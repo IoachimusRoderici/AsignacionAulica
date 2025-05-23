@@ -10,7 +10,7 @@ authors = [
   {name = "Joaquín Rodríguez"}
 ]
 
-requires-python = ">= 3.11"
+requires-python = "3.11"
 dependencies = [
   "pandas = 2.2.1"
 ]

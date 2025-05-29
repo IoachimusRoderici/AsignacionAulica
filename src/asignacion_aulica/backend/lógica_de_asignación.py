@@ -19,9 +19,25 @@ con todas las restricciones y que tenga la menor penalización posible.
 '''
 from ortools.sat.python import cp_model
 from pandas import DataFrame
+from typing import Iterable
 
 from .impossible_assignment_exception import ImposibleAssignmentException
 from .restricciones import todas_las_restricciones
+from .preferencias import obtener_cantidad_de_clases_fuera_del_edificio_preferido
+
+def construir_edificios(aulas: DataFrame) -> dict[str, Iterable[int]]:
+    '''
+    Devuelve el diccionario de nombres de edificio a iterables de aulas que tiene cada edificio.
+    '''
+
+    edificios = {}
+    for aula in aulas.itertuples():
+        if not aula.edificio in edificios:
+            edificios[aula.edificio] = [aula.Index]
+        else:
+            edificios[aula.edificio].append(aula.Index)
+
+    return edificios
 
 def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
     '''
@@ -61,6 +77,9 @@ def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
     for predicado in todas_las_restricciones(clases, aulas):
         modelo.add(predicado)
 
+    cantidad_de_clases_fuera_del_edificio_preferido = obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, construir_edificios(aulas))
+    modelo.minimize(cantidad_de_clases_fuera_del_edificio_preferido)
+
     # Resolver
     solver = cp_model.CpSolver()
     status = solver.solve(modelo)
@@ -69,6 +88,9 @@ def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
         raise ImposibleAssignmentException(f'El solucionador de restricciones terminó con status {status_name}.')
     
     #TODO: ¿qué hacer si da FEASIBLE?¿en qué condiciones ocurre?¿aceptamos la solución suboptima o tiramos excepción?
+
+    cantidad_de_clases_fuera_del_edificio_preferido = solver.value(cantidad_de_clases_fuera_del_edificio_preferido)
+    print(f"{cantidad_de_clases_fuera_del_edificio_preferido=}")
 
     # Armar lista con las asignaciones
     aulas_asignadas = list(map(solver.value, clases['aula_asignada']))

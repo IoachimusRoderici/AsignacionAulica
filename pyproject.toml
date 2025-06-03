@@ -13,7 +13,8 @@ authors = [
 requires-python = "~= 3.11"
 dependencies = [
   "pandas == 2.2.*",
-  "ortools == 9.12.*"
+  "ortools == 9.12.*",
+  "flet == 0.28.3"
 ]
 
 [project.optional-dependencies]

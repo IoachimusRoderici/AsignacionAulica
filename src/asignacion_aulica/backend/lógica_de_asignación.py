@@ -23,23 +23,9 @@ from typing import Iterable
 
 from .impossible_assignment_exception import ImposibleAssignmentException
 from .restricciones import todas_las_restricciones
-from .preferencias import obtener_cantidad_de_clases_fuera_del_edificio_preferido
+from .preferencias import obtener_penalizaciones
 
-def construir_edificios(aulas: DataFrame) -> dict[str, Iterable[int]]:
-    '''
-    Devuelve el diccionario de nombres de edificio a iterables de aulas que tiene cada edificio.
-    '''
-
-    edificios = {}
-    for aula in aulas.itertuples():
-        if not aula.edificio in edificios:
-            edificios[aula.edificio] = [aula.Index]
-        else:
-            edificios[aula.edificio].append(aula.Index)
-
-    return edificios
-
-def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
+def asignar(aulas: DataFrame, clases: DataFrame) -> tuple[ list[int], dict[str, int] ]:
     '''
     Resolver el problema de asignación.
 
@@ -61,7 +47,8 @@ def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
         - cantidad_de_alumnos: int
         - equipamiento_necesario: set[str]
         - edificio_preferido: str
-    :return: Lista con el número de aula asignada a cada clase
+    :return: Una lista con el número de aula asignada a cada clase, y un
+        diccionario con los valores de las penalizaciones.
     :raise ImposibleAssignmentException: Si no es posible hacer la asignación.
     '''
     # Modelo que contiene las variables, restricciones, y penalizaciones
@@ -77,8 +64,9 @@ def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
     for predicado in todas_las_restricciones(clases, aulas):
         modelo.add(predicado)
 
-    cantidad_de_clases_fuera_del_edificio_preferido = obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, construir_edificios(aulas))
-    modelo.minimize(cantidad_de_clases_fuera_del_edificio_preferido)
+    # Agregar al modelo las penalizaciones
+    penalizaciones = obtener_penalizaciones(modelo, clases, aulas)
+    modelo.minimize(penalizaciones['total'])
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -95,5 +83,9 @@ def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
     # Armar lista con las asignaciones
     aulas_asignadas = list(map(solver.value, clases['aula_asignada']))
     
-    return aulas_asignadas
+    # Armar diccionario con los valores de las penalizaciones
+    penalizaciones_evaluadas = {key: solver.value(value) for key, value in penalizaciones.items()}
+    penalizaciones_evaluadas.pop('total')
+    
+    return aulas_asignadas, penalizaciones_evaluadas
   

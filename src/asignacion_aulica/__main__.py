@@ -1,5 +1,8 @@
+import flet as ft
+from frontend import UI
+
 def main():
-    print('Todavía no hago nada.')
+    ft.app(UI.main())
 
 
 if __name__ == '__main__':

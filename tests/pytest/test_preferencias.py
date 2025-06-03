@@ -1,7 +1,7 @@
 from ortools.sat.python import cp_model
 import pytest
 
-from asignacion_aulica.backend import preferencias, lógica_de_asignación
+from asignacion_aulica.backend import preferencias
 from helper_functions import *
 
 def test_todas_las_aulas_en_el_edificio_preferido():
@@ -10,7 +10,6 @@ def test_todas_las_aulas_en_el_edificio_preferido():
         dict(edificio='preferido'),
         dict(edificio='preferido')
     )
-    edificios = {'preferido': aulas.index}
 
     clases, modelo = make_clases(
         len(aulas),
@@ -18,7 +17,7 @@ def test_todas_las_aulas_en_el_edificio_preferido():
         dict(edificio_preferido='preferido')
     )
 
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, edificios)
+    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, aulas)
 
     # Forzar asignaciones arbitrarias
     modelo.add(clases.loc[0, 'aula_asignada'] == 1)
@@ -39,7 +38,6 @@ def test_algunas_aulas_en_el_edificio_preferido():
         dict(edificio='preferido'),
         dict(edificio='preferido 2')
     )
-    edificios = lógica_de_asignación.construir_edificios(aulas)
 
     clases, modelo = make_clases(
         len(aulas),
@@ -51,7 +49,7 @@ def test_algunas_aulas_en_el_edificio_preferido():
         dict(edificio_preferido='preferido')
     )
 
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, edificios)
+    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, aulas)
 
     # Forzar asignaciones arbitrarias (generadas aleatoriamente)
     modelo.add(clases.loc[0, 'aula_asignada'] == 3)
@@ -77,14 +75,13 @@ def test_elije_aula_en_edificio_preferido():
         dict(edificio='no preferido 3'),
         dict(edificio='no preferido 4')
     )
-    edificios = lógica_de_asignación.construir_edificios(aulas)
 
     clases, modelo = make_clases(
         len(aulas),
         dict(edificio_preferido='preferido'),
     )
 
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, edificios)
+    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, aulas)
 
     # Pedir al modelo minimizar cantidad de clases fuera del edificio preferido 
     modelo.minimize(clases_fuera_del_edificio_preferido)

@@ -76,11 +76,8 @@ def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
     
     #TODO: ¿qué hacer si da FEASIBLE?¿en qué condiciones ocurre?¿aceptamos la solución suboptima o tiramos excepción?
 
-    cantidad_de_clases_fuera_del_edificio_preferido = solver.value(cantidad_de_clases_fuera_del_edificio_preferido)
-    print(f"{cantidad_de_clases_fuera_del_edificio_preferido=}")
-
     # Armar lista con las asignaciones
     aulas_asignadas = list(map(solver.value, clases['aula_asignada']))
         
-    return aulas_asignadas, penalizaciones_evaluadas
+    return aulas_asignadas
   

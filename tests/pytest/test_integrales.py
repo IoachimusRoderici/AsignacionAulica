@@ -1,3 +1,5 @@
+import pytest
+
 from asignacion_aulica import backend
 from helper_functions import *
 
@@ -25,4 +27,18 @@ def test_restricciones_y_preferencias():
 
     for asignación, asignación_esperada in zip(asignaciones, asignaciones_esperadas):
         assert asignación == asignación_esperada
+
+def test_asignación_imposible_por_equipamiento():
+
+    aulas = make_aulas(
+        dict(capacidad=60),
+    )
+
+    clases, _ = make_clases(
+        len(aulas),
+        dict(día="lunes", cantidad_de_alumnos=70, equipamiento_necesario={"proyector"}),
+    )
+
+    with pytest.raises(backend.ImposibleAssignmentException):
+        asignaciones = backend.asignar(aulas, clases)
 

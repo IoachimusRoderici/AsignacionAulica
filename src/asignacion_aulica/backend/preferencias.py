@@ -60,34 +60,23 @@ def obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo: cp_model.CpM
 
     return cantidad_de_clases_fuera_del_edificio_preferido
 
-# Iterable de tuplas (peso, nombre, función)
+# Iterable de tuplas (peso, función)
 todas_las_penalizaciones = (
-    (10, 'cantidad de clases fuera del edificio preferido', obtener_cantidad_de_clases_fuera_del_edificio_preferido),
+    (10, obtener_cantidad_de_clases_fuera_del_edificio_preferido),
 )
 
 def obtener_penalizaciones(modelo: cp_model.CpModel, clases: DataFrame, aulas: DataFrame):
     '''
-    Calcula todas las penalizaciones.
-
-    Agrega al modelo las variables necesarias y devuelve un diccionario con
-    toas las expresiones de penalizaciones.
+    Calcula la suma de todas las penalizaciones con sus pesos.
 
     :param modelo: El CpModel al que agregar variables.
     :param clases: Tabla con los datos de las clases.
     :param aulas: Tabla con los datos de las aulas.
-    :return: Diccionario que mapea nombres de penalizaciones a expresiones que
-        las representan. La penalización con el nombre "total" es la que el
-        modelo tiene que minimizar, las demás pueden servir para informar al
-        usuario sus valores luego de la asignación.
+    :return: La expresión de penalización total.
     '''
-    penalizaciones = {}
     penalización_total = 0
-    for peso, nombre, función in todas_las_penalizaciones:
-        expresión = función(modelo, clases, aulas)
-        penalizaciones[nombre] = expresión
-        penalización_total += peso*expresión
+    for peso, función in todas_las_penalizaciones:
+        penalización_total += peso * función(modelo, clases, aulas)
     
-    penalizaciones['total'] = penalización_total
-
-    return penalizaciones
+    return penalización_total
 

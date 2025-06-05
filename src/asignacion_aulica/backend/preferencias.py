@@ -60,9 +60,41 @@ def obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo: cp_model.CpM
 
     return cantidad_de_clases_fuera_del_edificio_preferido
 
+def obtener_cantidad_de_alumnos_fuera_del_aula(modelo: cp_model.CpModel, clases: DataFrame, aulas: DataFrame):
+    '''
+    Devuelve una expresión que representa la cantidad de alumnos que exceden la 
+    capacidad del aula asignada a su clase.
+    '''
+    cantidad_de_alumnos_fuera_del_aula = 0
+
+    for clase in clases.itertuples():
+        exceso_de_capacidad = modelo.new_int_var(0, clase.cantidad_de_alumnos, f"exceso_de_capacidad_de_{clase.nombre}")
+        for aula in aulas.itertuples():
+            # NOTE: Esto crea una tabla de n×m variable booleanas. Eso puede
+            # llegar a ser poco eficiente. También esas variables contienen
+            # exactamente la misma información que la columna "aula_asignada",
+            # así que se puede llegar a des-duplicar eliminando una de las dos.
+            # 
+            # NOTE: Por las restricciones del otro módulo, hay varias
+            # asignaciones prohibidas que se podrían saltear acá para no crear
+            # tantas variables y restricciones.
+            asignada_a_este_aula = modelo.new_bool_var(f'{clase.nombre} asignada al aula {aula.Index}')
+            modelo.add(clase.aula_asignada == aula.Index).OnlyEnforceIf(asignada_a_este_aula)
+            modelo.add(clase.aula_asignada != aula.Index).OnlyEnforceIf(~asignada_a_este_aula)
+
+            if clase.cantidad_de_alumnos > aula.capacidad:
+                modelo.add(exceso_de_capacidad == clase.cantidad_de_alumnos - aula.capacidad).OnlyEnforceIf(asignada_a_este_aula)
+            else:
+                modelo.add(exceso_de_capacidad == 0).OnlyEnforceIf(asignada_a_este_aula)
+        
+        cantidad_de_alumnos_fuera_del_aula += exceso_de_capacidad
+    
+    return cantidad_de_alumnos_fuera_del_aula
+
 # Iterable de tuplas (peso, función)
 todas_las_penalizaciones = (
-    (10, obtener_cantidad_de_clases_fuera_del_edificio_preferido),
+    (10,  obtener_cantidad_de_clases_fuera_del_edificio_preferido),
+    (100, obtener_cantidad_de_alumnos_fuera_del_aula),
 )
 
 def obtener_penalizaciones(modelo: cp_model.CpModel, clases: DataFrame, aulas: DataFrame):

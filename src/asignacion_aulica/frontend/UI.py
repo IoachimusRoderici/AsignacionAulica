@@ -7,8 +7,9 @@ Grupo Asignación Áulica
 
 import flet as ft
 
-from ui.menu import UI_Menu
-from ui.config import UI_Config
+from colores import COLOR
+from menu import UI_Menu
+from config import UI_Config
 
 
 def main(page: ft.Page):
@@ -19,20 +20,20 @@ def main(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.START
     page.window_width = 1280
     page.window_height = 720
-    page._set_attr("windowMinWidth", 1280)
-    page._set_attr("windowMinHeight", 720)
+    #page._set_attr("windowMinWidth", 1280)
+    #page._set_attr("windowMinHeight", 720)
     page.expand = True
     
     # Fuente de la app
     page.fonts = {
-        "Karla": "./ui/fonts/Karla-Regular.ttf",
-        "Open Sans": "./ui/fonts/OpenSans-Regular.ttf",
-        "Open Sans Condensed": "./ui/fonts/OpenSans_Condensed-Regular.ttf"
+        "Karla": "./fonts/Karla-Regular.ttf",
+        "Open Sans": "./fonts/OpenSans-Regular.ttf",
+        "Open Sans Condensed": "./fonts/OpenSans_Condensed-Regular.ttf"
     }
     page.theme = ft.Theme(font_family="Karla")  # Font de la App por default
     
     menu = UI_Menu()
-    config = UI_Config()
+    config = UI_Config(page)
     UI_Todo = ft.Row(
         [menu.dibujar(), config.dibujar()],
         spacing=0,
@@ -46,6 +47,5 @@ def main(page: ft.Page):
     page.update()
 
 
-#ft.app(main)
 if __name__ == "__main__":
     ft.app(main)

@@ -1,7 +1,8 @@
 from ortools.sat.python import cp_model
 import pytest
 
-from asignacion_aulica.backend import preferencias
+from asignacion_aulica.backend import crear_matriz_de_asignaciones, preferencias
+from asignacion_aulica.backend.restricciones import no_superponer_clases
 from helper_functions import *
 
 def test_algunas_clases_exceden_capacidad():
@@ -18,12 +19,14 @@ def test_algunas_clases_exceden_capacidad():
         dict(cantidad_de_alumnos=100),
     )
 
-    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(modelo, clases, aulas)
+    # Forzar asignaciones arbitrarias (clase i con aula i)
+    asignaciones = np.array([
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1],
+    ])
 
-    # Forzar asignaciones arbitrarias
-    modelo.add(clases.loc[0, 'aula_asignada'] == 0)
-    modelo.add(clases.loc[1, 'aula_asignada'] == 1)
-    modelo.add(clases.loc[2, 'aula_asignada'] == 2)
+    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(modelo, clases, aulas, asignaciones)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -47,12 +50,14 @@ def test_ninguna_clase_excede_capacidad():
         dict(cantidad_de_alumnos=100),
     )
 
-    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(modelo, clases, aulas)
+    # Forzar asignaciones arbitrarias (clase i con aula i)
+    asignaciones = np.array([
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1],
+    ])
 
-    # Forzar asignaciones arbitrarias
-    modelo.add(clases.loc[0, 'aula_asignada'] == 0)
-    modelo.add(clases.loc[1, 'aula_asignada'] == 1)
-    modelo.add(clases.loc[2, 'aula_asignada'] == 2)
+    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(modelo, clases, aulas, asignaciones)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -76,13 +81,14 @@ def test_entran_justito():
         dict(cantidad_de_alumnos=30),
     )
 
+    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
+
     # Restricciones para que no estén en el mismo aula
-    modelo.add(clases.loc[0, 'aula_asignada'] != clases.loc[1, 'aula_asignada'])
-    modelo.add(clases.loc[0, 'aula_asignada'] != clases.loc[2, 'aula_asignada'])
-    modelo.add(clases.loc[1, 'aula_asignada'] != clases.loc[2, 'aula_asignada'])
+    for predicado in no_superponer_clases(clases, aulas, asignaciones):
+        modelo.add(predicado)
 
     # Minizar capacidad excedida
-    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(modelo, clases, aulas)
+    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(modelo, clases, aulas, asignaciones)
     modelo.minimize(cantidad_excedida)
 
     # Resolver
@@ -118,13 +124,14 @@ def test_minimiza_capacidad_excedida():
         dict(cantidad_de_alumnos=31),
     )
 
+    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
+
     # Restricciones para que no estén en el mismo aula
-    modelo.add(clases.loc[0, 'aula_asignada'] != clases.loc[1, 'aula_asignada'])
-    modelo.add(clases.loc[0, 'aula_asignada'] != clases.loc[2, 'aula_asignada'])
-    modelo.add(clases.loc[1, 'aula_asignada'] != clases.loc[2, 'aula_asignada'])
+    for predicado in no_superponer_clases(clases, aulas, asignaciones):
+        modelo.add(predicado)
 
     # Minizar capacidad excedida
-    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(modelo, clases, aulas)
+    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(modelo, clases, aulas, asignaciones)
     modelo.minimize(cantidad_excedida)
 
     # Resolver
@@ -137,3 +144,4 @@ def test_minimiza_capacidad_excedida():
     assert solver.value(clases.loc[1, 'aula_asignada']) == 1
     assert solver.value(clases.loc[2, 'aula_asignada']) == 2
     assert solver.value(cantidad_excedida) == 3
+

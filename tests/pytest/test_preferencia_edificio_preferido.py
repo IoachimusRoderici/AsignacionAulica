@@ -17,11 +17,15 @@ def test_todas_las_aulas_en_el_edificio_preferido():
         dict(edificio_preferido='preferido')
     )
 
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, aulas)
+    # Forzar asignaciones arbitrarias:
+    # - Clase 0 con Aula 1
+    # - Clase 1 con Aula 2
+    asignaciones = np.array([
+        [0, 1, 0],
+        [0, 0, 1],
+    ])
 
-    # Forzar asignaciones arbitrarias
-    modelo.add(clases.loc[0, 'aula_asignada'] == 1)
-    modelo.add(clases.loc[1, 'aula_asignada'] == 2)
+    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, aulas, asignaciones)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -49,15 +53,23 @@ def test_algunas_aulas_en_el_edificio_preferido():
         dict(edificio_preferido='preferido')
     )
 
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, aulas)
+    # Forzar asignaciones arbitrarias:
+    # - Clase 0 con Aula 3
+    # - Clase 1 con Aula 2
+    # - Clase 2 con Aula 1
+    # - Clase 3 con Aula 1
+    # - Clase 4 con Aula 2
+    # - Clase 5 con Aula 0
+    asignaciones = np.array([
+        [0, 0, 0, 1],
+        [0, 0, 1, 0],
+        [0, 1, 0, 0],
+        [0, 1, 0, 0],
+        [0, 0, 1, 0],
+        [1, 0, 0, 0]
+    ])
 
-    # Forzar asignaciones arbitrarias (generadas aleatoriamente)
-    modelo.add(clases.loc[0, 'aula_asignada'] == 3)
-    modelo.add(clases.loc[1, 'aula_asignada'] == 2)
-    modelo.add(clases.loc[2, 'aula_asignada'] == 1)
-    modelo.add(clases.loc[3, 'aula_asignada'] == 1)
-    modelo.add(clases.loc[4, 'aula_asignada'] == 2)
-    modelo.add(clases.loc[5, 'aula_asignada'] == 0)
+    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, aulas, asignaciones)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -81,7 +93,9 @@ def test_elije_aula_en_edificio_preferido():
         dict(edificio_preferido='preferido'),
     )
 
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, aulas)
+    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
+
+    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, aulas, asignaciones)
 
     # Pedir al modelo minimizar cantidad de clases fuera del edificio preferido 
     modelo.minimize(clases_fuera_del_edificio_preferido)

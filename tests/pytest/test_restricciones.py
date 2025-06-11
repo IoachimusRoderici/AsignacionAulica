@@ -1,6 +1,11 @@
 from helper_functions import *
 from asignacion_aulica.backend import restricciones
 
+# TODO: Arreglar los assert de estos tests. O no lol.
+# Para el que prueba no_superponer_clases sería el único que "haría falta" ver
+# los predicados (o borrar el test xd). Para el resto se podría verificar que
+# se seteen constantes en la matriz de asignaciones.
+
 def test_superposición():
     aulas = make_aulas({})
     clases, modelo = make_clases(
@@ -10,7 +15,9 @@ def test_superposición():
         dict(horario_inicio=5, horario_fin=6)
     )
 
-    predicados = list(restricciones.no_superponer_clases(clases, aulas))
+    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
+
+    predicados = list(restricciones.no_superponer_clases(clases, aulas, asignaciones))
 
     # Debería generar solamente un predicado entre las primeras dos clases
     assert len(predicados) == 1
@@ -32,7 +39,9 @@ def test_aulas_cerradas():
         dict(horario_inicio=10, horario_fin=13)
     )
 
-    predicados = list(restricciones.no_asignar_en_aula_cerrada(clases, aulas))
+    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
+
+    predicados = list(restricciones.no_asignar_en_aula_cerrada(clases, aulas, asignaciones))
 
     # Debería generar restricciones con las aulas 1, 2, y 4
     assert len(predicados) == 3
@@ -51,7 +60,9 @@ def test_capacidad_suficiente():
         dict(cantidad_de_alumnos = 50)
     )
 
-    predicados = list(restricciones.asignar_aulas_con_capacidad_suficiente(clases, aulas))
+    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
+
+    predicados = list(restricciones.asignar_aulas_con_capacidad_suficiente(clases, aulas, asignaciones))
 
     # Debería generar una sola restricción con el aula 2
     assert len(predicados) == 1
@@ -68,8 +79,11 @@ def test_equipamiento():
         dict(equipamiento_necesario = set(('proyector',)))
     )
 
-    predicados = list(restricciones.asignar_aulas_con_el_equipamiento_requerido(clases, aulas))
+    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
+
+    predicados = list(restricciones.asignar_aulas_con_el_equipamiento_requerido(clases, aulas, asignaciones))
 
     # Debería generar una sola restricción con el aula 2
     assert len(predicados) == 1
     assert predicado_es_not_equals_entre_variable_y_constante(predicados[0], 2)
+

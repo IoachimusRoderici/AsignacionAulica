@@ -19,7 +19,7 @@ def test_superposición():
 
     asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
 
-    predicados = list(restricciones.no_superponer_clases(clases, aulas, asignaciones))
+    predicados = list(restricciones.no_superponer_clases(clases, aulas, {}, asignaciones))
 
     # Debería generar solamente un predicado entre las primeras dos clases
     assert len(predicados) == 1

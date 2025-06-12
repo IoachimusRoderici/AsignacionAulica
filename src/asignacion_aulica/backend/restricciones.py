@@ -37,7 +37,7 @@ def clases_se_superponen(clase1, clase2) -> bool:
            clase1.horario_inicio < clase2.horario_fin and \
            clase2.horario_inicio < clase1.horario_fin
 
-def no_superponer_clases(clases: DataFrame, aulas: DataFrame, asignaciones: np.ndarray):
+def no_superponer_clases(clases: DataFrame, aulas: DataFrame, aulas_dobles: dict[ int, tuple[int, int] ], asignaciones: np.ndarray):
     '''
     Las materias con horarios superpuestos no pueden estar en el mismo aula.
     '''

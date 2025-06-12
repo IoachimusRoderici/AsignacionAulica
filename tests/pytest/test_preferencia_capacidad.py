@@ -83,7 +83,7 @@ def test_entran_justito():
     asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
 
     # Restricciones para que no estén en el mismo aula
-    for predicado in no_superponer_clases(clases, aulas, asignaciones):
+    for predicado in no_superponer_clases(clases, aulas, {}, asignaciones):
         modelo.add(predicado)
 
     # Minizar capacidad excedida
@@ -127,7 +127,7 @@ def test_minimiza_capacidad_excedida():
     asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
 
     # Restricciones para que no estén en el mismo aula
-    for predicado in no_superponer_clases(clases, aulas, asignaciones):
+    for predicado in no_superponer_clases(clases, aulas, {}, asignaciones):
         modelo.add(predicado)
 
     # Minizar capacidad excedida

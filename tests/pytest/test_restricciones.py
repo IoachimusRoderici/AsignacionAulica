@@ -1,6 +1,5 @@
 from helper_functions import *
 
-from asignacion_aulica.backend.lógica_de_asignación import crear_matriz_de_asignaciones
 from asignacion_aulica.backend import restricciones
 
 # TODO: Arreglar los assert de estos tests. O no lol.
@@ -17,7 +16,7 @@ def test_superposición():
     )
     modelo = cp_model.CpModel()
 
-    asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
+    asignaciones = make_asignaciones(clases, aulas, modelo)
 
     predicados = list(restricciones.no_superponer_clases(clases, aulas, {}, asignaciones))
 
@@ -40,7 +39,7 @@ def test_aulas_cerradas():
         dict(horario_inicio=10, horario_fin=13)
     )
     modelo = cp_model.CpModel()
-    asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
+    asignaciones = make_asignaciones(clases, aulas, modelo)
 
     prohibidas = list(restricciones.no_asignar_en_aula_cerrada(clases, aulas))
 
@@ -60,7 +59,7 @@ def test_capacidad_suficiente():
         dict(cantidad_de_alumnos = 50)
     )
     modelo = cp_model.CpModel()
-    asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
+    asignaciones = make_asignaciones(clases, aulas, modelo)
 
     prohibidas = list(restricciones.asignar_aulas_con_capacidad_suficiente(clases, aulas))
 
@@ -78,7 +77,7 @@ def test_equipamiento():
         dict(equipamiento_necesario = set(('proyector',)))
     )
     modelo = cp_model.CpModel()
-    asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
+    asignaciones = make_asignaciones(clases, aulas, modelo)
 
     prohibidas = list(restricciones.asignar_aulas_con_el_equipamiento_requerido(clases, aulas))
 

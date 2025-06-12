@@ -76,7 +76,7 @@ def asignar(clases: DataFrame, aulas: DataFrame) -> list[int]:
     
     # Armar lista con las asignaciones
     asignaciones_finales = np.vectorize(solver.value)(asignaciones)
-    aulas_asignadas = list((asignaciones_finales!=0).argmax(axis=1))
+    aulas_asignadas = list(asignaciones_finales.argmax(axis=1))
         
     return aulas_asignadas
   

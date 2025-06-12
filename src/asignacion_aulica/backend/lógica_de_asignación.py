@@ -32,18 +32,10 @@ from .impossible_assignment_exception import ImposibleAssignmentException
 from asignacion_aulica.backend import restricciones
 from .preferencias import obtener_penalización
 
-def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
+def asignar(clases: DataFrame, aulas: DataFrame) -> list[int]:
     '''
     Resolver el problema de asignación.
 
-    :param aulas: Tabla con los datos de todas las aulas disponibles.
-        Columnas:
-        - edificio: str
-        - nombre: str
-        - capacidad: int
-        - equipamiento: set[str]
-        - horario_apertura: int #TODO: Decidir cómo representar los horarios en números enteros
-        - horario_cierre: int
     :param clases: Tabla con los datos de todas las clases.
         Una clase por fila.
         Columnas:
@@ -54,17 +46,25 @@ def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
         - cantidad_de_alumnos: int
         - equipamiento_necesario: set[str]
         - edificio_preferido: str
+    :param aulas: Tabla con los datos de todas las aulas disponibles.
+        Columnas:
+        - edificio: str
+        - nombre: str
+        - capacidad: int
+        - equipamiento: set[str]
+        - horario_apertura: int #TODO: Decidir cómo representar los horarios en números enteros
+        - horario_cierre: int
     :return: Una lista con el número de aula asignada a cada clase.
     :raise ImposibleAssignmentException: Si no es posible hacer la asignación.
     '''
     # Crear modelo, variables, restricciones, y penalizaciones
     modelo = cp_model.CpModel()
-    asignaciones = crear_matriz_de_asignaciones(modelo, clases, aulas)
+    asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
 
     for predicado in restricciones.restricciones_con_variables(clases, aulas, asignaciones):
         modelo.add(predicado)
     
-    penalización = obtener_penalización(modelo, clases, aulas, asignaciones)
+    penalización = obtener_penalización(clases, aulas, modelo, asignaciones)
     modelo.minimize(penalización)
 
     # Resolver
@@ -80,7 +80,7 @@ def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
         
     return aulas_asignadas
   
-def crear_matriz_de_asignaciones(modelo: cp_model.CpModel, clases: DataFrame, aulas: DataFrame) -> np.ndarray:
+def crear_matriz_de_asignaciones(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpModel) -> np.ndarray:
     '''
     Genera una matriz con las variables de asignación.
 

@@ -21,7 +21,7 @@ def test_restricciones_y_preferencias():
         dict(día="miércoles", cantidad_de_alumnos=55),
     )
 
-    asignaciones = backend.asignar(aulas, clases)
+    asignaciones = backend.asignar(clases, aulas)
     asignaciones_esperadas = [1, 0, 0, 1]
 
     for asignación, asignación_esperada in zip(asignaciones, asignaciones_esperadas):
@@ -38,5 +38,5 @@ def test_asignación_imposible_por_equipamiento():
     )
 
     with pytest.raises(backend.ImposibleAssignmentException):
-        asignaciones = backend.asignar(aulas, clases)
+        asignaciones = backend.asignar(clases, aulas)
 

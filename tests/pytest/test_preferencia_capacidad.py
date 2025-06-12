@@ -27,7 +27,7 @@ def test_algunas_clases_exceden_capacidad():
         [0, 0, 1],
     ])
 
-    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(modelo, clases, aulas, asignaciones)
+    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(clases, aulas, modelo, asignaciones)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -57,7 +57,7 @@ def test_ninguna_clase_excede_capacidad():
         [0, 0, 1],
     ])
 
-    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(modelo, clases, aulas, asignaciones)
+    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(clases, aulas, modelo, asignaciones)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -80,14 +80,14 @@ def test_entran_justito():
     )
     modelo = cp_model.CpModel()
 
-    asignaciones = crear_matriz_de_asignaciones(modelo, clases, aulas)
+    asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
 
     # Restricciones para que no estén en el mismo aula
     for predicado in no_superponer_clases(clases, aulas, asignaciones):
         modelo.add(predicado)
 
     # Minizar capacidad excedida
-    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(modelo, clases, aulas, asignaciones)
+    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(clases, aulas, modelo, asignaciones)
     modelo.minimize(cantidad_excedida)
 
     # Resolver
@@ -124,14 +124,14 @@ def test_minimiza_capacidad_excedida():
     )
     modelo = cp_model.CpModel()
 
-    asignaciones = crear_matriz_de_asignaciones(modelo, clases, aulas)
+    asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
 
     # Restricciones para que no estén en el mismo aula
     for predicado in no_superponer_clases(clases, aulas, asignaciones):
         modelo.add(predicado)
 
     # Minizar capacidad excedida
-    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(modelo, clases, aulas, asignaciones)
+    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(clases, aulas, modelo, asignaciones)
     modelo.minimize(cantidad_excedida)
 
     # Resolver

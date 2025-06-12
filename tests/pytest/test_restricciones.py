@@ -17,7 +17,7 @@ def test_superposición():
     )
     modelo = cp_model.CpModel()
 
-    asignaciones = crear_matriz_de_asignaciones(modelo, clases, aulas)
+    asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
 
     predicados = list(restricciones.no_superponer_clases(clases, aulas, asignaciones))
 
@@ -41,7 +41,7 @@ def test_aulas_cerradas():
     )
     modelo = cp_model.CpModel()
 
-    asignaciones = crear_matriz_de_asignaciones(modelo, clases, aulas)
+    asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
 
     predicados = list(restricciones.no_asignar_en_aula_cerrada(clases, aulas))
 
@@ -62,7 +62,7 @@ def test_capacidad_suficiente():
     )
     modelo = cp_model.CpModel()
 
-    asignaciones = crear_matriz_de_asignaciones(modelo, clases, aulas)
+    asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
 
     predicados = list(restricciones.asignar_aulas_con_capacidad_suficiente(clases, aulas, asignaciones))
 
@@ -81,7 +81,7 @@ def test_equipamiento():
     )
     modelo = cp_model.CpModel()
 
-    asignaciones = crear_matriz_de_asignaciones(modelo, clases, aulas)
+    asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
 
     predicados = list(restricciones.asignar_aulas_con_el_equipamiento_requerido(clases, aulas))
 

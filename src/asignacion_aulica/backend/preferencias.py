@@ -9,9 +9,9 @@ Cada penalización se define en una función que agrega al modelo las variables
 necesarias y devuelve una expresión que representa el valor a minimizar.
 
 Estas funciones toman los siguientes argumentos:
-- modelo: el CpModel al que agregar variables
 - clases: DataFrame, tabla con los datos de las clases
 - aulas: DataFrame, tabla con los datos de las aulas
+- modelo: el CpModel al que agregar variables
 - asignaciones: Matriz con los datos de asignaciones, donde las filas son
   clases y las columnas son aulas.
 
@@ -43,7 +43,7 @@ def construir_edificios(aulas: DataFrame) -> dict[str, set[int]]:
 
     return edificios
 
-def obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo: cp_model.CpModel, clases: DataFrame, aulas: DataFrame, asignaciones: np.ndarray):
+def obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpModel, asignaciones: np.ndarray):
     '''
     Devuelve una expresión que representa la cantidad de clases fuera de su edificio preferido.
     '''
@@ -61,7 +61,7 @@ def obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo: cp_model.CpM
 
     return cantidad_de_clases_fuera_del_edificio_preferido
 
-def obtener_cantidad_de_alumnos_fuera_del_aula(modelo: cp_model.CpModel, clases: DataFrame, aulas: DataFrame, asignaciones: np.ndarray):
+def obtener_cantidad_de_alumnos_fuera_del_aula(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpModel, asignaciones: np.ndarray):
     '''
     Devuelve una expresión que representa la cantidad de alumnos que exceden la 
     capacidad del aula asignada a su clase.
@@ -88,18 +88,17 @@ todas_las_penalizaciones = (
     (100, obtener_cantidad_de_alumnos_fuera_del_aula),
 )
 
-def obtener_penalización(modelo: cp_model.CpModel, clases: DataFrame, aulas: DataFrame, asignaciones: np.ndarray):
+def obtener_penalización(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpModel, asignaciones: np.ndarray):
     '''
     Calcula la suma de todas las penalizaciones con sus pesos.
 
-    :param modelo: El CpModel al que agregar variables.
     :param clases: Tabla con los datos de las clases.
     :param aulas: Tabla con los datos de las aulas.
+    :param modelo: El CpModel al que agregar variables.
     :return: La expresión de penalización total.
     '''
     penalización_total = 0
     for peso, función in todas_las_penalizaciones:
-        penalización_total += peso * función(modelo, clases, aulas, asignaciones)
+        penalización_total += peso * función(clases, aulas, modelo, asignaciones)
     
     return penalización_total
-

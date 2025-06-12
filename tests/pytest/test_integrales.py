@@ -14,8 +14,7 @@ def test_restricciones_y_preferencias():
         dict(capacidad=40, equipamiento={"proyector"}),
     )
 
-    clases, _ = make_clases(
-        len(aulas),
+    clases = make_clases(
         dict(día="lunes", cantidad_de_alumnos=70, equipamiento_necesario={"proyector"}),
         dict(día="lunes", cantidad_de_alumnos=50),
         dict(día="miércoles", cantidad_de_alumnos=56),
@@ -34,8 +33,7 @@ def test_asignación_imposible_por_equipamiento():
         dict(capacidad=60),
     )
 
-    clases, _ = make_clases(
-        len(aulas),
+    clases = make_clases(
         dict(día="lunes", cantidad_de_alumnos=70, equipamiento_necesario={"proyector"}),
     )
 

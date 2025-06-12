@@ -1,6 +1,8 @@
 from ortools.sat.python import cp_model
+import numpy as np
 import pytest
 
+from asignacion_aulica.backend.lógica_de_asignación import crear_matriz_de_asignaciones
 from asignacion_aulica.backend import preferencias
 from helper_functions import *
 
@@ -10,12 +12,11 @@ def test_todas_las_aulas_en_el_edificio_preferido():
         dict(edificio='preferido'),
         dict(edificio='preferido')
     )
-
-    clases, modelo = make_clases(
-        len(aulas),
+    clases = make_clases(
         dict(edificio_preferido='preferido'),
         dict(edificio_preferido='preferido')
     )
+    modelo = cp_model.CpModel()
 
     # Forzar asignaciones arbitrarias:
     # - Clase 0 con Aula 1
@@ -42,9 +43,7 @@ def test_algunas_aulas_en_el_edificio_preferido():
         dict(edificio='preferido'),
         dict(edificio='preferido 2')
     )
-
-    clases, modelo = make_clases(
-        len(aulas),
+    clases = make_clases(
         dict(edificio_preferido='preferido'),
         dict(edificio_preferido='preferido'),
         dict(edificio_preferido='preferido 2'),
@@ -52,6 +51,7 @@ def test_algunas_aulas_en_el_edificio_preferido():
         dict(edificio_preferido='preferido 2'),
         dict(edificio_preferido='preferido')
     )
+    modelo = cp_model.CpModel()
 
     # Forzar asignaciones arbitrarias:
     # - Clase 0 con Aula 3
@@ -87,13 +87,13 @@ def test_elije_aula_en_edificio_preferido():
         dict(edificio='no preferido 3'),
         dict(edificio='no preferido 4')
     )
-
-    clases, modelo = make_clases(
-        len(aulas),
+    clases = make_clases(
         dict(edificio_preferido='preferido'),
     )
+    modelo = cp_model.CpModel()
 
-    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
+    asignaciones = crear_matriz_de_asignaciones(modelo, clases, aulas)
+    print(asignaciones)
 
     clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, aulas, asignaciones)
 
@@ -105,8 +105,9 @@ def test_elije_aula_en_edificio_preferido():
     status = solver.solve(modelo)
     if status != cp_model.OPTIMAL:
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
+    asignaciones_finales = np.vectorize(solver.value)(asignaciones)
 
     # La clase se debe asignar al aula en el edificio preferido
     assert solver.value(clases_fuera_del_edificio_preferido) == 0
-    assert solver.value(clases.loc[0, 'aula_asignada']) == 2
+    assert sum(asignaciones_finales[0,:]) == 1 and asignaciones_finales[0, 2] == 1
 

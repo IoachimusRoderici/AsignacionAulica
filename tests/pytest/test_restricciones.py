@@ -1,4 +1,6 @@
 from helper_functions import *
+
+from asignacion_aulica.backend.lógica_de_asignación import crear_matriz_de_asignaciones
 from asignacion_aulica.backend import restricciones
 
 # TODO: Arreglar los assert de estos tests. O no lol.
@@ -8,14 +10,14 @@ from asignacion_aulica.backend import restricciones
 
 def test_superposición():
     aulas = make_aulas({})
-    clases, modelo = make_clases(
-        len(aulas),
+    clases = make_clases(
         dict(horario_inicio=1, horario_fin=3),
         dict(horario_inicio=2, horario_fin=4),
         dict(horario_inicio=5, horario_fin=6)
     )
+    modelo = cp_model.CpModel()
 
-    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
+    asignaciones = crear_matriz_de_asignaciones(modelo, clases, aulas)
 
     predicados = list(restricciones.no_superponer_clases(clases, aulas, asignaciones))
 
@@ -34,14 +36,14 @@ def test_aulas_cerradas():
         dict(horario_apertura=9,  horario_cierre=14), # Sobra
         dict(horario_apertura=11, horario_cierre=12), # Abre tarde y cierra temprano
     )
-    clases, modelo = make_clases(
-        len(aulas),
+    clases = make_clases(
         dict(horario_inicio=10, horario_fin=13)
     )
+    modelo = cp_model.CpModel()
 
-    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
+    asignaciones = crear_matriz_de_asignaciones(modelo, clases, aulas)
 
-    predicados = list(restricciones.no_asignar_en_aula_cerrada(clases, aulas, asignaciones))
+    predicados = list(restricciones.no_asignar_en_aula_cerrada(clases, aulas))
 
     # Debería generar restricciones con las aulas 1, 2, y 4
     assert len(predicados) == 3
@@ -55,12 +57,12 @@ def test_capacidad_suficiente():
         dict(capacidad = 50),
         dict(capacidad = 10)
     )
-    clases, modelo = make_clases(
-        len(aulas),
+    clases = make_clases(
         dict(cantidad_de_alumnos = 50)
     )
+    modelo = cp_model.CpModel()
 
-    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
+    asignaciones = crear_matriz_de_asignaciones(modelo, clases, aulas)
 
     predicados = list(restricciones.asignar_aulas_con_capacidad_suficiente(clases, aulas, asignaciones))
 
@@ -74,14 +76,14 @@ def test_equipamiento():
         dict(equipamiento = set(('proyector', 'otra cosa'))),
         dict(equipamiento = set())
     )
-    clases, modelo = make_clases(
-        len(aulas),
+    clases = make_clases(
         dict(equipamiento_necesario = set(('proyector',)))
     )
+    modelo = cp_model.CpModel()
 
-    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
+    asignaciones = crear_matriz_de_asignaciones(modelo, clases, aulas)
 
-    predicados = list(restricciones.asignar_aulas_con_el_equipamiento_requerido(clases, aulas, asignaciones))
+    predicados = list(restricciones.asignar_aulas_con_el_equipamiento_requerido(clases, aulas))
 
     # Debería generar una sola restricción con el aula 2
     assert len(predicados) == 1

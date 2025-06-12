@@ -26,6 +26,7 @@ con todas las restricciones y que tenga la menor penalización posible.
 from ortools.sat.python import cp_model
 from pandas import DataFrame
 from typing import Iterable
+import numpy as np
 
 from .impossible_assignment_exception import ImposibleAssignmentException
 from .preferencias import obtener_penalización
@@ -58,7 +59,7 @@ def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
     '''
     # Crear modelo, variables, restricciones, y penalizaciones
     modelo = cp_model.CpModel()
-    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
+    asignaciones = crear_matriz_de_asignaciones(modelo, clases, aulas)
 
     for predicado in restricciones.restricciones_con_variables(clases, aulas, asignaciones):
         modelo.add(predicado)
@@ -79,3 +80,40 @@ def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
         
     return aulas_asignadas
   
+def crear_matriz_de_asignaciones(modelo: cp_model.CpModel, clases: DataFrame, aulas: DataFrame) -> np.ndarray:
+    '''
+    Genera una matriz con las variables de asignación.
+
+    Las filas de la matriz representan clases y las columnas representan aulas.
+    Cada elemento de la matriz es un booleano que indica si ese aula está
+    asignada a esa clase. El booleano puede ser una constante 0 o 1, o puede ser
+    una variable booleana del modelo.
+
+    Algunos elementos de la matriz se inicializan con las constantes que se
+    pueden deducir de las restricciones. Luego se agregan variables al modelo
+    para completar los elementos restantes.
+
+    También se agregan restricciones para que cada clase se asigne exactamente a
+    un aula.
+
+    :param modelo: El CpModel al que agregar variables.
+    :param clases: Tabla con los datos de las clases.
+    :param aulas: Tabla con los datos de las aulas.
+    :return: La expresión de penalización total.
+    '''
+    asignaciones = np.empty(shape=(len(clases), len(aulas)), dtype=object)
+
+    # Popular con constantes
+    for índices in restricciones.aulas_prohibidas(clases, aulas):
+        asignaciones[*índices] = 0
+    
+    # Rellenar los elementos vacíos con variables
+    for clase, aula in np.ndindex(asignaciones.shape):
+        if asignaciones[clase, aula] is None:
+            asignaciones[clase, aula] = modelo.new_bool_var(f'clase_{clase}_asignada_al_aula_{aula}')
+    
+    # Asegurar que cada clase se asigna a exactamente un aula
+    for clase in clases.Index:
+        modelo.add_exactly_one(asignaciones[clase,:])
+    
+    return asignaciones

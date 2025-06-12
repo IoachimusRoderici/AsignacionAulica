@@ -26,11 +26,7 @@ def test_todas_las_aulas_en_el_edificio_preferido():
         [0, 0, 1],
     ])
 
-<<<<<<< HEAD
     clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
-=======
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, aulas, asignaciones)
->>>>>>> 585baa6 (Actualizar tests)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -73,11 +69,7 @@ def test_algunas_aulas_en_el_edificio_preferido():
         [1, 0, 0, 0]
     ])
 
-<<<<<<< HEAD
     clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
-=======
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, aulas, asignaciones)
->>>>>>> 585baa6 (Actualizar tests)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -100,16 +92,9 @@ def test_elije_aula_en_edificio_preferido():
     )
     modelo = cp_model.CpModel()
 
-<<<<<<< HEAD
     asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
-    print(asignaciones)
 
     clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
-=======
-    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
-
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo, clases, aulas, asignaciones)
->>>>>>> 585baa6 (Actualizar tests)
 
     # Pedir al modelo minimizar cantidad de clases fuera del edificio preferido 
     modelo.minimize(clases_fuera_del_edificio_preferido)

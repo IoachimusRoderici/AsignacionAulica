@@ -17,11 +17,7 @@ def test_superposición():
     )
     modelo = cp_model.CpModel()
 
-<<<<<<< HEAD
     asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
-=======
-    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
->>>>>>> 585baa6 (Actualizar tests)
 
     predicados = list(restricciones.no_superponer_clases(clases, aulas, asignaciones))
 
@@ -46,13 +42,7 @@ def test_aulas_cerradas():
     modelo = cp_model.CpModel()
     asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
 
-<<<<<<< HEAD
     prohibidas = list(restricciones.no_asignar_en_aula_cerrada(clases, aulas))
-=======
-    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
-
-    predicados = list(restricciones.no_asignar_en_aula_cerrada(clases, aulas, asignaciones))
->>>>>>> 585baa6 (Actualizar tests)
 
     # Debería generar restricciones con las aulas 1, 2, y 4
     assert len(prohibidas) == 3
@@ -72,13 +62,7 @@ def test_capacidad_suficiente():
     modelo = cp_model.CpModel()
     asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
 
-<<<<<<< HEAD
     prohibidas = list(restricciones.asignar_aulas_con_capacidad_suficiente(clases, aulas))
-=======
-    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
-
-    predicados = list(restricciones.asignar_aulas_con_capacidad_suficiente(clases, aulas, asignaciones))
->>>>>>> 585baa6 (Actualizar tests)
 
     # Debería generar una sola restricción con el aula 2
     assert len(prohibidas) == 1
@@ -96,19 +80,9 @@ def test_equipamiento():
     modelo = cp_model.CpModel()
     asignaciones = crear_matriz_de_asignaciones(clases, aulas, modelo)
 
-<<<<<<< HEAD
     prohibidas = list(restricciones.asignar_aulas_con_el_equipamiento_requerido(clases, aulas))
 
     # Debería generar una sola restricción con el aula 2
     assert len(prohibidas) == 1
     assert (0, 2) in prohibidas
-=======
-    asignaciones = crear_matriz_de_asignaciones(aulas, clases)
-
-    predicados = list(restricciones.asignar_aulas_con_el_equipamiento_requerido(clases, aulas, asignaciones))
-
-    # Debería generar una sola restricción con el aula 2
-    assert len(predicados) == 1
-    assert predicado_es_not_equals_entre_variable_y_constante(predicados[0], 2)
->>>>>>> 585baa6 (Actualizar tests)
 

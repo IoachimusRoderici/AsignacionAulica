@@ -117,3 +117,4 @@ def crear_matriz_de_asignaciones(clases: DataFrame, aulas: DataFrame, modelo: cp
         modelo.add_exactly_one(asignaciones[clase,:])
     
     return asignaciones
+

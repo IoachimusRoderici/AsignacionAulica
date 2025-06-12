@@ -48,13 +48,16 @@ def obtener_cantidad_de_clases_fuera_del_edificio_preferido(modelo: cp_model.CpM
     Devuelve una expresión que representa la cantidad de clases fuera de su edificio preferido.
     '''
     edificios = construir_edificios(aulas)
-    cantidad_de_clases_fuera_del_edificio_preferido = 0
 
+    # La cantidad comienza con el total de clases, y por cada clase que se
+    # encuentra dentro de su edificio preferido se resta 1 a la cantidad de
+    # clases fuera del edificio preferido
+    cantidad_de_clases_fuera_del_edificio_preferido = len(clases)
     for clase in clases.itertuples():
         if clase.edificio_preferido:
-            # Si no se asignó la clase a alguna de las aulas del edificio preferido, está fuera del edificio preferido
-            fuera_del_edificio_preferido = sum(asignaciones[clase.Index, aula] for aula in edificios[clase.edificio_preferido]) == 0
-            cantidad_de_clases_fuera_del_edificio_preferido += fuera_del_edificio_preferido
+            # Esta expresión da 1 o 0
+            en_edificio_preferido = sum(asignaciones[clase.Index, aula] for aula in edificios[clase.edificio_preferido])
+            cantidad_de_clases_fuera_del_edificio_preferido -= en_edificio_preferido
 
     return cantidad_de_clases_fuera_del_edificio_preferido
 

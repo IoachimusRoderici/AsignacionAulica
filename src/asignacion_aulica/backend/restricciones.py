@@ -35,7 +35,7 @@ def no_superponer_clases(clases: DataFrame, aulas: DataFrame, asignaciones: np.n
         if clase1.día == clase2.día and \
            clase1.horario_inicio < clase2.horario_fin and \
            clase2.horario_inicio < clase1.horario_fin:
-            for aula in aulas.Index:
+            for aula in aulas.index:
                 yield asignaciones[clase1.Index, aula] + asignaciones[clase2.Index, aula] <= 1
 
 def no_asignar_en_aula_cerrada(clases: DataFrame, aulas: DataFrame):

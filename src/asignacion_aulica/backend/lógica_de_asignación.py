@@ -29,8 +29,8 @@ from typing import Iterable
 import numpy as np
 
 from .impossible_assignment_exception import ImposibleAssignmentException
+from asignacion_aulica.backend import restricciones
 from .preferencias import obtener_penalización
-import restricciones
 
 def asignar(aulas: DataFrame, clases: DataFrame) -> list[int]:
     '''
@@ -113,7 +113,7 @@ def crear_matriz_de_asignaciones(modelo: cp_model.CpModel, clases: DataFrame, au
             asignaciones[clase, aula] = modelo.new_bool_var(f'clase_{clase}_asignada_al_aula_{aula}')
     
     # Asegurar que cada clase se asigna a exactamente un aula
-    for clase in clases.Index:
+    for clase in clases.index:
         modelo.add_exactly_one(asignaciones[clase,:])
     
     return asignaciones

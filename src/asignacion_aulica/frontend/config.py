@@ -7,7 +7,7 @@ Created on Sat May 31 12:50:43 2025
 
 import flet as ft
 
-from colores import COLOR
+from .colores import COLOR
 
 
 class UI_TituloConfig():

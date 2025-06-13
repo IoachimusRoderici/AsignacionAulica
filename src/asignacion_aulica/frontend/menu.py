@@ -7,8 +7,8 @@ Created on Tue May 20 20:54:47 2025
 
 import flet as ft
 
-from colores import COLOR
-from iconos import UI_Icono
+from .colores import COLOR
+from .iconos import UI_Icono
 
 
 class UI_UNRN:

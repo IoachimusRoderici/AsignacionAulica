@@ -1,8 +1,8 @@
 import flet as ft
-from frontend import UI
+from asignacion_aulica.frontend import UI
 
 def main():
-    ft.app(UI.main())
+    ft.app(UI.main)
 
 
 if __name__ == '__main__':

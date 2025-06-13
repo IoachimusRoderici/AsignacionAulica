@@ -33,7 +33,6 @@ jobs:
 
       - name: Build executable with PyInstaller
         run: |
-          echo ${{ env.VERSION }}
           pyinstaller --name asignacion-aulica-${{ env.VERSION }} --onefile src/asignacion-aulica/__main__.py
 
       - name: Upload artifact

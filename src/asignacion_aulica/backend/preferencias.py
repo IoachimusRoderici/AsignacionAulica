@@ -105,9 +105,9 @@ def obtener_capacidad_sobrante(clases: DataFrame, aulas: DataFrame, modelo: cp_m
 
 # Iterable de tuplas (peso, función)
 todas_las_penalizaciones = (
-    (10,  obtener_cantidad_de_clases_fuera_del_edificio_preferido),
-    (100, obtener_cantidad_de_alumnos_fuera_del_aula),
-    (10, obtener_capacidad_sobrante),
+    (100,  obtener_cantidad_de_clases_fuera_del_edificio_preferido),
+    (1000, obtener_cantidad_de_alumnos_fuera_del_aula),
+    (1, obtener_capacidad_sobrante),
 )
 
 def obtener_penalización(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpModel, asignaciones: np.ndarray):

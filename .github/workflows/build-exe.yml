@@ -33,7 +33,7 @@ jobs:
 
       - name: Build executable with PyInstaller
         run: |
-          pyinstaller --name asignacion-aulica-${{ env.VERSION }} --onefile src/asignacion-aulica/__main__.py
+          pyinstaller --name asignacion-aulica-${{ env.VERSION }} --onefile src/asignacion_aulica/__main__.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

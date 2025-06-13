@@ -17,7 +17,7 @@ aulas['equipamiento'] = list(map(parsear_equipamiento, aulas['equipamiento']))
 
 asignaciones = backend.asignar(clases, aulas, aulas_dobles)
 
-tabla_asignaciones = clases[['nombre', 'día', 'horario_inicio', 'horario_fin']].copy()
+tabla_asignaciones = clases.copy()
 tabla_asignaciones['edificio'] = [aulas.loc[x, 'edificio'] for x in asignaciones]
 tabla_asignaciones['aula'] = [aulas.loc[x, 'nombre'] for x in asignaciones]
 tabla_asignaciones.sort_values(['día', 'horario_inicio'], inplace=True)

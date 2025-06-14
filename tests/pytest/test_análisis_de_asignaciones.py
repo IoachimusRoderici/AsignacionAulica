@@ -14,8 +14,8 @@ def test_ningún_aula_chica():
     )
     asignaciones = [2, 0, 1]
 
-    aulas_chicas = análisis.clases_con_aula_chica(clases, aulas, asignaciones)
-    assert len(aulas_chicas) == 0
+    clases_excedidas = análisis.clases_con_aula_chica(clases, aulas, asignaciones)
+    assert len(clases_excedidas) == 0
 
 def test_algún_aula_chica():
     clases = make_clases(
@@ -29,10 +29,10 @@ def test_algún_aula_chica():
     )
     asignaciones = [1, 0, 0]
 
-    aulas_chicas = análisis.clases_con_aula_chica(clases, aulas, asignaciones)
-    assert aulas_chicas == {2}
+    clases_excedidas = análisis.clases_con_aula_chica(clases, aulas, asignaciones)
+    assert clases_excedidas == {2: 80-30}
 
-def test_todas_las_aulas_chicas():
+def test_todas_las_clases_excedidas():
     clases = make_clases(
         dict(cantidad_de_alumnos = 50),
         dict(cantidad_de_alumnos = 25),
@@ -44,5 +44,5 @@ def test_todas_las_aulas_chicas():
     )
     asignaciones = [0, 0, 1]
 
-    aulas_chicas = análisis.clases_con_aula_chica(clases, aulas, asignaciones)
-    assert aulas_chicas == {0, 1 ,2}
+    clases_excedidas = análisis.clases_con_aula_chica(clases, aulas, asignaciones)
+    assert clases_excedidas == {0: 50-24, 1: 25-24, 2: 80-10}

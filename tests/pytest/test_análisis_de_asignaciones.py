@@ -46,3 +46,45 @@ def test_todas_las_clases_excedidas():
 
     clases_excedidas = análisis.clases_con_aula_chica(clases, aulas, asignaciones)
     assert clases_excedidas == {0: 50-24, 1: 25-24, 2: 80-10}
+
+def test_todas_fuera_del_edificio_preferido():
+    clases = make_clases(
+        dict(edificio_preferido = '1'),
+        dict(edificio_preferido = '3'),
+        dict(edificio_preferido = '2'),
+        dict(edificio_preferido = '1'),
+    )
+    aulas = make_aulas(
+        dict(edificio = '2'),
+        dict(edificio = '1'),
+        dict(edificio = '2'),
+        dict(edificio = '3'),
+        dict(edificio = '3'),
+        dict(edificio = '1'),
+        dict(edificio = '2'),
+    )
+    asignaciones = [0, 1, 4, 3]
+
+    clases_tristes = análisis.clases_fuera_del_edificio_preferido(clases, aulas, asignaciones)
+    assert clases_tristes == {0, 1, 2, 3}
+
+def test_una_sola_en_el_edificio_preferido():
+    clases = make_clases(
+        dict(edificio_preferido = '1'),
+        dict(edificio_preferido = '3'),
+        dict(edificio_preferido = '2'),
+        dict(edificio_preferido = '1'),
+    )
+    aulas = make_aulas(
+        dict(edificio = '2'),
+        dict(edificio = '1'),
+        dict(edificio = '2'),
+        dict(edificio = '3'),
+        dict(edificio = '3'),
+        dict(edificio = '1'),
+        dict(edificio = '2'),
+    )
+    asignaciones = [0, 1, 2, 3]
+
+    clases_tristes = análisis.clases_fuera_del_edificio_preferido(clases, aulas, asignaciones)
+    assert clases_tristes == {0, 1, 3}

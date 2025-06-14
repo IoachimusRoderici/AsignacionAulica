@@ -17,3 +17,16 @@ def clases_con_aula_chica(clases: DataFrame, aulas: DataFrame, asignaciones: lis
             clases_con_aula_chica[i] = exceso
     
     return clases_con_aula_chica
+
+def clases_fuera_del_edificio_preferido(clases: DataFrame, aulas: DataFrame, asignaciones: list[int]) -> set[int]:
+    '''
+    Devuelve un set con los índices de las clases que están fuera de su edificio
+    preferido.
+    '''
+    clases_fuera_del_edificio_preferido = set()
+    for i in clases.index:
+        if clases.loc[i, 'edificio_preferido'] and \
+            clases.loc[i, 'edificio_preferido'] != aulas.loc[asignaciones[i], 'edificio']:
+            clases_fuera_del_edificio_preferido.add(i)
+    
+    return clases_fuera_del_edificio_preferido

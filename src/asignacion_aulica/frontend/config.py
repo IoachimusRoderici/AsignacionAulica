@@ -12,8 +12,8 @@ Apartados de configuración, inputs y outputs de datos. Incluye:
 import flet as ft
 from pandas import DataFrame
 
-from .typing import List
-from .colores import COLOR
+from typing import List
+from colores import COLOR
 
 
 class UI_BotonConfig():

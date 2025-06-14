@@ -2,7 +2,8 @@
 """
 Proyecto de Ingeniería de Software
 Grupo Asignación Áulica
-@author: Cristian
+Parte "FrontEnd" - Interfaz Gráfica de Usuario (GUI)
+@author: Cristian Mogensen
 """
 
 import flet as ft
@@ -13,16 +14,39 @@ from .config import UI_Config
 
 
 def main(page: ft.Page):
-    # Pagina principal
-    page.title = "UNRN Andina - Asignación de Aulas"
-    page.theme_mode = ft.ThemeMode.LIGHT
-    page.padding = 0
-    page.vertical_alignment = ft.MainAxisAlignment.START
-    page.window_width = 1280
-    page.window_height = 720
-    #page._set_attr("windowMinWidth", 1280)
-    #page._set_attr("windowMinHeight", 720)
-    page.expand = True
+    """
+    Función main de entrada o de ejecución al programa. Se ejecuta con flet
+    utilizando:
+        ft.app(main)
+        
+    Título: "UNRN Andina - Asignación de Aulas"
+    Dimensiones de ventana: 1280x720 px (mínimo)
+
+    Parameters
+    ----------
+    page : ft.Page
+        Page principal de la app. (no hace falta incluirlo al ejecutarlo con
+        ft.app)
+
+    Returns
+    -------
+    None.
+
+    """
+    
+    # Página/ft.Page principal
+    page.title = "UNRN Andina - Asignación de Aulas" # Título de la ventana
+    page.theme_mode = ft.ThemeMode.LIGHT # Tema claro
+    page.padding = 0 # Quita el padding entre elementos
+    page.spacing = 0 # Quita espaciado
+    page.alignment = ft.alignment.top_left # Alineamiento
+    page.vertical_alignment = ft.MainAxisAlignment.START # Alineamiento vertical
+    page.horizontal_alignment = ft.CrossAxisAlignment.START # Alineamiento horizontal
+    page.window_width = 1280 # Ancho de la ventana
+    page.window_height = 720 # Alto de la ventana
+    page._set_attr("windowMinWidth", 1280) # Ancho mínimo de la ventana
+    page._set_attr("windowMinHeight", 720) # Alto mínimo de la ventana
+    page.window.maximized = True # Maximiza la ventana
     
     # Fuente de la app
     page.fonts = {
@@ -32,17 +56,19 @@ def main(page: ft.Page):
     }
     page.theme = ft.Theme(font_family="Karla")  # Font de la App por default
     
-    menu = UI_Menu()
-    config = UI_Config(page)
-    UI_Todo = ft.Row(
-        [menu.dibujar(), config.dibujar()],
-        spacing=0,
-        scroll=ft.ScrollMode.ALWAYS,
-        vertical_alignment=ft.CrossAxisAlignment.START,
-        expand=True
-        )
+    menu = UI_Menu() # Menú de archivo...
+    config = UI_Config(page) # Menú de configuración (edificios, aulas, ...)
     
-    page.add(UI_Todo)
+    UI_interfaz = ft.Row(
+        controls=[
+            menu.dibujar(),
+            config.dibujar()
+        ],
+        spacing=0,
+        expand=True
+    )
+    
+    page.add(UI_interfaz) # Se agrega el contenido a la ventana
     
     page.update()
 

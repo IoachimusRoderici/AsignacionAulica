@@ -10,6 +10,7 @@ Apartados de configuración, inputs y outputs de datos. Incluye:
 """
 
 import flet as ft
+import pandas as pd
 from pandas import DataFrame
 
 from typing import List
@@ -191,48 +192,31 @@ class UI_Config_Edificios():
         
         # Fila 4:
         # Tabla con datos de los edificios cargados
-        data = {
-            "Nombre del Edificio": ["Anasagasti", "Mitre"],
-            "Lunes": ["9:00-18:00", "9:00-18:00"],
-            "Martes": ["12:00-21:00", "12:00-21:00"]
-        }
-        df = DataFrame(data)
         
+    
+        #   Excel dedicado a los edificios que vamos a tener por defecto, ubicado en la carpeta de data.
+        df = pd.import_excel("../data/edificios.xlsx")
+
         columnas = []
         filas = []
         
+        # Se obtienen los nombres de las columnas.
         for col_name in df:
             columnas.append(ft.DataColumn(ft.Text(col_name)))
-            
+        
+        # Se obtienen número de filas de la tabla.
         num_rows = df.shape[0]
-        for i in range(num_rows):
-            filas.append(ft.DataRow(
-                cells=[
-                    ft.DataCell(ft.Text(df["Nombre del Edificio"].iloc[i])),
-                    ft.DataCell(ft.Text(df["Lunes"].iloc[i])),
-                    ft.DataCell(ft.Text(df["Martes"].iloc[i])),
-                ]
-            ))
+        
+        # Para cada fila se cargan los datos de todas las celdas, de sus
+        # respectivas columnas.
+        for row in range(num_rows):
+            celdas = []
+            for col in df:
+                celdas.append(ft.DataCell(ft.Text(df[col].iloc[row])))
+            filas.append(ft.DataRow(cells=celdas))
         
         self.tabla = ft.DataTable(
-            # columns=[
-            #     ft.DataColumn(ft.Text("ID"), numeric=True),
-            #     ft.DataColumn(ft.Text("Nombre del Edificio"))
-            # ],
-            # rows=[
-            #     ft.DataRow(
-            #         cells=[
-            #             ft.DataCell(ft.Text("0")),
-            #             ft.DataCell(ft.Text("Anasagasti"))
-            #         ]
-            #     ),
-            #     ft.DataRow(
-            #         cells=[
-            #             ft.DataCell(ft.Text("1")),
-            #             ft.DataCell(ft.Text("Mitre"))
-            #         ]
-            #     )
-            # ]
+
             columns=columnas,
             rows=filas
         )

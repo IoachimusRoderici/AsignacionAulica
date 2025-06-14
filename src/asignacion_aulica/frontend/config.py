@@ -195,7 +195,10 @@ class UI_Config_Edificios():
         
     
         #   Excel dedicado a los edificios que vamos a tener por defecto, ubicado en la carpeta de data.
-        df = pd.import_excel("../data/edificios.xlsx")
+        #   ADVERTENCIA DE JUAN: Esta ruta es relativa, tomando como '.' la raiz del repo de git,
+        #   que en mi caso es ASIGNACIONAULICA. Si lo corre alguien mas, o para el .exe final, quizas
+        #   se deba cambiar esta ruta.
+        df = pd.read_excel("./src/asignacion_aulica/data/edificios.xlsx")
 
         columnas = []
         filas = []

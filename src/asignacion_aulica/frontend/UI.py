@@ -7,10 +7,9 @@ Grupo Asignación Áulica
 
 import flet as ft
 
-from .colores import COLOR
-from .menu import UI_Menu
-from .config import UI_Config
-
+from asignacion_aulica.frontend.colores import COLOR
+from asignacion_aulica.frontend.menu import UI_Menu
+from asignacion_aulica.frontend.config import UI_Config
 
 def main(page: ft.Page):
     # Pagina principal
@@ -46,6 +45,5 @@ def main(page: ft.Page):
     
     page.update()
 
-
-if __name__ == "__main__":
+def start_app():
     ft.app(main)

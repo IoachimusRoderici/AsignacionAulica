@@ -9,6 +9,12 @@ class ElementoDuplicadoException(Exception):
         super().__init__(mensaje)
         self.elemento = elemento
 
+class HorarioIncorrectoException(Exception):
+    """Excepcion lanzada cuando quiere cambiarse un rango horario de dia a un horario de cierre menor al de apertura"""
+    def __init__(self, mensaje, elemento=None):
+        super().__init__(mensaje)
+        self.elemento = elemento
+
 ### Crear 'EdificioTieneAulasException'
 
 #####################
@@ -110,10 +116,42 @@ class Universidad:
 
     
     
-    def modificar_edificio(self, nombre_edificio, columna_a_modificar, valor_nuevo): #TODO implementar
+    def modificar_edificio(self, nombre_edificio:str, columna_a_modificar:str, valor_nuevo:str):
+        """
+        Modifica el valor de una columna específica para el edificio dado.
 
-        # IDEA: df[Fila_correcta]['Martes'] = valor_nuevo
-        print("A IMPLEMENTAR")
+        Parameters
+        ----------
+        nombre_edificio : str
+            Nombre del edificio a modificar (clave primaria, debe estar en la primera columna).
+        columna_a_modificar : str
+            Nombre de la columna a modificar.
+        valor_nuevo : str
+            Valor nuevo a establecer en la celda correspondiente.
+        
+        Returns
+        -------
+        None
+
+        """
+
+        # Buscar la fila donde la primera columna (nombre de edificio) coincide
+        filtro = self.edificios[self.edificios.iloc[:, 0] == nombre_edificio]
+        # Obtener el índice de esa fila
+        index = filtro.index[0]
+        # Modificar el valor
+        self.edificios.at[index, columna_a_modificar] = valor_nuevo
+
+    
+    def modificar_horario_edificio(self, nombre_edificio:str, dia:str, 
+        hora1:int, hora2:int, minuto1:int, minuto2:int):
+        condicion = (hora2>hora1) or (hora1==hora2 and minuto1<minuto2)
+
+        if condicion:
+            self.modificar_edificio(nombre_edificio, dia, f"{hora1}:{minuto1:02}-{hora2}:{minuto2:02}")
+        else:
+            raise(HorarioInvalidoException("La hora de cierre no puede ser menor que la de apertura"))
+
 
     
 
@@ -145,7 +183,12 @@ def main():
     print("Edificios antes del eliminar:")
     print(uni.mostrar_edificios())
 
-    uni.eliminar_edificio("Anasagasti 1")
+    
+    uni.modificar_edificio("Anasagasti 1", "Sábado", "CERRADO")
+    uni.modificar_edificio("Anasagasti 1", "Nombre del Edificio", "Viedma 1")
+    uni.modificar_horario_edificio("Mitre 1", "Domingo", 10, 11, 00, 00)
+
+
     print("Edificios despues del eliminar:")
     print(uni.mostrar_edificios())
 

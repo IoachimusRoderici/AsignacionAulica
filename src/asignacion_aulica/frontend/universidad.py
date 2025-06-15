@@ -1,9 +1,4 @@
-
-
 import pandas as pd
-
-
-
 
 
 class Universidad:
@@ -16,10 +11,10 @@ class Universidad:
         self.aulas = aulas
 
     # Sector de edificios:
-    def col_names_edificios(self): # Retorna lista de columnnames
-        print(self.edificios.columns.tolist())
-    def mostrar_edificios(self): #TODO implementar, actualmente es un print
-        print(self.edificios)
+    def columnas_edificios(self): # Retorna lista de columnnames
+        return self.edificios.columns.tolist()
+    def mostrar_edificios(self): # Retorna el dataframe de edificios
+        return self.edificios
     def agregar_edificio(self, row_edificio): #TODO implementar
         print("A IMPLEMENTAR")
     def eliminar_edificio(self, id_edificio): #TODO implementar. Prohibir si aulas lo usan
@@ -27,10 +22,10 @@ class Universidad:
     def modificar_edificio(self, row_edificio): #TODO implementar
         print("A IMPLEMENTAR")
     # Sector de aulas
-    def col_names_aulas(self): # Retorna lista de columnnames
-        print(self.aulas.columns.tolist())
-    def mostrar_aulas(self): #TODO implementar, actualmente es un print
-        print(self.aulas)
+    def columnas_aulas(self): # Retorna lista de columnnames
+        return self.aulas.columns.tolist()
+    def mostrar_aulas(self): # Retorna el dataframe de aulas
+        return self.aulas
     def agregar_aula(self, row): #TODO implementar. Que no permita aulas huerfanas.
         print("A IMPLEMENTAR")
     def eliminar_aula(self, id_aula): #TODO implementar
@@ -48,10 +43,10 @@ class Universidad:
 
 def main():
     uni = Universidad()
-    uni.mostrar_edificios()
-    uni.mostrar_aulas()
-    uni.col_names_edificios()
-    uni.col_names_aulas()
+    print(uni.mostrar_edificios())
+    print(uni.mostrar_aulas())
+    print(uni.columnas_edificios())
+    print(uni.columnas_aulas())
 
 
 if __name__ == '__main__':

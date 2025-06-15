@@ -8,6 +8,9 @@ class ElementoDuplicadoException(Exception):
     def __init__(self, mensaje, elemento=None):
         super().__init__(mensaje)
         self.elemento = elemento
+
+### Crear 'EdificioTieneAulasException'
+
 #####################
 
 
@@ -63,10 +66,9 @@ class Universidad:
         """
         return self.edificios.iloc[:,0].tolist()
 
-    def agregar_edificio(self, nombre_edificio:str): #TODO Invocar excepcion apropiada en caso de no agregar elemento.
+    def agregar_edificio(self, nombre_edificio:str):
         """
         Metodo para agregar un edificio a la universidad.
-        #TODO hacer que se agregue el row generado al dataframe
 
         Parameters
         ----------
@@ -80,7 +82,6 @@ class Universidad:
 
         if nombre_edificio in self.nombres_edificios():
             raise(ElementoDuplicadoException("Ya existe un edificio con ese nombre"))
-            return
 
         aux_dict = {self.edificios.columns[0]:nombre_edificio}
         for col in self.edificios.columns[1:-1]:
@@ -90,15 +91,29 @@ class Universidad:
         self.edificios = pd.concat([self.edificios, aux_row], ignore_index=True)
 
 
-    def eliminar_edificio(self, id_edificio:str): #TODO implementar. Prohibir si aulas lo usan
-        print("A IMPLEMENTAR")
-    def modificar_edificio(self, row_edificio): #TODO implementar
-        print("A IMPLEMENTAR")
-    
-    
-    def modificar_edificio(self, nombre_edificio, columna_a_modificar, valor_nuevo):
+    def eliminar_edificio(self, nombre_edificio:str): #TODO Prohibir si hay aulas que usan el edificio
+        """
+        Metodo para eliminar un edificio existente de la universidad
 
-        df[Fila_correcta]['Martes'] = valor_nuevo
+        Parameters
+        ----------
+        nombre_edificio : str
+            El nombre del edificio a eliminar. Funciona como clave primaria.
+        Returns
+            None
+        Throws:
+            EdificioTieneAulasException , si se trata de agregar un edificio ya existente.
+        """
+        ### TODO DOCUMENTAR
+        ### TODO prohibir si hay aulas instanciadas que usen ese edificio
+        self.edificios = self.edificios[self.edificios.iloc[:, 0] != nombre_edificio].reset_index(drop=True)
+
+    
+    
+    def modificar_edificio(self, nombre_edificio, columna_a_modificar, valor_nuevo): #TODO implementar
+
+        # IDEA: df[Fila_correcta]['Martes'] = valor_nuevo
+        print("A IMPLEMENTAR")
 
     
 
@@ -127,13 +142,14 @@ class Universidad:
 def main():
     uni = Universidad()
 
-    for nombre in ["Agregable 1", "Agregable 2" , "Agregable 1"]:
-        try:
-            uni.agregar_edificio(nombre)
-        except ElementoDuplicadoException:
-            print("Elemento duplicado, con clave primaria " + nombre)
-
+    print("Edificios antes del eliminar:")
     print(uni.mostrar_edificios())
+
+    uni.eliminar_edificio("Anasagasti 1")
+    print("Edificios despues del eliminar:")
+    print(uni.mostrar_edificios())
+
+
 
 if __name__ == '__main__':
     main()

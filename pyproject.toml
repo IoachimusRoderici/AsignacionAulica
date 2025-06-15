@@ -36,6 +36,10 @@ minversion = "8.3"
 [tool.setuptools.package-data]
 asignacion_aulica = ["data/*"]
 
+[tool.flet]
+product = "Asignación Áulica"
+company = "UNRN"
+
 [tool.flet.app]
 path = "src/asignacion_aulica"
 

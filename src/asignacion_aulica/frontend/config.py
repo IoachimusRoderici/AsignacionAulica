@@ -10,11 +10,47 @@ Apartados de configuración, inputs y outputs de datos. Incluye:
 """
 
 import flet as ft
-import pandas as pd
 from pandas import DataFrame
-
 from typing import List
+
 from colores import COLOR
+
+
+def crear_tabla(df: DataFrame) -> ft.DataTable:
+    """
+    Crea una ft.DataTable (UI, Flet) a partir de una DataFrame.
+
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame (tabla) con todos los datos de la tabla.
+
+    Returns
+    -------
+    ft.DataTable
+        Tabla con todos los datos de la DataFrame, para mostrar en la UI.
+
+    """
+    
+    columnas = []
+    filas = []
+    
+    # Se obtienen los nombres de las columnas.
+    for col_name in df:
+        columnas.append(ft.DataColumn(ft.Text(col_name)))
+    
+    # Se obtienen número de filas de la tabla.
+    num_rows = df.shape[0]
+    
+    # Para cada fila se cargan los datos de todas las celdas, de sus
+    # respectivas columnas.
+    for row in range(num_rows):
+        celdas = []
+        for col in df:
+            celdas.append(ft.DataCell(ft.Text(df[col].iloc[row])))
+        filas.append(ft.DataRow(cells=celdas))
+    
+    return ft.DataTable(columns=columnas, rows=filas)
 
 
 class UI_BotonConfig():
@@ -89,8 +125,38 @@ class UI_Config_Edificios():
     """
     Apartado de Edificios de la universidad.
     """
+    
+    def agregar_edificio(self, e):
+        nombre = self.campo_nombre_edificio.value.strip()
+        print(f"Agregando edificio: {nombre}")
+        
+        # try
+        #   self.ui_config.universidad.TU_FUNCION(...)
+        # except edificio_no_existe:
+        #   mostrar cartelito de alerta
+        
+        # actualizar tabla
+    
+    def modificar_horario(self, e) -> str:
+        nombre_edificio = self.campo_nombre_edificio.value.strip() # Mitre
+        hora_apertura = self.lista_hora_apertura.value.strip() # "09"
+        hora_cierre = self.lista_hora_cierre.value.strip() # "00"
+        minutos_apertura = self.lista_minutos_apertura.value.strip() # "21"
+        minutos_cierre = self.lista_minutos_cierre.value.strip() # "00"
+        
+        # "09:00-21:00"
+        horario: str = f"{hora_apertura}:{minutos_apertura}-{hora_cierre}:{minutos_cierre}"
+        
+        # try:
+        #   self.ui_config.universidad.TU_FUNCION(...)
+        # except edificio_no_existe:
+        #   mostrar cartelito de alerta
+        
+        # actualizar tabla
+    
     def __init__(
-            self
+            self,
+            ui_config
             ):
         """
         Crea el apartado de edificios de la universidad.
@@ -101,7 +167,7 @@ class UI_Config_Edificios():
         1) Dropdown de edificios - Botón eliminar edificio
         2) Campo nombre edificio - Btn agregar edificio - Btn. modificar edificio
         3) ----- (linea divisora) -----
-        4) Título: Horarios de apertura y cierre
+        4) Título: "Horarios de apertura y cierre"
         5) Drop. con día - Hora apertura - Hora cierre - Btn. agregar horario - Btn. eliminar horario
         6) ----- (linea divisora) -----
         7) Tabla con datos de los edificios cargados
@@ -112,28 +178,21 @@ class UI_Config_Edificios():
 
         """
         
+        self.ui_config = ui_config
+        
         self.fila: List[ft.Row] = []
         
         # Fila 0:
-        # Título
+        # 0) Título: "Configuración de Edificios de la Universidad"
         self.titulo = ft.Text(
             value="Configuración de Edificios de la Universidad",
             text_align=ft.TextAlign.LEFT,
             size=20,
             selectable=False
         )
-        self.fila.append(
-            ft.Row(
-                [
-                    self.titulo
-                ],
-                alignment=ft.CrossAxisAlignment.END,
-                expand=True,tight=False
-            )
-        )
         
         # Fila 1:
-        # Dropdown de edificios - Botón eliminar edificio
+        # 1) Dropdown de edificios - Botón eliminar edificio
         self.lista_edificios = ft.Dropdown(
             label="Edificios",
             options=[
@@ -141,23 +200,15 @@ class UI_Config_Edificios():
                 ft.dropdown.Option("Mitre"),
             ],
             enable_filter=True,
+            enable_search=True
             
         )
         self.boton_eliminar_edificio = ft.Button(
             text="Eliminar edificio",
         )
-        self.fila.append(
-            ft.Row(
-                [
-                    self.lista_edificios,
-                    self.boton_eliminar_edificio
-                ],
-                scroll=ft.ScrollMode.ALWAYS,
-            )
-        )
         
         # Fila 2:
-        # Campo nombre edificio - Btn agregar edificio - Btn. modificar edificio
+        # 2) Campo nombre edificio - Btn agregar edificio - Btn. modificar edificio
         self.campo_nombre_edificio = ft.TextField(
             label="Nombre del edificio",
         )
@@ -167,69 +218,124 @@ class UI_Config_Edificios():
         self.boton_modificar_edificio = ft.Button(
             text="Modificar edificio",
         )
-        self.fila.append(
-            ft.Row(
-                [
-                    self.campo_nombre_edificio,
-                    self.boton_agregar_edificio,
-                    self.boton_modificar_edificio
-                ],
-            )
-        )
         
         # Fila 3: (línea divisora)
-        # --------------------
-        self.linea = ft.Divider(
+        # 3) ----- (linea divisora) -----
+        self.linea_0 = ft.Divider(
             thickness=1
-        )
-        self.fila.append(
-            ft.Row(
-                [
-                    self.linea
-                ],
-            )
         )
         
         # Fila 4:
-        # Tabla con datos de los edificios cargados
-        
-    
-        #   Excel dedicado a los edificios que vamos a tener por defecto, ubicado en la carpeta de data.
-        #   ADVERTENCIA DE JUAN: Esta ruta es relativa, tomando como '.' la raiz del repo de git,
-        #   que en mi caso es ASIGNACIONAULICA. Si lo corre alguien mas, o para el .exe final, quizas
-        #   se deba cambiar esta ruta.
-        df = pd.read_excel("./src/asignacion_aulica/data/edificios.xlsx")
-
-        columnas = []
-        filas = []
-        
-        # Se obtienen los nombres de las columnas.
-        for col_name in df:
-            columnas.append(ft.DataColumn(ft.Text(col_name)))
-        
-        # Se obtienen número de filas de la tabla.
-        num_rows = df.shape[0]
-        
-        # Para cada fila se cargan los datos de todas las celdas, de sus
-        # respectivas columnas.
-        for row in range(num_rows):
-            celdas = []
-            for col in df:
-                celdas.append(ft.DataCell(ft.Text(df[col].iloc[row])))
-            filas.append(ft.DataRow(cells=celdas))
-        
-        self.tabla = ft.DataTable(
-
-            columns=columnas,
-            rows=filas
+        # 4) Título: "Horarios de apertura y cierre"
+        self.titulo_horarios = ft.Text(
+            value="Horarios del Edificio",
+            text_align=ft.TextAlign.LEFT,
+            size=20,
+            selectable=False
         )
-        self.fila.append(
-            ft.Row(
-                [
-                    self.tabla
-                ],
-            )
+        
+        # Fila 5:
+        # 5) Drop. con día - Hora apertura - Hora cierre - Btn. agregar horario - Btn. eliminar horario
+        self.lista_dias = ft.Dropdown(
+            label="Día",
+            options=[
+                ft.dropdown.Option("Lunes"),
+                ft.dropdown.Option("Martes"),
+                ft.dropdown.Option("Miércoles"),
+                ft.dropdown.Option("Jueves"),
+                ft.dropdown.Option("Viernes"),
+                ft.dropdown.Option("Sábado"),
+                ft.dropdown.Option("Domingo")
+            ],
+            enable_filter=True,
         )
+        self.lista_hora_apertura = ft.Dropdown(
+            label="Hora",
+            options=[
+                ft.dropdown.Option(f"{i:02}") for i in range(24)
+            ],
+            enable_filter=True,
+        )
+        self.separador_0 = ft.Text(":")
+        self.lista_minutos_apertura = ft.Dropdown(
+            label="Minutos",
+            options=[
+                ft.dropdown.Option(f"{i:02}") for i in range(0, 60, 5)
+            ],
+            enable_filter=True,
+        )
+        self.separador_1 = ft.Text("-")
+        self.lista_hora_cierre = ft.Dropdown(
+            label="Hora",
+            options=[
+                ft.dropdown.Option(f"{i:02}") for i in range(24)
+            ],
+            enable_filter=True,
+        )
+        self.separador_2 = ft.Text(":")
+        self.lista_minutos_cierre = ft.Dropdown(
+            label="Minutos",
+            options=[
+                ft.dropdown.Option(f"{i:02}") for i in range(0, 60, 5)
+            ],
+            enable_filter=True,
+        )
+        self.boton_establecer_horario = ft.Button(
+            text="Establecer horario",
+        )
+        self.boton_eliminar_horario = ft.Button(
+            text="Eliminar horario",
+        )
+        
+        # Fila 6
+        # 6) ----- (linea divisora) -----
+        self.linea_1 = ft.Divider(
+            thickness=1
+        )
+        
+        # Fila 7:
+        # 7) Tabla con datos de los edificios cargados
+        data = {
+            "Nombre del Edificio": ["Mitre", "Anasagasti"],
+            "Lunes": ["9:00-18:00", "9:00-18:00"],
+            "Martes": ["12:00-21:00", "12:00-21:00"],
+            "Miércoles": ["9:00-18:00", "9:00-18:00"],
+            "Jueves": ["12:00-21:00", "12:00-21:00"],
+            "Viernes": ["9:00-18:00", "9:00-18:00"],
+            "Sábado": ["12:00-21:00", "12:00-21:00"],
+            "Domingo": ["CERRADO", "CERRADO"],
+        }
+        # data = {
+        #     "Nombre del Edificio": [],
+        #     "Lunes": [],
+        #     "Martes": [],
+        #     "Miércoles": [],
+        #     "Jueves": [],
+        #     "Viernes": [],
+        #     "Sábado": [],
+        #     "Domingo": [],
+        # }
+        df = DataFrame(data)
+        self.tabla = crear_tabla(df)
+        
+        # Define el comportamiento "on_click" de cada elemento.
+        self.boton_agregar_edificio.on_click = self.agregar_edificio
+        
+        # Agrega todas las filas a la columna resultado.
+        self.fila.append(ft.Row([self.titulo]))
+        self.fila.append(ft.Row([self.lista_edificios, self.boton_eliminar_edificio]))
+        self.fila.append(ft.Row([self.campo_nombre_edificio, self.boton_agregar_edificio, self.boton_modificar_edificio]))
+        self.fila.append(ft.Row([self.linea_0]))
+        self.fila.append(ft.Row([self.titulo_horarios]))
+        self.fila.append(ft.Row([
+            self.lista_dias,
+            self.lista_hora_apertura, self.separador_0,self.lista_minutos_apertura,
+            self.separador_1,
+            self.lista_hora_cierre, self.separador_2, self.lista_minutos_cierre,
+            self.boton_establecer_horario,self.boton_eliminar_horario
+        ]))
+        self.fila.append(ft.Row([self.linea_1]))
+        self.fila.append(ft.Row([self.tabla]))
         
         # Columna final con todas las filas creadas.
         self.columna = ft.Column(
@@ -252,35 +358,42 @@ class UI_Config_Aulas():
     def __init__(
             self
             ):
-        # Layout (por filas):
-        # Título
-        # Dropdown de edificios - Drop. de aulas - Botón eliminar aula
-        # Campo identificador aula - Campo capacidad aula - Btn. agregar aula - Btn. modificar aula
-        # --------------------
-        # Drop. de equipamiento - Campo de nombre equipamiento - Btn. agregar equipamiento - Btn. eliminar eq.
-        # --------------------
-        # Btn. mostrar aulas - Btn. mostrar eq. de aula
-        # Tabla con datos de los edificios/equip. por aula cargados
+        """
+        Crea el apartado de aulas de los edificios la universidad.
+        
+        Layout (por filas):
+        -----------------------------------------------------------------------
+        0) Título: "Configuración de Aulas de los Edificios"
+        1) Dropdown de edificios - Drop. de aulas - Botón eliminar aula
+        2) Campo identificador aula - Campo capacidad aula - Btn. agregar aula - Btn. modificar aula
+        3) ----- (linea divisora) -----
+        4) Título: "Equipamiento del Aula"
+        5) Drop. de equipamiento - Campo de nombre equipamiento - Btn. agregar equipamiento - Btn. eliminar eq.
+        6) ----- (linea divisora) -----
+        7) Título: "Horario del Aula"
+        8) Drop. con día - Hora apertura - Hora cierre - Btn. establecer horario - Btn. eliminar horario
+        9) ----- (linea divisora) -----
+        10) Btn. mostrar aulas - Btn. mostrar eq. de aula
+        11) Tabla con datos de los aulas
+
+        Returns
+        -------
+        None.
+
+        """
         
         self.fila: List[ft.Row] = []
         
         # Fila 0:
-        # Título
+        # 0) Título: "Configuración de Aulas de los Edificios"
         self.titulo = ft.Text(
             "Configuración de Aulas de los Edificios",
             size=20,
             selectable=False
         )
-        self.fila.append(
-            ft.Row(
-                [
-                    self.titulo
-                ]
-            )
-        )
         
         # Fila 1:
-        # Dropdown de edificios - Drop. de aulas - Botón eliminar aula
+        # 1) Dropdown de edificios - Drop. de aulas - Botón eliminar aula
         self.lista_edificios = ft.Dropdown(
             label="Edificios"
         )
@@ -290,18 +403,9 @@ class UI_Config_Aulas():
         self.boton_eliminar_aula = ft.Button(
             "Eliminar aula"
         )
-        self.fila.append(
-            ft.Row(
-                [
-                    self.lista_edificios,
-                    self.lista_aulas,
-                    self.boton_eliminar_aula
-                ]
-            )
-        )
         
         # Fila 2:
-        # Campo identificador aula - Campo capacidad aula - Btn. agregar aula - Btn. modificar aula
+        # 2) Campo identificador aula - Campo capacidad aula - Btn. agregar aula - Btn. modificar aula
         self.campo_identificador_aula = ft.TextField(
             label="Identificador del aula"
         )
@@ -314,117 +418,183 @@ class UI_Config_Aulas():
         self.boton_modificar_aula = ft.Button(
             "Modificar aula"
         )
-        self.fila.append(
-            ft.Row(
-                [
-                    self.campo_identificador_aula,
-                    self.campo_capacidad_aula,
-                    self.boton_agregar_aula,
-                    self.boton_modificar_aula
-                ]
-            )
-        )
         
-        # Fila 3: (linea divisora)
-        # --------------------
+        # Fila 3:
+        # 3) ----- (linea divisora) -----
         self.linea_0 = ft.Divider(
-                thickness=1
-            )
-        self.fila.append(
-            ft.Row(
-                [
-                    self.linea_0
-                ]
-            )
+            thickness=1
         )
         
         # Fila 4:
-        # Drop. de equipamiento - Campo de nombre equipamiento - Btn. agregar equipamiento - Btn. eliminar eq.
-        self.lista_equipamiento = ft.Dropdown(
-                label="Equipamiento"
-            )
-        self.campo_equipamiento_aula = ft.TextField(
-                label="Equipamiento del aula"
-            )
-        self.boton_agregar_equipamiento = ft.Button(
-                "Agregar equipamiento"
-            )
-        self.boton_eliminar_equipamiento = ft.Button(
-                "Eliminar equipamiento"
-            )
-        self.fila.append(
-            ft.Row(
-                [
-                    self.lista_equipamiento,
-                    self.campo_equipamiento_aula,
-                    self.boton_agregar_equipamiento,
-                    self.boton_eliminar_equipamiento
-                ]
-            )
+        # 4) Título: "Equipamiento del Aula"
+        self.titulo_equipamiento = ft.Text(
+            "Equipamiento del Aula",
+            size=20,
+            selectable=False
         )
         
-        # Fila 5: (linea divisora)
-        # --------------------
-        self.linea_1 = ft.Divider(
-                thickness=1
-            )
-        self.fila.append(
-            ft.Row(
-                [
-                    self.linea_1
-                ]
-            )
+        
+        # Fila 5:
+        # 5) Drop. de equipamiento - Campo de nombre equipamiento - Btn. agregar equipamiento - Btn. eliminar eq.
+        self.lista_equipamiento = ft.Dropdown(
+            label="Equipamiento"
+        )
+        self.campo_equipamiento_aula = ft.TextField(
+            label="Equipamiento del aula"
+        )
+        self.boton_agregar_equipamiento = ft.Button(
+            "Agregar equipamiento"
+        )
+        self.boton_eliminar_equipamiento = ft.Button(
+            "Eliminar equipamiento"
         )
         
         # Fila 6:
-        # Btn. mostrar aulas - Btn. mostrar eq. de aula
-        self.boton_mostrar_aulas = ft.Button(
-                "Mostrar Aulas"
-            )
-        self.boton_mostrar_equipamiento_aulas = ft.Button(
-                "Mostrar Equipamiento de Aula"
-            )
-        self.fila.append(
-            ft.Row(
-                [
-                    self.boton_mostrar_aulas,
-                    self.boton_mostrar_equipamiento_aulas
-                ]
-            )
+        # 6) ----- (linea divisora) -----
+        self.linea_1 = ft.Divider(
+            thickness=1
         )
         
         # Fila 7:
-        # Tabla con datos de los edificios/equip. por aula cargados
+        # 7) Título: "Horario del Aula"
+        self.titulo_horario = ft.Text(
+            "Horario del Aula",
+            size=20,
+            selectable=False
+        )
+        
+        # Fila 8:
+        # 8) Drop. con día - Hora apertura - Hora cierre - Btn. establecer horario - Btn. eliminar horario
+        self.lista_dias = ft.Dropdown(
+            label="Día",
+            options=[
+                ft.dropdown.Option("Lunes"),
+                ft.dropdown.Option("Martes"),
+                ft.dropdown.Option("Miércoles"),
+                ft.dropdown.Option("Jueves"),
+                ft.dropdown.Option("Viernes"),
+                ft.dropdown.Option("Sábado"),
+                ft.dropdown.Option("Domingo")
+            ],
+            enable_filter=True,
+        )
+        self.lista_hora_apertura = ft.Dropdown(
+            label="Hora",
+            options=[
+                ft.dropdown.Option(f"{i:02}") for i in range(24)
+            ],
+            enable_filter=True,
+        )
+        self.separador_0 = ft.Text(":")
+        self.lista_minutos_apertura = ft.Dropdown(
+            label="Minutos",
+            options=[
+                ft.dropdown.Option(f"{i:02}") for i in range(0, 60, 5)
+            ],
+            enable_filter=True,
+        )
+        self.separador_1 = ft.Text("-")
+        self.lista_hora_cierre = ft.Dropdown(
+            label="Hora",
+            options=[
+                ft.dropdown.Option(f"{i:02}") for i in range(24)
+            ],
+            enable_filter=True,
+        )
+        self.separador_2 = ft.Text(":")
+        self.lista_minutos_cierre = ft.Dropdown(
+            label="Minutos",
+            options=[
+                ft.dropdown.Option(f"{i:02}") for i in range(0, 60, 5)
+            ],
+            enable_filter=True,
+        )
+        self.boton_establecer_horario = ft.Button(
+            text="Establecer horario",
+        )
+        self.boton_eliminar_horario = ft.Button(
+            text="Eliminar horario",
+        )
+        
+        # Fila 9:
+        # 9) ----- (linea divisora) -----
+        self.linea_2 = ft.Divider(
+            thickness=1
+        )
+        
+        # Fila 10:
+        # 10) Btn. mostrar aulas - Btn. mostrar eq. de aula
+        self.boton_mostrar_aulas = ft.Button(
+            "Mostrar Aulas"
+        )
+        self.boton_mostrar_equipamiento_aulas = ft.Button(
+            "Mostrar Equipamiento de Aula"
+        )
+        
+        # Fila 11:
+        # 11) Tabla con datos de los aulas
         self.tabla = ft.DataTable(
             columns=[
                 ft.DataColumn(ft.Text("Edificio")),
                 ft.DataColumn(ft.Text("Identificador de Aula")),
-                ft.DataColumn(ft.Text("Capacidad"), numeric=True)
+                ft.DataColumn(ft.Text("Capacidad")),
+                ft.DataColumn(ft.Text("Lunes")),
+                ft.DataColumn(ft.Text("Martes")),
+                ft.DataColumn(ft.Text("Miércoles")),
+                ft.DataColumn(ft.Text("Jueves")),
+                ft.DataColumn(ft.Text("Viernes")),
+                ft.DataColumn(ft.Text("Sábado")),
+                ft.DataColumn(ft.Text("Domingo"))
             ],
             rows=[
                 ft.DataRow(
                     cells=[
                         ft.DataCell(ft.Text("Anasagasti")),
                         ft.DataCell(ft.Text("B-101")),
-                        ft.DataCell(ft.Text("50"))
+                        ft.DataCell(ft.Text("50")),
+                        ft.DataCell(ft.Text("9:00-21:00")),
+                        ft.DataCell(ft.Text("9:00-21:00")),
+                        ft.DataCell(ft.Text("9:00-21:00")),
+                        ft.DataCell(ft.Text("9:00-21:00")),
+                        ft.DataCell(ft.Text("9:00-21:00")),
+                        ft.DataCell(ft.Text("9:00-21:00")),
+                        ft.DataCell(ft.Text("CERRADO")),
                     ]
                 ),
                 ft.DataRow(
                     cells=[
                         ft.DataCell(ft.Text("Anasagasti")),
                         ft.DataCell(ft.Text("B-201")),
-                        ft.DataCell(ft.Text("50"))
+                        ft.DataCell(ft.Text("50")),
+                        ft.DataCell(ft.Text("9:00-21:00")),
+                        ft.DataCell(ft.Text("9:00-21:00")),
+                        ft.DataCell(ft.Text("9:00-21:00")),
+                        ft.DataCell(ft.Text("9:00-21:00")),
+                        ft.DataCell(ft.Text("9:00-21:00")),
+                        ft.DataCell(ft.Text("9:00-21:00")),
+                        ft.DataCell(ft.Text("CERRADO")),
                     ]
                 )
             ],
         )
-        self.fila.append(
-            ft.Row(
-                [
-                    self.tabla
-                ]
-            )
-        )
+        
+        self.fila.append(ft.Row([self.titulo]))
+        self.fila.append(ft.Row([self.lista_edificios, self.lista_aulas, self.boton_eliminar_aula]))
+        self.fila.append(ft.Row([self.campo_identificador_aula, self.campo_capacidad_aula, self.boton_agregar_aula, self.boton_modificar_aula]))
+        self.fila.append(ft.Row([self.linea_0]))
+        self.fila.append(ft.Row([self.titulo_equipamiento]))
+        self.fila.append(ft.Row([self.lista_equipamiento, self.campo_equipamiento_aula, self.boton_agregar_equipamiento, self.boton_eliminar_equipamiento]))
+        self.fila.append(ft.Row([self.linea_1]))
+        self.fila.append(ft.Row([self.titulo_horario]))
+        self.fila.append(ft.Row([self.lista_dias,
+                                 self.lista_hora_apertura, self.separador_0, self.lista_minutos_apertura,
+                                 self.separador_1,
+                                 self.lista_hora_cierre, self.separador_2, self.lista_minutos_cierre,
+                                 self.boton_establecer_horario,
+                                 self.boton_eliminar_horario]))
+        self.fila.append(ft.Row([self.linea_2]))
+        self.fila.append(ft.Row([self.boton_mostrar_aulas, self.boton_mostrar_equipamiento_aulas]))
+        self.fila.append(ft.Row([self.tabla]))
         
         # Columna final con todas las filas creadas.
         self.columna = ft.Column(
@@ -445,53 +615,113 @@ class UI_Config_Carreras():
     def __init__(
             self
             ):
+        """
+        Crea el apartado de aulas de los edificios la universidad.
+        
+        Layout (por filas):
+        -----------------------------------------------------------------------
+        0) Título: "Configuración de Carreras de la Universidad"
+        1) Dropdown carreras - Botón eliminar carrera    
+        2) Campo nombre de carrera - Btn. agregar carrera - Btn. modificar carrera
+        3) Drop. edificio preferido para la carrera - Btn. eliminar preferencia
+        4) ----- (linea divisora) -----
+        5) Tabla con datos de las carreras
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        self.fila: List[ft.Row] = []
+        
+        # Fila 0:
+        # 0) Título: "Configuración de Carreras de la Universidad"
         self.titulo = ft.Text(
             "Configuración de Carreras de la Universidad",
             size=20,
             selectable=False
-            )
+        )
         
+        # Fila 1:
+        # 1) Dropdown carreras - Botón eliminar carrera
         self.lista_carreras = ft.Dropdown(
-            label="Carreras"
-            )
+            label="Carrera"
+        )
         self.boton_eliminar_carrera = ft.Button(
             "Eliminar carrera"
-            )
-        self.fila_lista = ft.Row(
-            [
-                self.lista_carreras,
-                self.boton_eliminar_carrera
-            ]
-            )
+        )
         
+        # Fila 2:
+        # 2) Campo nombre de carrera - Btn. agregar carrera - Btn. modificar carrera
         self.campo_nombre_carrera = ft.TextField(
             label="Nombre de la carrera"
-            )
+        )
         self.boton_agregar_carrera = ft.Button(
             "Agregar carrera"
-            )
-        self.fila_creacion = ft.Row(
-            [
-                self.campo_nombre_carrera,
-                self.boton_agregar_carrera
-            ]
-            )
+        )
+        self.boton_modificar_carrera = ft.Button(
+            "Modificar carrera"
+        )
         
-        self.lista_preferencia_edificio = ft.Dropdown(
-            label="Edificio de preferencia"
-            )
+        # Fila 3:
+        # 3) Drop. edificio preferido para la carrera - Btn. eliminar preferencia
+        self.lista_edificios = ft.Dropdown(
+            label="Edificio"
+        )
+        self.boton_eliminar_preferencia = ft.Button(
+            "Eliminar preferencia de edificio"
+        )
         
+        # Fila 4:
+        # 4) ----- (linea divisora) -----
+        self.linea = ft.Divider(
+            thickness=1
+        )
+        
+        # Fila 5:
+        # 5) Tabla con datos de las carreras
+        self.tabla = ft.DataTable(
+            columns=[
+                ft.DataColumn(ft.Text("Carrera")),
+                ft.DataColumn(ft.Text("Preferencia de Edificio"))
+            ],
+            rows=[
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text("Ingeniería en Computación")),
+                        ft.DataCell(ft.Text("Anasagasti")),
+                    ]
+                ),
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text("Ingeniería Electrónica")),
+                        ft.DataCell(ft.Text("Anasagasti")),
+                    ]
+                ),
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text("Antropología")),
+                        ft.DataCell(ft.Text("Mitre")),
+                    ]
+                ),
+            ],
+        )
+        
+        self.fila.append(ft.Row([self.titulo]))
+        self.fila.append(ft.Row([self.lista_carreras, self.boton_eliminar_carrera]))
+        self.fila.append(ft.Row([self.campo_nombre_carrera, self.boton_agregar_carrera, self.boton_modificar_carrera]))
+        self.fila.append(ft.Row([self.lista_edificios, self.boton_eliminar_preferencia]))
+        self.fila.append(ft.Row([self.linea]))
+        self.fila.append(ft.Row([self.tabla]))
+        
+        # Columna final con todas las filas creadas.
         self.columna = ft.Column(
-            [
-                self.titulo,
-                self.fila_lista,
-                self.fila_creacion,
-                self.lista_preferencia_edificio
-            ]
-            )
+            controls=self.fila
+        )
         self.container = ft.Container(
             content=self.columna
-            )
+        )
     
     def dibujar(self) -> ft.Container:
         return self.container
@@ -504,64 +734,158 @@ class UI_Config_Actividades():
     def __init__(
             self
             ):
+        """
+        Crea el apartado de aulas de los edificios la universidad.
+        
+        Layout (por filas):
+        -----------------------------------------------------------------------
+        0) Título: "Configuración de Actividades/Materias de la Universidad"
+        1) Dropdown identificador - Drop. nombre actividad - Drop. comisión - Botón eliminar actividad
+        2) Campo nombre de carrera - Btn. agregar carrera - Btn. modificar carrera
+        3) Drop. edificio preferido para la carrera - Btn. eliminar preferencia
+        4) ----- (linea divisora) -----
+        5) Tabla con datos de las carreras
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        self.fila: List[ft.Row] = []
+        
+        # Fila 0:
+        # 0) Título: "Configuración de Actividades/Materias de la Universidad"
         self.titulo = ft.Text(
             "Configuración de Actividades/Materias de la Universidad",
             size=20,
             selectable=False
-            )
+        )
         
+        # Fila 1:
+        # 1) Dropdown identificador - Drop. nombre actividad - Drop. comisión - Botón eliminar actividad
         self.lista_identificador_actividades = ft.Dropdown(
             label="Identificador"
-            )
+        )
         self.lista_nombre_actividades = ft.Dropdown(
             label="Nombre de actividad"
-            )
+        )
+        
+        # Fila 2:
+        # 2) Campo nombre de carrera - Btn. agregar carrera - Btn. modificar carrera
         self.lista_comision_actividades = ft.Dropdown(
             label="Comisión"
-            )
+        )
         self.boton_eliminar_actividad = ft.Button(
             "Eliminar actividad"
-            )
-        self.fila_lista = ft.Row(
-            [
-                self.lista_identificador_actividades,
-                self.lista_nombre_actividades,
-                self.lista_comision_actividades,
-                self.boton_eliminar_actividad
-            ]
-            )
+        )
         
+        # Fila 3:
+        # 3) Drop. edificio preferido para la carrera - Btn. eliminar preferencia
         self.campo_identificador_actividad = ft.TextField(
             label="Identificador"
-            )
+        )
         self.campo_nombre_actividad = ft.TextField(
             label="Nombre de actividad"
-            )
+        )
+        
+        # Fila 4:
+        # 4) ----- (linea divisora) -----
         self.campo_comision_actividad = ft.TextField(
             label="Comisión"
-            )
+        )
         self.boton_agregar_actividad = ft.Button(
             "Agregar actividad"
-            )
-        self.fila_creacion = ft.Row(
-            [
-                self.campo_identificador_actividad,
-                self.campo_nombre_actividad,
-                self.campo_comision_actividad,
-                self.boton_agregar_actividad
-            ]
-            )
+        )
+        self.boton_modificar_actividad = ft.Button(
+            "Modificar actividad"
+        )
         
+        # Fila 5:
+        # 5) Tabla con datos de las carreras
+        self.tabla = ft.DataTable(
+            columns=[
+                ft.DataColumn(ft.Text("Identificador")),
+                ft.DataColumn(ft.Text("Nombre")),
+                ft.DataColumn(ft.Text("Comisión")),
+                ft.DataColumn(ft.Text("Carrera")),
+                ft.DataColumn(ft.Text("Año")),
+                ft.DataColumn(ft.Text("Cant. de Alumnos")),
+                ft.DataColumn(ft.Text("Preferencia Edificio"))
+            ],
+            rows=[
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text("PI")),
+                        ft.DataCell(ft.Text("Programación I")),
+                        ft.DataCell(ft.Text("A")),
+                        ft.DataCell(ft.Text("Ingeniería en Computación")),
+                        ft.DataCell(ft.Text("1")),
+                        ft.DataCell(ft.Text("100")),
+                        ft.DataCell(ft.Text("Anasagasti")),
+                    ]
+                ),
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text("PI")),
+                        ft.DataCell(ft.Text("Programación I")),
+                        ft.DataCell(ft.Text("B")),
+                        ft.DataCell(ft.Text("Ingeniería en Computación")),
+                        ft.DataCell(ft.Text("1")),
+                        ft.DataCell(ft.Text("100")),
+                        ft.DataCell(ft.Text("Anasagasti")),
+                    ]
+                ),
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text("PII")),
+                        ft.DataCell(ft.Text("Programación II")),
+                        ft.DataCell(ft.Text("N/A")),
+                        ft.DataCell(ft.Text("Ingeniería en Computación")),
+                        ft.DataCell(ft.Text("2")),
+                        ft.DataCell(ft.Text("100")),
+                        ft.DataCell(ft.Text("Anasagasti")),
+                    ]
+                ),
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text("Matemática I")),
+                        ft.DataCell(ft.Text("MI")),
+                        ft.DataCell(ft.Text("N/A")),
+                        ft.DataCell(ft.Text("Ingeniería en Computación")),
+                        ft.DataCell(ft.Text("1")),
+                        ft.DataCell(ft.Text("50")),
+                        ft.DataCell(ft.Text("Mitre")),
+                    ]
+                ),
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text("Ingeniería de Software")),
+                        ft.DataCell(ft.Text("IS")),
+                        ft.DataCell(ft.Text("N/A")),
+                        ft.DataCell(ft.Text("Ingeniería en Computación")),
+                        ft.DataCell(ft.Text("4")),
+                        ft.DataCell(ft.Text("50")),
+                        ft.DataCell(ft.Text("Anasagasti")),
+                    ]
+                ),
+            ],
+        )
+        
+        self.fila.append(ft.Row([self.titulo]))
+        self.fila.append(ft.Row([self.lista_identificador_actividades, self.lista_nombre_actividades]))
+        self.fila.append(ft.Row([self.lista_comision_actividades, self.boton_eliminar_actividad]))
+        self.fila.append(ft.Row([self.campo_identificador_actividad, self.campo_nombre_actividad]))
+        self.fila.append(ft.Row([self.campo_comision_actividad, self.boton_agregar_actividad, self.boton_modificar_actividad]))
+        self.fila.append(ft.Row([self.tabla]))
+        
+        # Columna final con todas las filas creadas.
         self.columna = ft.Column(
-            [
-                self.titulo,
-                self.fila_lista,
-                self.fila_creacion,
-            ]
-            )
+            controls=self.fila
+        )
         self.container = ft.Container(
             content=self.columna
-            )
+        )
     
     def dibujar(self) -> ft.Container:
         return self.container
@@ -574,9 +898,9 @@ class UI_Config():
     """
     def __init__(
             self,
-            page: ft.Page
+            universidad
             ):
-        self.page = page
+        self.universidad = universidad
         
         # Botones para configurar cada apartado.
         self.btn_edificios = UI_BotonConfig(self, "Edificios", APARTADO.EDIFICIOS)
@@ -596,7 +920,7 @@ class UI_Config():
             scroll=ft.ScrollMode.AUTO,
             )
         
-        self.apartado_edificios = UI_Config_Edificios()
+        self.apartado_edificios = UI_Config_Edificios(self)
         self.apartado_aulas = UI_Config_Aulas()
         self.apartado_carreras = UI_Config_Carreras()
         self.apartado_actividades = UI_Config_Actividades()
@@ -652,4 +976,3 @@ class UI_Config():
         self.menu_config.controls.append(self.fila_botones)
         self.menu_config.controls.append(self.apartado.dibujar())
         self.menu_config.update()
-        self.page.update()

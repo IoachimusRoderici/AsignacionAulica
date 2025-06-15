@@ -12,7 +12,6 @@ Menú encargado de la creación y apertura de archivos. Incluye:
 """
 
 import flet as ft
-import os
 
 from colores import COLOR
 from iconos import UI_Icono
@@ -118,15 +117,16 @@ class UI_Menu:
     Panel (de navegación?) izquierdo o menú, con todos los botones necesarios
     para la creación de archivos.
     """
-    def __init__(self):
-        print(os.getcwd())
-        self.icono_UNRN = UI_UNRN("./src/asignacion_aulica/frontend/imgs/UNRN_Andina.png")
-        self.boton_menu = UI_MenuBoton("./src/asignacion_aulica/frontend/imgs/icono_menu.png", "Menú")
-        self.boton_nuevo = UI_MenuBoton("./src/asignacion_aulica/frontend/imgs/icono_nuevo.png", "Nuevo")
-        self.boton_abrir = UI_MenuBoton("./src/asignacion_aulica/frontend/imgs/icono_abrir.png", "Abrir")
-        self.boton_guardar = UI_MenuBoton("./src/asignacion_aulica/frontend/imgs/icono_guardar.png", "Guardar")
-        self.boton_importar = UI_MenuBoton("./src/asignacion_aulica/frontend/imgs/icono_importar.png", "Importar")
-        self.boton_exportar = UI_MenuBoton("./src/asignacion_aulica/frontend/imgs/icono_exportar.png", "Exportar")
+    def __init__(self, universidad):
+        self.universidad = universidad
+        
+        self.icono_UNRN = UI_UNRN("./imgs/UNRN_Andina.png")
+        self.boton_menu = UI_MenuBoton("./imgs/icono_menu.png", "Menú")
+        self.boton_nuevo = UI_MenuBoton("./imgs/icono_nuevo.png", "Nuevo")
+        self.boton_abrir = UI_MenuBoton("./imgs/icono_abrir.png", "Abrir")
+        self.boton_guardar = UI_MenuBoton("./imgs/icono_guardar.png", "Guardar")
+        self.boton_importar = UI_MenuBoton("./imgs/icono_importar.png", "Importar")
+        self.boton_exportar = UI_MenuBoton("./imgs/icono_exportar.png", "Exportar")
         
         self.subcolumna = ft.Column(
             controls=[

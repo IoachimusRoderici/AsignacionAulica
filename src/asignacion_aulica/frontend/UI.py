@@ -56,8 +56,9 @@ def main(page: ft.Page):
     }
     page.theme = ft.Theme(font_family="Karla")  # Font de la App por default
     
-    menu = UI_Menu() # Menú de archivo...
-    config = UI_Config(page) # Menú de configuración (edificios, aulas, ...)
+    universidad = None #Universidad()
+    menu = UI_Menu(universidad) # Menú de archivo...
+    config = UI_Config(universidad) # Menú de configuración (edificios, aulas, ...)
     
     UI_interfaz = ft.Row(
         controls=[

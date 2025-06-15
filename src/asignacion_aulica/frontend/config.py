@@ -130,25 +130,30 @@ class UI_Config_Edificios():
         nombre = self.campo_nombre_edificio.value.strip()
         print(f"Agregando edificio: {nombre}")
         
-        # try
-        #   self.ui_config.universidad.TU_FUNCION(...)
-        # except edificio_no_existe:
-        #   mostrar cartelito de alerta
-        
-        # actualizar tabla
+
+        ### WARNING: ACA NO ESTA INSTANCIADO UNIVERSIDAD. Siempre va a entrar al Exception.
+        ### Por ahora puse el Exception porque no tengo separado el archivo con excepciones del universidad.py
+        ### Pero esta es la estructura que deberia tener esto.
+        #try:
+        #    self.ui_config.universidad.agregar_edificio(nombre)
+        #except Exception:
+            # Aca cartelito de alerta
+        #    print("Se intento agregar un edificio duplicado, oops")
+        # finally:
+            # Actualizar tabla
+
     
     def modificar_horario(self, e) -> str:
         nombre_edificio = self.campo_nombre_edificio.value.strip() # Mitre
+        # dia = self.campo_dia? .value.strip()
         hora_apertura = self.lista_hora_apertura.value.strip() # "09"
         hora_cierre = self.lista_hora_cierre.value.strip() # "00"
         minutos_apertura = self.lista_minutos_apertura.value.strip() # "21"
         minutos_cierre = self.lista_minutos_cierre.value.strip() # "00"
-        
-        # "09:00-21:00"
-        horario: str = f"{hora_apertura}:{minutos_apertura}-{hora_cierre}:{minutos_cierre}"
-        
+             
         # try:
-        #   self.ui_config.universidad.TU_FUNCION(...)
+        #   self.ui_config.universidad.modificar_horario_edificio(nombre_edificio, dia,
+        #           hora_apertura, hora_cierre, minutos_apertura, minuto_cierre)
         # except edificio_no_existe:
         #   mostrar cartelito de alerta
         
@@ -241,10 +246,10 @@ class UI_Config_Edificios():
             options=[
                 ft.dropdown.Option("Lunes"),
                 ft.dropdown.Option("Martes"),
-                ft.dropdown.Option("Miércoles"),
+                ft.dropdown.Option("Miércoles"),    # Juan: Ya agregue el acento al excel
                 ft.dropdown.Option("Jueves"),
                 ft.dropdown.Option("Viernes"),
-                ft.dropdown.Option("Sábado"),
+                ft.dropdown.Option("Sábado"),       # Juan: Ya agregue el acento al excel
                 ft.dropdown.Option("Domingo")
             ],
             enable_filter=True,

@@ -1,5 +1,16 @@
 import pandas as pd
-from frontend.universidad_exceptions import ElementoDuplicadoException
+
+
+###### ZONA DE EXCEPCIONES. Despues arreglar con la importacion de paquetes and stuff
+
+class ElementoDuplicadoException(Exception):
+    """Excepcion lanzada cuando quiere agregarse a un dataframe un dato que ya existe."""
+    def __init__(self, mensaje, elemento=None):
+        super().__init__(mensaje)
+        self.elemento = elemento
+#####################
+
+
 
 class Universidad:
     def __init__(self, 
@@ -116,11 +127,11 @@ class Universidad:
 def main():
     uni = Universidad()
 
-    for nombre in ["Agregable 1", "Agregable 2" , "Agregable 3"]:
+    for nombre in ["Agregable 1", "Agregable 2" , "Agregable 1"]:
         try:
             uni.agregar_edificio(nombre)
         except ElementoDuplicadoException:
-            print("Elemento duplicado")
+            print("Elemento duplicado, con clave primaria " + nombre)
 
     print(uni.mostrar_edificios())
 
@@ -132,10 +143,3 @@ if __name__ == '__main__':
 
 
 
-###### ZONA DE EXCEPCIONES. Despues arreglar con la importacion de paquetes and stuff
-
-class ElementoDuplicadoException(Exception):
-    """Excepcion lanzada cuando quiere agregarse a un dataframe un dato que ya existe."""
-    def __init__(self, mensaje, elemento=None):
-        super().__init__(mensaje)
-        self.elemento = elemento

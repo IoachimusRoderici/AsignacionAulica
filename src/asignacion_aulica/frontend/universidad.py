@@ -1,5 +1,5 @@
 import pandas as pd
-
+from frontend.universidad_exceptions import ElementoDuplicadoException
 
 class Universidad:
     def __init__(self, 
@@ -52,7 +52,7 @@ class Universidad:
         """
         return self.edificios.iloc[:,0].tolist()
 
-    def agregar_edificio(self, nombre_edificio:str): #TODO agregar el row generado
+    def agregar_edificio(self, nombre_edificio:str): #TODO Invocar excepcion apropiada en caso de no agregar elemento.
         """
         Metodo para agregar un edificio a la universidad.
         #TODO hacer que se agregue el row generado al dataframe
@@ -66,10 +66,9 @@ class Universidad:
         Throws:
             ElementoYaExistenteException , si se trata de agregar un edificio ya existente.
         """
-        ## ACA CHEQUEO DE QUE OTRO EDIFICIO NO TENGA ESE NOMBRE
 
-        if nombre_edificio in self.nombres_edificios:
-            print("KABOOM, ACA DEBERIA TIRAR EXCEPCION")
+        if nombre_edificio in self.nombres_edificios():
+            raise(ElementoDuplicadoException("Ya existe un edificio con ese nombre"))
             return
 
         aux_dict = {self.edificios.columns[0]:nombre_edificio}
@@ -77,8 +76,7 @@ class Universidad:
             aux_dict[col] = "9:00-23:00"
         aux_dict[self.edificios.columns[-1]] = "CERRADO"
         aux_row = pd.DataFrame([aux_dict])
-        self.edificios.loc[len(self.edificios)] = aux_row
-
+        self.edificios = pd.concat([self.edificios, aux_row], ignore_index=True)
 
 
     def eliminar_edificio(self, id_edificio:str): #TODO implementar. Prohibir si aulas lo usan
@@ -117,10 +115,27 @@ class Universidad:
 
 def main():
     uni = Universidad()
-    uni.agregar_edificio("Agregable 1")
-    uni.agregar_edificio("Agregable 2")
-    uni.agregar_edificio("Agregable 1")
+
+    for nombre in ["Agregable 1", "Agregable 2" , "Agregable 3"]:
+        try:
+            uni.agregar_edificio(nombre)
+        except ElementoDuplicadoException:
+            print("Elemento duplicado")
+
     print(uni.mostrar_edificios())
 
 if __name__ == '__main__':
     main()
+
+
+
+
+
+
+###### ZONA DE EXCEPCIONES. Despues arreglar con la importacion de paquetes and stuff
+
+class ElementoDuplicadoException(Exception):
+    """Excepcion lanzada cuando quiere agregarse a un dataframe un dato que ya existe."""
+    def __init__(self, mensaje, elemento=None):
+        super().__init__(mensaje)
+        self.elemento = elemento

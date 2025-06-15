@@ -77,8 +77,7 @@ class Universidad:
             aux_dict[col] = "9:00-23:00"
         aux_dict[self.edificios.columns[-1]] = "CERRADO"
         aux_row = pd.DataFrame([aux_dict])
-        print(aux_row)
-        print("A IMPLEMENTAR")
+        self.edificios.loc[len(self.edificios)] = aux_row
 
 
 
@@ -95,7 +94,7 @@ class Universidad:
     
 
 
-    
+
     # Sector de aulas
     def columnas_aulas(self): # Retorna lista de columnnames
         return self.aulas.columns.tolist()
@@ -118,12 +117,10 @@ class Universidad:
 
 def main():
     uni = Universidad()
-    #print(uni.mostrar_edificios())
-    #print(uni.mostrar_aulas())
-    #print(uni.columnas_edificios())
-    #print(uni.columnas_aulas())
-    #print(uni.nombres_edificios())
     uni.agregar_edificio("Agregable 1")
+    uni.agregar_edificio("Agregable 2")
+    uni.agregar_edificio("Agregable 1")
+    print(uni.mostrar_edificios())
 
 if __name__ == '__main__':
     main()

@@ -15,6 +15,11 @@ class Universidad:
         return self.edificios.columns.tolist()
     def mostrar_edificios(self): # Retorna el dataframe de edificios
         return self.edificios
+    """Metodo para mostrar los nombres de los edificios instanciados.
+    Sirve para el menu dropdown al intentar crear aulas."""
+    def nombres_edificios(self):
+        return self.edificios.iloc[:,0].tolist()
+
     def agregar_edificio(self, row_edificio): #TODO implementar
         print("A IMPLEMENTAR")
     def eliminar_edificio(self, id_edificio): #TODO implementar. Prohibir si aulas lo usan
@@ -43,11 +48,11 @@ class Universidad:
 
 def main():
     uni = Universidad()
-    print(uni.mostrar_edificios())
-    print(uni.mostrar_aulas())
-    print(uni.columnas_edificios())
-    print(uni.columnas_aulas())
-
+    #print(uni.mostrar_edificios())
+    #print(uni.mostrar_aulas())
+    #print(uni.columnas_edificios())
+    #print(uni.columnas_aulas())
+    print(uni.nombres_edificios())
 
 if __name__ == '__main__':
     main()

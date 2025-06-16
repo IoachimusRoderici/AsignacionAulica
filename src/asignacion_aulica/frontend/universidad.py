@@ -1,23 +1,8 @@
 import pandas as pd
 from datetime import time
 
-###### ZONA DE EXCEPCIONES. Despues arreglar con la importacion de paquetes and stuff
+from asignacion_aulica.frontend.excepciones_universidad import *
 
-class ElementoDuplicadoException(Exception):
-    """Excepcion lanzada cuando quiere agregarse a un dataframe un dato que ya existe."""
-    def __init__(self, mensaje, elemento=None):
-        super().__init__(mensaje)
-        self.elemento = elemento
-
-class HorarioIncorrectoException(Exception):
-    """Excepcion lanzada cuando quiere cambiarse un rango horario de dia a un horario de cierre menor al de apertura"""
-    def __init__(self, mensaje, elemento=None):
-        super().__init__(mensaje)
-        self.elemento = elemento
-
-### Crear 'EdificioTieneAulasException'
-
-#####################
 
 
 
@@ -186,6 +171,11 @@ def main():
     uni.modificar_edificio("Anasagasti 1", "Sábado", "CERRADO")
     uni.modificar_edificio("Anasagasti 1", "Nombre del Edificio", "Viedma 1")
     uni.modificar_horario_edificio("Mitre 1", "Domingo", 10, 11, 00, 00)
+
+    try:
+        uni.modificar_horario_edificio("Mitre1", "Lunes", 11, 5, 00, 00)
+    except HorarioInvalidoException as e:
+        print(e)
 
 
     print("Edificios despues del eliminar:")

@@ -13,8 +13,8 @@ import flet as ft
 #from pandas import DataFrame
 from typing import List
 
-from colores import COLOR
-from datos import *
+from .colores import COLOR
+from .datos import *
 
 
 class UI_BotonConfig():

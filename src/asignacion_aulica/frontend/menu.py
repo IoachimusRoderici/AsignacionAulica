@@ -13,8 +13,8 @@ Menú encargado de la creación y apertura de archivos. Incluye:
 
 import flet as ft
 
-from colores import COLOR
-from iconos import UI_Icono
+from .colores import COLOR
+from .iconos import UI_Icono
 
 
 class UI_UNRN:
@@ -120,13 +120,13 @@ class UI_Menu:
     def __init__(self, universidad):
         self.universidad = universidad
         
-        self.icono_UNRN = UI_UNRN("./imgs/UNRN_Andina.png")
-        self.boton_menu = UI_MenuBoton("./imgs/icono_menu.png", "Menú")
-        self.boton_nuevo = UI_MenuBoton("./imgs/icono_nuevo.png", "Nuevo")
-        self.boton_abrir = UI_MenuBoton("./imgs/icono_abrir.png", "Abrir")
-        self.boton_guardar = UI_MenuBoton("./imgs/icono_guardar.png", "Guardar")
-        self.boton_importar = UI_MenuBoton("./imgs/icono_importar.png", "Importar")
-        self.boton_exportar = UI_MenuBoton("./imgs/icono_exportar.png", "Exportar")
+        self.icono_UNRN = UI_UNRN("logo_UNRN_Andina.png")
+        self.boton_menu = UI_MenuBoton("iconos/menu.png", "Menú")
+        self.boton_nuevo = UI_MenuBoton("iconos/nuevo.png", "Nuevo")
+        self.boton_abrir = UI_MenuBoton("iconos/abrir.png", "Abrir")
+        self.boton_guardar = UI_MenuBoton("iconos/guardar.png", "Guardar")
+        self.boton_importar = UI_MenuBoton("iconos/importar.png", "Importar")
+        self.boton_exportar = UI_MenuBoton("iconos/exportar.png", "Exportar")
         
         self.subcolumna = ft.Column(
             controls=[

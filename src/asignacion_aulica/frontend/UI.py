@@ -58,7 +58,7 @@ def main(page: ft.Page):
     
     universidad = None #Universidad()
     menu = UI_Menu(universidad) # Menú de archivo...
-    config = UI_Config(universidad) # Menú de configuración (edificios, aulas, ...)
+    config = UI_Config(universidad, page) # Menú de configuración (edificios, aulas, ...)
     
     UI_interfaz = ft.Row(
         controls=[

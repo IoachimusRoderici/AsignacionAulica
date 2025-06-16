@@ -464,19 +464,19 @@ class UI_Config_Edificios():
         # TODO
         # (ES EL MISMO QUE EN actualizar_lista_edificios MAS ABAJO)
         # # Se cargan todos los nombres de los edificios.
-        # opciones_edificios: List[ft.dropdown.Option] = []
-        # for edificio in self.ui_config.universidad.TU_FUNCION():
-        #     opciones_edificios.append(ft.dropdown.Option(str(edificio)))
-        # self.lista_edificios = self.crear_lista_edificios()
-        # self.lista_edificios.options = opciones_edificios
+        opciones_edificios: List[ft.dropdown.Option] = []
+        for edificio in self.ui_config.universidad.nombres_edificios():
+            opciones_edificios.append(ft.dropdown.Option(str(edificio)))
+        self.lista_edificios = self.crear_lista_edificios()
+        self.lista_edificios.options = opciones_edificios
         # TODO
         # (ES EL MISMO QUE EN actualizar_tabla MAS ABAJO)
         # # Crea una tabla nueva con todos los datos nuevos. (tristemente se
         # tiene que crear la tabla de cero porque sino flet no lo actualiza).
-        # self.tabla = crear_tabla(self.ui_config.universidad.TU_FUNCION())
+        self.tabla = crear_tabla(self.ui_config.universidad.mostrar_edificios())
         # USA UN DATAFRAME CON TODA LA TABLA, CON LOS NOMBRES DE LAS COLUMNAS Y
         # TODO, LA FUNCION CREAR_TABLA ESTA EN DATOS.PY!!!!!!
-        pass
+        
     
     def crear_lista_edificios(self) -> ft.Dropdown:
         dropdown = ft.Dropdown(
@@ -605,11 +605,11 @@ class UI_Config_Edificios():
         """
         # TODO
         # # Se cargan todos los nombres de los edificios.
-        # opciones_edificios: List[ft.dropdown.Option] = []
-        # for edificio in self.ui_config.universidad.TU_FUNCION():
-        #     opciones_edificios.append(ft.dropdown.Option(str(edificio)))
-        # self.lista_edificios = self.crear_lista_edificios()
-        # self.lista_edificios.options = opciones_edificios
+        opciones_edificios: List[ft.dropdown.Option] = []
+        for edificio in self.ui_config.universidad.nombres_edificios():
+            opciones_edificios.append(ft.dropdown.Option(str(edificio)))
+        self.lista_edificios = self.crear_lista_edificios()
+        self.lista_edificios.options = opciones_edificios
         
         # Se actualizan los elementos de la interfaz.
         self.actualizar_filas()
@@ -648,3 +648,6 @@ class UI_Config_Edificios():
     
     def dibujar(self) -> ft.Container:
         return self.container
+
+
+    # Posible implementar aca una funcion helper para leer los datos

@@ -454,17 +454,36 @@ class UI_Config_Edificios():
         # 7) Tabla con datos de los edificios cargados
         self.tabla = self.crear_tabla()
         
+        # Carga inicial de los datos:
+        self.cargar_datos_inicio()
+        
         self.actualizar_handlers()
-        self.actualizar_lista_edificios()
-        self.actualizar_tabla()
         self.actualizar_filas()
+    
+    def cargar_datos_inicio(self):
+        # TODO
+        # (ES EL MISMO QUE EN actualizar_lista_edificios MAS ABAJO)
+        # # Se cargan todos los nombres de los edificios.
+        # opciones_edificios: List[ft.dropdown.Option] = []
+        # for edificio in self.ui_config.universidad.TU_FUNCION():
+        #     opciones_edificios.append(ft.dropdown.Option(str(edificio)))
+        # self.lista_edificios = self.crear_lista_edificios()
+        # self.lista_edificios.options = opciones_edificios
+        # TODO
+        # (ES EL MISMO QUE EN actualizar_tabla MAS ABAJO)
+        # # Crea una tabla nueva con todos los datos nuevos. (tristemente se
+        # tiene que crear la tabla de cero porque sino flet no lo actualiza).
+        # self.tabla = crear_tabla(self.ui_config.universidad.TU_FUNCION())
+        # USA UN DATAFRAME CON TODA LA TABLA, CON LOS NOMBRES DE LAS COLUMNAS Y
+        # TODO, LA FUNCION CREAR_TABLA ESTA EN DATOS.PY!!!!!!
+        pass
     
     def crear_lista_edificios(self) -> ft.Dropdown:
         dropdown = ft.Dropdown(
             label="Edificios",
             options=[
-                ft.dropdown.Option("Anasagasti"),
-                ft.dropdown.Option("Mitre"),
+                # ft.dropdown.Option("Anasagasti"),
+                # ft.dropdown.Option("Mitre"),
             ],
             enable_filter=True,
         )
@@ -539,12 +558,12 @@ class UI_Config_Edificios():
         self.boton_modificar_edificio.on_click = self.modificar_edificio
         self.boton_establecer_horario.on_click = self.establecer_horario
         self.boton_eliminar_horario.on_click = self.eliminar_horario
-        # self.lista_edificios.on_change = self.seleccionar_edificio
-        # self.lista_dias.on_change = self.seleccionar_dia
-        # self.lista_hora_apertura = self.seleccionar_hora_apertura
-        # self.lista_minutos_apertura = self.seleccionar_minutos_apertura
-        # self.lista_hora_cierre = self.seleccionar_hora_cierre
-        # self.lista_minutos_cierre = self.seleccionar_minutos_cierre
+        self.lista_edificios.on_change = self.seleccionar_edificio
+        self.lista_dias.on_change = self.seleccionar_dia
+        self.lista_hora_apertura.on_change = self.seleccionar_hora_apertura
+        self.lista_minutos_apertura.on_change = self.seleccionar_minutos_apertura
+        self.lista_hora_cierre.on_change = self.seleccionar_hora_cierre
+        self.lista_minutos_cierre.on_change = self.seleccionar_minutos_cierre
     
     def actualizar_filas(self):
         self.fila = []

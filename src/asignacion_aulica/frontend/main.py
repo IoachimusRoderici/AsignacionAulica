@@ -11,7 +11,6 @@ import flet as ft
 from .colores import COLOR
 from .menu import UI_Menu
 from .config import UI_Config
-from asignacion_aulica.backend import coso
 
 
 def main(page: ft.Page):
@@ -36,7 +35,7 @@ def main(page: ft.Page):
     """
     
     # Página/ft.Page principal
-    page.title = "UNRN Andina - Asignación de Aulas" + coso() # Título de la ventana
+    page.title = "UNRN Andina - Asignación de Aulas" # Título de la ventana
     page.theme_mode = ft.ThemeMode.LIGHT # Tema claro
     page.padding = 0 # Quita el padding entre elementos
     page.spacing = 0 # Quita espaciado

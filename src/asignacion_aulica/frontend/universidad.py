@@ -81,7 +81,6 @@ class Universidad:
         aux_row = pd.DataFrame([aux_dict])
         self.edificios = pd.concat([self.edificios, aux_row], ignore_index=True)
 
-
     def eliminar_edificio(self, nombre_edificio:str): #TODO Prohibir si hay aulas que usan el edificio
         """
         Metodo para eliminar un edificio existente de la universidad
@@ -98,8 +97,6 @@ class Universidad:
         ### TODO DOCUMENTAR
         ### TODO prohibir si hay aulas instanciadas que usen ese edificio
         self.edificios = self.edificios[self.edificios.iloc[:, 0] != nombre_edificio].reset_index(drop=True)
-
-    
     
     def modificar_edificio(self, nombre_edificio:str, columna_a_modificar:str, valor_nuevo:str):
         """
@@ -127,7 +124,6 @@ class Universidad:
         # Modificar el valor
         self.edificios.at[index, columna_a_modificar] = valor_nuevo
 
-    
     def modificar_horario_edificio(self, nombre_edificio:str, dia:str, 
         hora1:int, hora2:int, minuto1:int, minuto2:int):
 
@@ -146,8 +142,14 @@ class Universidad:
         return self.aulas.columns.tolist()
     def mostrar_aulas(self): # Retorna el dataframe de aulas
         return self.aulas
-    def agregar_aula(self, row): #TODO implementar. Que no permita aulas huerfanas.
-        print("A IMPLEMENTAR")
+    def agregar_aula(self, identificador_aula:str , capacidad:int, edificio_aula:str): #TODO implementar. Que no permita aulas huerfanas.
+        
+        aux_dict = {col:None for col in self.columnas_aulas}
+        aux[self.columnas_aulas[0]] = identificador_aula    #   Primer columna es identificador aula. Escribo
+        aux[self.columnas_aulas[1]] = capacidad
+        aux[self.columnas_aulas[-1]] = edificio_aula        #   Ultima columna es edificio. Escribo.
+        print("falta IMPLEMENTAR TODAVIA")
+
     def eliminar_aula(self, id_aula): #TODO implementar
         print("A IMPLEMENTAR")
     def modificar_aula(self, row_aula): #TODO implementar

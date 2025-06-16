@@ -1,5 +1,5 @@
 import pandas as pd
-
+from datetime import time
 
 ###### ZONA DE EXCEPCIONES. Despues arreglar con la importacion de paquetes and stuff
 
@@ -145,9 +145,8 @@ class Universidad:
     
     def modificar_horario_edificio(self, nombre_edificio:str, dia:str, 
         hora1:int, hora2:int, minuto1:int, minuto2:int):
-        condicion = (hora2>hora1) or (hora1==hora2 and minuto1<minuto2)
 
-        if condicion:
+        if time(hora1, minuto1) < time(hora2, minuto2):
             self.modificar_edificio(nombre_edificio, dia, f"{hora1}:{minuto1:02}-{hora2}:{minuto2:02}")
         else:
             raise(HorarioInvalidoException("La hora de cierre no puede ser menor que la de apertura"))

@@ -23,7 +23,6 @@ Estas funciones toman los siguientes argumentos:
 Esto se omite de los docstrings para no tener que repetirlo en todos lados.
 '''
 from itertools import combinations, product
-from ortools.sat.python import cp_model
 from pandas import DataFrame
 from typing import Iterable
 import numpy as np
@@ -65,8 +64,11 @@ def no_asignar_en_aula_cerrada(clases: DataFrame, aulas: DataFrame):
     La clase no puede estar en un aula que no esté abierta en ese horario.
     '''
     for aula, clase in product(aulas.itertuples(), clases.itertuples()):
-        if aula.horario_apertura > clase.horario_inicio or \
-           aula.horario_cierre < clase.horario_fin:
+        aula_cerrada = clase.día not in aula.horario_apertura or \
+                       clase.día not in aula.horario_cierre or \
+                       aula.horario_apertura[clase.día] > clase.horario_inicio or \
+                       aula.horario_cierre[clase.día] < clase.horario_fin
+        if aula_cerrada:
             yield (clase.Index, aula.Index)
 
 def asignar_aulas_con_capacidad_suficiente(clases: DataFrame, aulas: DataFrame):

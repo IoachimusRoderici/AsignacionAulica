@@ -10,47 +10,11 @@ Apartados de configuración, inputs y outputs de datos. Incluye:
 """
 
 import flet as ft
-from pandas import DataFrame
+#from pandas import DataFrame
 from typing import List
 
 from colores import COLOR
-
-
-def crear_tabla(df: DataFrame) -> ft.DataTable:
-    """
-    Crea una ft.DataTable (UI, Flet) a partir de una DataFrame.
-
-    Parameters
-    ----------
-    df : DataFrame
-        DataFrame (tabla) con todos los datos de la tabla.
-
-    Returns
-    -------
-    ft.DataTable
-        Tabla con todos los datos de la DataFrame, para mostrar en la UI.
-
-    """
-    
-    columnas = []
-    filas = []
-    
-    # Se obtienen los nombres de las columnas.
-    for col_name in df:
-        columnas.append(ft.DataColumn(ft.Text(col_name)))
-    
-    # Se obtienen número de filas de la tabla.
-    num_rows = df.shape[0]
-    
-    # Para cada fila se cargan los datos de todas las celdas, de sus
-    # respectivas columnas.
-    for row in range(num_rows):
-        celdas = []
-        for col in df:
-            celdas.append(ft.DataCell(ft.Text(df[col].iloc[row])))
-        filas.append(ft.DataRow(cells=celdas))
-    
-    return ft.DataTable(columns=columnas, rows=filas)
+from datos import *
 
 
 class UI_BotonConfig():
@@ -126,38 +90,96 @@ class UI_Config_Edificios():
     Apartado de Edificios de la universidad.
     """
     
+    def actualizar_tabla(self):
+        pass
+    
     def agregar_edificio(self, e):
-        nombre = self.campo_nombre_edificio.value.strip()
-        print(f"Agregando edificio: {nombre}")
-        
+        nombre_edificio: str = limpiar_texto(self.campo_nombre_edificio.value)
+        print(f"Agregar edificio: {nombre_edificio}")
 
         ### WARNING: ACA NO ESTA INSTANCIADO UNIVERSIDAD. Siempre va a entrar al Exception.
         ### Por ahora puse el Exception porque no tengo separado el archivo con excepciones del universidad.py
         ### Pero esta es la estructura que deberia tener esto.
-        #try:
-        #    self.ui_config.universidad.agregar_edificio(nombre)
-        #except Exception:
-            # Aca cartelito de alerta
-        #    print("Se intento agregar un edificio duplicado, oops")
-        # finally:
-            # Actualizar tabla
-
-    
-    def modificar_horario(self, e) -> str:
-        nombre_edificio = self.campo_nombre_edificio.value.strip() # Mitre
-        # dia = self.campo_dia? .value.strip()
-        hora_apertura = self.lista_hora_apertura.value.strip() # "09"
-        hora_cierre = self.lista_hora_cierre.value.strip() # "00"
-        minutos_apertura = self.lista_minutos_apertura.value.strip() # "21"
-        minutos_cierre = self.lista_minutos_cierre.value.strip() # "00"
-             
         # try:
-        #   self.ui_config.universidad.modificar_horario_edificio(nombre_edificio, dia,
-        #           hora_apertura, hora_cierre, minutos_apertura, minuto_cierre)
-        # except edificio_no_existe:
+        #   self.ui_config.universidad.TU_FUNCION(...)
+        # except excepcion:
         #   mostrar cartelito de alerta
+        # finally:
+        #   self.actualizar_tabla()
+        #
         
-        # actualizar tabla
+    def modificar_edificio(self, e):
+        nombre_edificio: str = self.lista_edificios.value or "" # Si es None toma valor ""
+        nuevo_nombre_edificio: str = limpiar_texto(self.campo_nombre_edificio.value)
+        print(f"Modificar edificio: {nombre_edificio} -> {nuevo_nombre_edificio}")
+        
+        # try:
+        #   self.ui_config.universidad.TU_FUNCION(...)
+        # except excepcion:
+        #   mostrar cartelito de alerta
+        # finally:
+        #   self.actualizar_tabla()
+        
+    def eliminar_edificio(self, e):
+        nombre_edificio: str = self.lista_edificios.value or "" # Si es None toma valor ""
+        print(f"Eliminar edificio: {nombre_edificio}")
+       
+        # try:
+        #   self.ui_config.universidad.TU_FUNCION(...)
+        # except excepcion:
+        #   mostrar cartelito de alerta
+        # finally:
+        #   self.actualizar_tabla()
+        
+    def establecer_horario(self, e):
+        nombre_edificio: str = self.lista_edificios.value or "" # Si es None toma valor ""
+        dia: str = self.lista_dias.value or "" # "Miércoles"
+        hora_apertura: str = self.lista_hora_apertura.value or "" # "09"
+        hora_cierre: str = self.lista_hora_cierre.value or "" # "00"
+        minutos_apertura: str = self.lista_minutos_apertura.value or "" # "21"
+        minutos_cierre: str = self.lista_minutos_cierre.value or "" # "00"
+        
+        # "09:00-21:00"
+        horario: str = f"{hora_apertura}:{minutos_apertura}-{hora_cierre}:{minutos_cierre}"
+        
+        print(f"Establecer horario: {dia}, {horario} -> Edificio: {nombre_edificio}")
+        
+        # try:
+        #   self.ui_config.universidad.TU_FUNCION(...)
+        # except excepcion:
+        #   mostrar cartelito de alerta
+        # finally:
+        #   self.actualizar_tabla()
+    
+    def eliminar_horario(self, e):
+        nombre_edificio: str = self.lista_edificios.value or "" # Si es None toma valor ""
+        dia: str = self.lista_dias.value or "" # Si es None toma valor ""
+        print(f"Eliminar horario: {dia} -> Edificio: {nombre_edificio}")
+        
+        # try:
+        #   self.ui_config.universidad.TU_FUNCION(...)
+        # except excepcion:
+        #   mostrar cartelito de alerta
+        # finally:
+        #   self.actualizar_tabla()
+    
+    def seleccionar_edificio(self, e):
+        pass
+    
+    def seleccionar_dia(self, e):
+        pass
+    
+    def seleccionar_hora_apertura(self, e):
+        pass
+    
+    def seleccionar_minutos_apertura(self, e):
+        pass
+    
+    def seleccionar_hora_cierre(self, e):
+        pass
+    
+    def seleccionar_minutos_cierre(self, e):
+        pass
     
     def __init__(
             self,
@@ -246,10 +268,10 @@ class UI_Config_Edificios():
             options=[
                 ft.dropdown.Option("Lunes"),
                 ft.dropdown.Option("Martes"),
-                ft.dropdown.Option("Miércoles"),    # Juan: Ya agregue el acento al excel
+                ft.dropdown.Option("Miércoles"),
                 ft.dropdown.Option("Jueves"),
                 ft.dropdown.Option("Viernes"),
-                ft.dropdown.Option("Sábado"),       # Juan: Ya agregue el acento al excel
+                ft.dropdown.Option("Sábado"),
                 ft.dropdown.Option("Domingo")
             ],
             enable_filter=True,
@@ -325,6 +347,16 @@ class UI_Config_Edificios():
         
         # Define el comportamiento "on_click" de cada elemento.
         self.boton_agregar_edificio.on_click = self.agregar_edificio
+        self.boton_eliminar_edificio.on_click = self.eliminar_edificio
+        self.boton_modificar_edificio.on_click = self.modificar_edificio
+        self.boton_establecer_horario.on_click = self.establecer_horario
+        # self.boton_eliminar_horario.on_click = self.eliminar_horario
+        # self.lista_edificios.on_change = self.seleccionar_edificio
+        # self.lista_dias.on_change = self.seleccionar_dia
+        # self.lista_hora_apertura = self.seleccionar_hora_apertura
+        # self.lista_minutos_apertura = self.seleccionar_minutos_apertura
+        # self.lista_hora_cierre = self.seleccionar_hora_cierre
+        # self.lista_minutos_cierre = self.seleccionar_minutos_cierre
         
         # Agrega todas las filas a la columna resultado.
         self.fila.append(ft.Row([self.titulo]))

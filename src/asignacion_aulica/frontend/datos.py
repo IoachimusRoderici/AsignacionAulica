@@ -1,6 +1,44 @@
 # -*- coding: utf-8 -*-
+import flet as ft
+from pandas import DataFrame
 import re
 
+
+def crear_tabla(df: DataFrame) -> ft.DataTable:
+    """
+    Crea una ft.DataTable (UI, Flet) a partir de una DataFrame.
+
+    Parameters
+    ----------
+    df : DataFrame
+        DataFrame (tabla) con todos los datos de la tabla.
+
+    Returns
+    -------
+    ft.DataTable
+        Tabla con todos los datos de la DataFrame, para mostrar en la UI.
+
+    """
+    
+    columnas = []
+    filas = []
+    
+    # Se obtienen los nombres de las columnas.
+    for col_name in df:
+        columnas.append(ft.DataColumn(ft.Text(col_name)))
+    
+    # Se obtienen número de filas de la tabla.
+    num_rows = df.shape[0]
+    
+    # Para cada fila se cargan los datos de todas las celdas, de sus
+    # respectivas columnas.
+    for row in range(num_rows):
+        celdas = []
+        for col in df:
+            celdas.append(ft.DataCell(ft.Text(df[col].iloc[row])))
+        filas.append(ft.DataRow(cells=celdas))
+    
+    return ft.DataTable(columns=columnas, rows=filas)
 
 def limpiar_texto(texto: str) -> str:
     """

@@ -23,7 +23,6 @@ class UI_UNRN:
     """
     def __init__(self, ruta_imagen: str):
         # Directorio donde se encuentra la imágen del icono.
-        # Ejemplo: "./ui/imgs/UNRN_Andina.png"
         self.ruta_imagen: str = ruta_imagen
         self.tamanio_imagen: int = 225
         self.tamanio_container: int = 250
@@ -63,7 +62,6 @@ class UI_MenuBoton:
             texto: str
             ):
         # Directorio donde se encuentra la imágen del icono del boton.
-        # Ejemplo: "./ui/imgs/icono_menu.png"
         self.ruta_imagen: str = ruta_imagen
         # Texto que dirá el botón. Por ejemplo: "Menú"
         self.texto: str = texto

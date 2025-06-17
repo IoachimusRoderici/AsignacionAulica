@@ -151,25 +151,25 @@ class UI_Config_Edificios():
         print(f"Eliminar edificio: {nombre_edificio}")
         
         # TODO
-        # try:
-        #     # Se elimina el edificio en la "base de datos".
-        #     self.ui_config.universidad.TU_FUNCION(...)
-        #
-        #     # Si es que no hay ningún problema:
-        #     # Limpia el campo de texto del edificio.
-        #     self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
-        #
-        #     # Limpia las listas de selección de horario.
-        #     self.limpiar_seleccion_horario()
-        #
-        #     # Se actualizan los elementos de la interfaz.
-        #     self.actualizar_tabla()
-        #     self.actualizar_lista_edificios()
-        #     self.actualizar_filas()
-        #     self.actualizar_apartado()
-        # except Exception as e:
-        #     mensaje_error: str = str(e)
-        #     self.alertar(mensaje_error)
+        try:
+        #   # Se elimina el edificio en la "base de datos".
+            self.ui_config.universidad.eliminar_edificio(nombre_edificio)
+        
+        #   # Si es que no hay ningún problema:
+        #   # Limpia el campo de texto del edificio.
+            self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
+        
+        #   # Limpia las listas de selección de horario.
+            self.limpiar_seleccion_horario()
+        
+        #   # Se actualizan los elementos de la interfaz.
+            self.actualizar_tabla()
+            self.actualizar_lista_edificios()
+            self.actualizar_filas()
+            self.actualizar_apartado()
+        except Exception as e:
+        #   mensaje_error: str = str(e)
+            self.alertar(mensaje_error)
         
     def establecer_horario(self, e):
         """

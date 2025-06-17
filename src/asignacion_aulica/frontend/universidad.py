@@ -70,6 +70,9 @@ class Universidad:
         Throws:
             ElementoYaExistenteException , si se trata de agregar un edificio ya existente.
         """
+        nombre_edificio = nombre_edificio.strip()
+        if nombre_edificio == "":
+            raise(ElementoInvalidoException("No se puede agregar un edificio sin nombre"))
 
         if nombre_edificio in self.nombres_edificios():
             raise(ElementoDuplicadoException("Ya existe un edificio con ese nombre"))
@@ -92,10 +95,13 @@ class Universidad:
         Returns
             None
         Throws:
+            ElementoNoExisteException, si se trata de borrar un edificio que no existe en sistema.
             EdificioTieneAulasException , si se trata de agregar un edificio ya existente.
         """
-        ### TODO DOCUMENTAR
         ### TODO prohibir si hay aulas instanciadas que usen ese edificio
+        if nombre_edificio not in self.nombres_edificios():
+            raise(ElementoNoExisteException("El edificio que desea borrar no existe en el sistema."))
+        
         self.edificios = self.edificios[self.edificios.iloc[:, 0] != nombre_edificio].reset_index(drop=True)
     
     def modificar_edificio(self, nombre_edificio:str, columna_a_modificar:str, valor_nuevo:str):

@@ -6,6 +6,14 @@ def parsear_equipamiento(literal):
     componentes = (x.strip() for x in literal.split(','))
     return {componente for componente in componentes if componente != ''}
 
+def parsear_horarios(literal):
+    componentes = (x.strip() for x in literal.split(','))
+    horarios = dict()
+    for componente in componentes:
+        día, horario = componente.split(':')
+        horarios[día] = int(horario)
+    return horarios
+
 clases = pd.read_csv('clases.csv', keep_default_na=False)
 aulas = pd.read_csv('aulas.csv', keep_default_na=False)
 
@@ -14,6 +22,8 @@ with open('aulas_dobles.json') as f:
 
 clases['equipamiento_necesario'] = list(map(parsear_equipamiento, clases['equipamiento_necesario']))
 aulas['equipamiento'] = list(map(parsear_equipamiento, aulas['equipamiento']))
+aulas['horario_apertura'] = list(map(parsear_horarios, aulas['horario_apertura']))
+aulas['horario_cierre'] = list(map(parsear_horarios, aulas['horario_cierre']))
 
 asignaciones = backend.asignar(clases, aulas, aulas_dobles)
 

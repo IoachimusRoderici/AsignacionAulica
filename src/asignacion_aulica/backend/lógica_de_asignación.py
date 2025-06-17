@@ -53,6 +53,8 @@ def asignar(clases: DataFrame, aulas: DataFrame, aulas_dobles: dict[ int, tuple[
         - equipamiento: set[str]
         - horario_apertura: dict[str (día), int] # TODO: Decidir cómo representar los horarios en números enteros
         - horario_cierre: dict[str (día), int]
+        Los días que no aparecen en los diccionarios de los horarios se
+        consideran como días donde el aula está cerrada.
     :param aulas_dobles: Diccionario donde las keys son los índices de las
         aulas dobles y los values son tuplas con las aulas individuales que
         conforman el aula doble.

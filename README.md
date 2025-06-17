@@ -20,7 +20,7 @@ de python.
    .\venv\Scripts\activate  # En Windows
    ```
 
-3. Instalar las dependencias del proyecto con `pip install .[test]`
+3. Instalar las dependencias del proyecto con `pip install --editable .[test]`
 
    Nota: la opción `[test]` instala los paquetes necesarios para ejecutar las
    pruebas unitarias. Se puede omitir si no vas a ejecutar las pruebas

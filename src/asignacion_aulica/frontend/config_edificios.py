@@ -189,12 +189,12 @@ class UI_Config_Edificios():
         None.
 
         """
-        nombre_edificio: str = self.lista_edificios.value or "" # Si es None toma valor ""
-        dia: str = self.lista_dias.value or "" # "Miércoles"
-        hora_apertura: str = self.lista_hora_apertura.value or "" # "09"
-        hora_cierre: str = self.lista_hora_cierre.value or "" # "00"
-        minutos_apertura: str = self.lista_minutos_apertura.value or "" # "21"
-        minutos_cierre: str = self.lista_minutos_cierre.value or "" # "00"
+        nombre_edificio: str = str(self.lista_edificios.value or "") # Si es None toma valor ""
+        dia: str = str(self.lista_dias.value or "") # "Miércoles"
+        hora_apertura: str = str(self.lista_hora_apertura.value or "") # "09"
+        hora_cierre: str = str(self.lista_hora_cierre.value or "") # "00"
+        minutos_apertura: str = str(self.lista_minutos_apertura.value or "") # "21"
+        minutos_cierre: str = str(self.lista_minutos_cierre.value or "") # "00"
         
         horario: str = f"{hora_apertura}:{minutos_apertura}-{hora_cierre}:{minutos_cierre}"
         
@@ -207,10 +207,10 @@ class UI_Config_Edificios():
             self.ui_config.universidad.modificar_horario_edificio(
                 nombre_edificio,
                 dia,
-                int(hora_apertura),
-                int(hora_cierre),
-                int(minutos_apertura),
-                int(minutos_cierre)
+                hora_apertura,
+                hora_cierre,
+                minutos_apertura,
+                minutos_cierre
             )
         
             # Se actualizan los elementos de la interfaz.

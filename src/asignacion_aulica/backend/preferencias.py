@@ -27,7 +27,7 @@ llamada "total" que es la que hay que minimizar.
 '''
 from ortools.sat.python import cp_model
 from pandas import DataFrame
-from typing import Iterable
+from typing import Any
 import numpy as np
 
 def construir_edificios(aulas: DataFrame) -> dict[str, set[int]]:
@@ -61,26 +61,42 @@ def obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases: DataFrame, a
 
     return cantidad_de_clases_fuera_del_edificio_preferido
 
-def obtener_cantidad_de_alumnos_fuera_del_aula(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpModel, asignaciones: np.ndarray):
+def obtener_cantidad_de_alumnos_fuera_del_aula(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpModel, asignaciones: np.ndarray) -> tuple[Any, int]:
     '''
-    Devuelve una expresión que representa la cantidad de alumnos que exceden la 
-    capacidad del aula asignada a su clase.
+    Calcula una expresión que representa la cantidad de alumnos que exceden la
+    capacidad del aula asignada a su clase, y el valor máximo que puede llegar
+    a alcanzar.
+    :return: Tupla donde el primer elemento es la expresión, y el segundo es la cota superior.
     '''
     cantidad_de_alumnos_fuera_del_aula = 0
+    cota_superior_total = 0
 
     for clase in clases.itertuples():
         exceso_de_capacidad = modelo.new_int_var(0, clase.cantidad_de_alumnos, f"exceso_de_capacidad_de_{clase.nombre}")
+        cota_superior = 0
+
         for aula in aulas.itertuples():
             asignada_a_este_aula = asignaciones[clase.Index, aula.Index]
 
-            if clase.cantidad_de_alumnos > aula.capacidad:
-                modelo.add(exceso_de_capacidad == clase.cantidad_de_alumnos - aula.capacidad).only_enforce_if(asignada_a_este_aula)
-            else:
-                modelo.add(exceso_de_capacidad == 0).only_enforce_if(asignada_a_este_aula)
-        
+            posible_exceso = max(0, clase.cantidad_de_alumnos - aula.capacidad)
+            modelo.add(exceso_de_capacidad == posible_exceso).only_enforce_if(asignada_a_este_aula)
+
+            if not isinstance(asignada_a_este_aula, np.integer):
+                # Si no se sabe la asignación de antemano, la cota superior puede necesitar actualización
+                cota_superior = max(cota_superior, posible_exceso)
+            elif asignada_a_este_aula == 1:
+                # Cuando hay una asignación forzada, cota_superior == exceso_de_capacidad
+                cota_superior = posible_exceso
+                break
+
         cantidad_de_alumnos_fuera_del_aula += exceso_de_capacidad
+        cota_superior_total += cota_superior
     
-    return cantidad_de_alumnos_fuera_del_aula
+    # Evitamos que la cota superior se 0 porque luego se usa para dividir
+    if cota_superior_total == 0:
+        cota_superior_total = 1
+
+    return cantidad_de_alumnos_fuera_del_aula, cota_superior_total
 
 def obtener_capacidad_sobrante(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpModel, asignaciones: np.ndarray):
     '''

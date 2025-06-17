@@ -73,10 +73,9 @@ class UI_Config_Edificios():
         """
         # Toma el input del usuario.
         nombre_edificio: str = limpiar_texto(self.campo_nombre_edificio.value) # datos.py
-        print(f"original: \n{self.ui_config.universidad.mostrar_edificios()}")
+        
         print(f"Agregar edificio: {nombre_edificio}")
         
-        # TODO
         try:
         #   # Se agrega el edificio a la "base de datos".
             self.ui_config.universidad.agregar_edificio(nombre_edificio)
@@ -93,8 +92,6 @@ class UI_Config_Edificios():
         except Exception as e:
         #   mensaje_error: str = str(e)
             self.alertar(e)
-        finally:
-            print(self.ui_config.universidad.mostrar_edificios())
     
     def modificar_edificio(self, e):
         """

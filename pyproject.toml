@@ -30,7 +30,7 @@ minversion = "8.3"
 [tool.flet]
 company = "UNRN"
 org = "ar.edu.unrn"
-product = "Asignación Áulica"
+product = "Asignacion Aulica"
 
 [tool.flet.app]
 path = "src"

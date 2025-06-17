@@ -51,12 +51,11 @@ def asignar(clases: DataFrame, aulas: DataFrame, aulas_dobles: dict[ int, tuple[
         - nombre: str
         - capacidad: int
         - equipamiento: set[str]
-        - horario_apertura: dict[str (día), int] # TODO: Decidir cómo representar los horarios en números enteros
-        - horario_cierre: dict[str (día), int]
-        Los días que no aparecen en los diccionarios de los horarios se
-        consideran como días donde el aula está cerrada.
+        - horarios: dict[str (día), tuple[int, int]] # TODO: Decidir cómo representar los horarios en números enteros
+          Mapea días de la semana a tuplas (apertura, cierre). Los días que no
+          están en el diccionario se considera que el aula está cerrada.
     :param aulas_dobles: Diccionario donde las keys son los índices de las
-        aulas dobles y los values son tuplas con las aulas individuales que
+        aulas dobles y los valores son tuplas con las aulas individuales que
         conforman el aula doble.
     :return: Una lista con el número de aula asignada a cada clase.
     :raise ImposibleAssignmentException: Si no es posible hacer la asignación.

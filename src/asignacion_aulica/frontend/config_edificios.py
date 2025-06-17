@@ -234,23 +234,25 @@ class UI_Config_Edificios():
         
         print(f"Eliminar horario: {dia} -> Edificio: {nombre_edificio}")
         
-        # TODO
-        # try:
-        #     # Se "elimina" (se marca como cerrado) el horario del día elegido
-        #     # del edificio en la "base de datos".
-        #     self.ui_config.universidad.TU_FUNCION(...)
-        #
-        #     # Si es que no hay ningún problema:
-        #     # Limpia las listas de selección de horario.
-        #     self.limpiar_seleccion_horario()
-        #
-        #     # Se actualizan los elementos de la interfaz.
-        #     self.actualizar_tabla()
-        #     self.actualizar_filas()
-        #     self.actualizar_apartado()
-        # except Exception as e:
-        #     mensaje_error: str = str(e)
-        #     self.alertar(mensaje_error)
+        try:
+        #   # Se "elimina" (se marca como cerrado) el horario del día elegido
+        #   # del edificio en la "base de datos".
+            self.ui_config.universidad.modificar_edificio(
+                nombre_edificio,
+                dia,
+                "CERRADO"
+            )
+        
+        #   # Si es que no hay ningún problema:
+        #   # Limpia las listas de selección de horario.
+            self.limpiar_seleccion_horario()
+        
+        #   # Se actualizan los elementos de la interfaz.
+            self.actualizar_tabla()
+            self.actualizar_filas()
+            self.actualizar_apartado()
+        except Exception as e:
+            self.alertar(e)
     
     def seleccionar_edificio(self, e):
         # Limpia el campo de texto del edificio.
@@ -280,7 +282,7 @@ class UI_Config_Edificios():
             self.actualizar_apartado()
         else:
             dia: str = self.lista_dias.value
-            if dia != None:
+            if dia in self.ui_config.universidad.nombres_columnas()[1:]:
                 # TODO
                 # PODES CAMBIAR LA IMPLEMENTACION PERO DEBE SER ACORDE A LO QUE ESTA PARA QUE FUNCIONE
                 # hora_apertura: str = self.ui_config.universidad.TU_FUNCION()
@@ -598,7 +600,6 @@ class UI_Config_Edificios():
         None.
 
         """
-        # TODO
         # # Se cargan todos los nombres de los edificios.
         opciones_edificios: List[ft.dropdown.Option] = []
         for edificio in self.ui_config.universidad.nombres_edificios():

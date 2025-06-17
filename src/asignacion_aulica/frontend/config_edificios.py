@@ -194,28 +194,33 @@ class UI_Config_Edificios():
         minutos_apertura: str = self.lista_minutos_apertura.value or "" # "21"
         minutos_cierre: str = self.lista_minutos_cierre.value or "" # "00"
         
-        # "09:00-21:00"
         horario: str = f"{hora_apertura}:{minutos_apertura}-{hora_cierre}:{minutos_cierre}"
         
         print(f"Establecer horario: {dia}, {horario} -> Edificio: {nombre_edificio}")
         
-        # TODO
-        # try:
-        #     # Se establece el horario del día elegido del edificio en la
-        #     # "base de datos".
-        #     self.ui_config.universidad.TU_FUNCION(...)
-        #
-        #     # Si es que no hay ningún problema:
-        #     # Limpia las listas de selección de horario.
-        #     self.limpiar_seleccion_horario()
-        #
-        #     # Se actualizan los elementos de la interfaz.
-        #     self.actualizar_tabla()
-        #     self.actualizar_filas()
-        #     self.actualizar_apartado()
-        # except Exception as e:
-        #     mensaje_error: str = str(e)
-        #     self.alertar(mensaje_error)
+    
+        try:
+        #   # Se establece el horario del día elegido del edificio en la
+        #   # "base de datos".
+            self.ui_config.universidad.modificar_horario_edificio(
+                nombre_edificio,
+                dia,
+                int(hora_apertura),
+                int(hora_cierre),
+                int(minutos_apertura),
+                int(minutos_cierre)
+            )
+        
+        #   # Si es que no hay ningún problema:
+        #   # Limpia las listas de selección de horario.
+            #self.limpiar_seleccion_horario()  # ES MAS COMODO PARA EL USUARIO SI NO SE LIMPIA ESE CAMPO.
+        
+            # Se actualizan los elementos de la interfaz.
+            self.actualizar_tabla()
+            self.actualizar_filas()
+            self.actualizar_apartado()
+        except Exception as e:
+            self.alertar(e)
     
     def eliminar_horario(self, e):
         """
@@ -264,9 +269,8 @@ class UI_Config_Edificios():
         # Se actualizan los elementos de la interfaz.
         self.actualizar_filas()
         self.actualizar_apartado()
-        
     
-    def seleccionar_dia(self, e):
+    def seleccionar_dia(self, e): # TODO No se que hace pero no obstruye la implementacion no tenerla, al menos no todavia
         nombre_edificio: str = self.lista_edificios.value
         if nombre_edificio == None:
             self.alertar("Para poder seleccionar y establecer el horario de un edificio, primero debe seleccionar el edificio al que se le aplicarán los cambios.")

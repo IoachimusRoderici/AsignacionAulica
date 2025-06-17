@@ -14,6 +14,8 @@ class Universidad:
         self.edificios = edificios
         self.aulas = aulas
 
+        print(self.edificios.columns.tolist())
+
 
     # Sector de edificios:
 
@@ -128,8 +130,10 @@ class Universidad:
 
         if nombre_edificio=="":
             raise(ElementoInvalidoException("Debe ingresar un edificio a modificar."))
+        if columna_a_modificar=="":
+            raise(ElementoInvalidoException("Debe elegir el dia al que quiera modificar su horario."))
         if columna_a_modificar not in self.columnas_edificios():
-            raise(ElementoInvalidoException(f"La columna que desea modificar ({columna_a_modificar}) no se encuentra entre los datos del edificio ({self.columnas_edificio}.)"))
+            raise(ElementoInvalidoException(f"La columna que desea modificar ({columna_a_modificar}) no se encuentra entre los datos del edificio ({self.columnas_edificios()}.)"))
         if valor_nuevo=="":
             raise(ElementoInvalidoException("No se puede ingresar una cadena vacia como valor nuevo."))
 
@@ -143,6 +147,15 @@ class Universidad:
 
     def modificar_horario_edificio(self, nombre_edificio:str, dia:str, 
         hora1:int, hora2:int, minuto1:int, minuto2:int):
+
+        if (
+            hora1 not in range(0,24) or
+            hora2 not in range(0,24) or
+            minuto1 not in range(0,60) or
+            minuto2 not in range(0,60)
+        ):
+            raise(HorarioInvalidoException("Error: Los datos de horario deben estar en un rango de 0-23 horas y 0-59 minutos."))
+
 
         if time(hora1, minuto1) < time(hora2, minuto2):
             self.modificar_edificio(nombre_edificio, dia, f"{hora1}:{minuto1:02}-{hora2}:{minuto2:02}")

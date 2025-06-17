@@ -207,10 +207,10 @@ class UI_Config_Edificios():
             self.ui_config.universidad.modificar_horario_edificio(
                 nombre_edificio,
                 dia,
-                hora_apertura,
-                hora_cierre,
-                minutos_apertura,
-                minutos_cierre
+                int(hora_apertura),
+                int(hora_cierre),
+                int(minutos_apertura),
+                int(minutos_cierre)
             )
         
             # Se actualizan los elementos de la interfaz.

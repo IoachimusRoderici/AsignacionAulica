@@ -93,7 +93,7 @@ class UI_Config_Edificios():
         #   mensaje_error: str = str(e)
             self.alertar(e)
     
-    def modificar_edificio(self, e):
+    def modificar_edificio(self, e): #Nota: Solo modifica nombre, no horarios
         """
         Función "handler" para el click del botón "Modificar edificio".
         Modifica el nombre de un edificio ya agregado a "base de datos" del
@@ -139,7 +139,7 @@ class UI_Config_Edificios():
         #     mensaje_error: str = str(e)
             self.alertar(e)
         
-    def eliminar_edificio(self, e):
+    def eliminar_edificio(self, e): #Nota: Si no se puede eliminar porque hay aulas que lo usa, lo resuelvo en universidad.py
         """
         Función "handler" para el click del botón "Eliminar edificio".
         Elimina un edificio ya agregado a "base de datos" del programa.
@@ -462,7 +462,7 @@ class UI_Config_Edificios():
         self.actualizar_handlers()
         self.actualizar_filas()
     
-    def cargar_datos_inicio(self):
+    def cargar_datos_inicio(self): # TODO: Posible limpieza de codigo
         # (ES EL MISMO QUE EN actualizar_lista_edificios MAS ABAJO)
         # # Se cargan todos los nombres de los edificios. #TODO esto cuenta como reuso de codigo? ver si se puede limpiar
         opciones_edificios: List[ft.dropdown.Option] = []
@@ -473,7 +473,6 @@ class UI_Config_Edificios():
         # (ES EL MISMO QUE EN actualizar_tabla MAS ABAJO) #TODO esto cuenta como reuso de codigo? Ver si se puede limpiar.
         #self.actualizar_tabla()
         self.tabla = crear_tabla(self.ui_config.universidad.mostrar_edificios())
-        
     
     def crear_lista_edificios(self) -> ft.Dropdown:
         dropdown = ft.Dropdown(
@@ -518,11 +517,11 @@ class UI_Config_Edificios():
         )
         return dropdown
     
-    def crear_lista_minutos(self) -> ft.Dropdown:
+    def crear_lista_minutos(self) -> ft.Dropdown: # Modificado a intervalos de a 15 minutos
         dropdown = ft.Dropdown(
             label="Minutos",
             options=[
-                ft.dropdown.Option(f"{i:02}") for i in range(0, 60, 5)
+                ft.dropdown.Option(f"{i:02}") for i in range(0, 60, 15)
             ],
             enable_filter=True,
         )

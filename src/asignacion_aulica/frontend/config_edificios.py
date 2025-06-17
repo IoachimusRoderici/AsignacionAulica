@@ -73,29 +73,28 @@ class UI_Config_Edificios():
         """
         # Toma el input del usuario.
         nombre_edificio: str = limpiar_texto(self.campo_nombre_edificio.value) # datos.py
-        
+        print(f"original: \n{self.ui_config.universidad.mostrar_edificios()}")
         print(f"Agregar edificio: {nombre_edificio}")
         
         # TODO
-        # try:
-        #     # Se agrega el edificio a la "base de datos".
-        #     self.ui_config.universidad.TU_FUNCION(...)
-        #
-        #     # Si es que no hay ningún problema:
-        #     # Limpia el campo de texto del edificio.
-        #     self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
-        #
-        #     # Limpia las listas de selección de horario.
-        #     self.limpiar_seleccion_horario()
-        #
-        #     # Se actualizan los elementos de la interfaz.
-        #     self.actualizar_tabla()
-        #     self.actualizar_lista_edificios()
-        #     self.actualizar_filas()
-        #     self.actualizar_apartado()
-        # except Exception as e:
-        #     mensaje_error: str = str(e)
-        #     self.alertar(mensaje_error)
+        try:
+        #   # Se agrega el edificio a la "base de datos".
+            self.ui_config.universidad.agregar_edificio(nombre_edificio)
+        #   # Si es que no hay ningún problema:
+        #   # Limpia el campo de texto del edificio.
+            self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
+        #   # Limpia las listas de selección de horario.
+            self.limpiar_seleccion_horario()
+        #   # Se actualizan los elementos de la interfaz.
+            self.actualizar_tabla()
+            self.actualizar_lista_edificios()
+            self.actualizar_filas()
+            self.actualizar_apartado()
+        except Exception as e:
+        #   mensaje_error: str = str(e)
+            self.alertar(e)
+        finally:
+            print(self.ui_config.universidad.mostrar_edificios())
     
     def modificar_edificio(self, e):
         """
@@ -461,21 +460,16 @@ class UI_Config_Edificios():
         self.actualizar_filas()
     
     def cargar_datos_inicio(self):
-        # TODO
         # (ES EL MISMO QUE EN actualizar_lista_edificios MAS ABAJO)
-        # # Se cargan todos los nombres de los edificios.
+        # # Se cargan todos los nombres de los edificios. #TODO esto cuenta como reuso de codigo? ver si se puede limpiar
         opciones_edificios: List[ft.dropdown.Option] = []
         for edificio in self.ui_config.universidad.nombres_edificios():
             opciones_edificios.append(ft.dropdown.Option(str(edificio)))
         self.lista_edificios = self.crear_lista_edificios()
         self.lista_edificios.options = opciones_edificios
-        # TODO
-        # (ES EL MISMO QUE EN actualizar_tabla MAS ABAJO)
-        # # Crea una tabla nueva con todos los datos nuevos. (tristemente se
-        # tiene que crear la tabla de cero porque sino flet no lo actualiza).
+        # (ES EL MISMO QUE EN actualizar_tabla MAS ABAJO) #TODO esto cuenta como reuso de codigo? Ver si se puede limpiar.
+        #self.actualizar_tabla()
         self.tabla = crear_tabla(self.ui_config.universidad.mostrar_edificios())
-        # USA UN DATAFRAME CON TODA LA TABLA, CON LOS NOMBRES DE LAS COLUMNAS Y
-        # TODO, LA FUNCION CREAR_TABLA ESTA EN DATOS.PY!!!!!!
         
     
     def crear_lista_edificios(self) -> ft.Dropdown:
@@ -624,12 +618,10 @@ class UI_Config_Edificios():
         None.
 
         """
-        # TODO
         # # Crea una tabla nueva con todos los datos nuevos. (tristemente se
         # tiene que crear la tabla de cero porque sino flet no lo actualiza).
-        # self.tabla = crear_tabla(self.ui_config.universidad.TU_FUNCION())
-        # USA UN DATAFRAME CON TODA LA TABLA, CON LOS NOMBRES DE LAS COLUMNAS Y
-        # TODO, LA FUNCION CREAR_TABLA ESTA EN DATOS.PY!!!!!!
+        # Vuelve a leer el dataframe de edificios y lo carga a la tabla
+        self.tabla = crear_tabla(self.ui_config.universidad.mostrar_edificios())
         
         # Se actualizan los elementos de la interfaz.
         self.actualizar_filas()

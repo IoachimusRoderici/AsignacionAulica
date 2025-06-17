@@ -113,26 +113,31 @@ class UI_Config_Edificios():
         
         print(f"Modificar edificio: {nombre_edificio} -> {nuevo_nombre_edificio}")
         
-        # TODO
-        # try:
-        #     # Se modifica el edificio en la "base de datos".
-        #     self.ui_config.universidad.TU_FUNCION(...)
-        #
-        #     # Si es que no hay ningún problema:
-        #     # Limpia el campo de texto del edificio.
-        #     self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
-        #
-        #     # Limpia las listas de selección de horario.
-        #     self.limpiar_seleccion_horario()
-        #
-        #     # Se actualizan los elementos de la interfaz.
-        #     self.actualizar_tabla()
-        #     self.actualizar_lista_edificios()
-        #     self.actualizar_filas()
-        #     self.actualizar_apartado()
-        # except Exception as e:
+        
+        try:
+            # Se modifica el edificio en la "base de datos".
+            print(self.ui_config.universidad.columnas_edificios())
+            self.ui_config.universidad.modificar_edificio(
+                nombre_edificio,
+                self.ui_config.universidad.columnas_edificios()[0], 
+                nuevo_nombre_edificio
+            )
+        
+        #   Si es que no hay ningún problema:
+        #   # Limpia el campo de texto del edificio.
+            self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
+        
+        #   # Limpia las listas de selección de horario.
+            self.limpiar_seleccion_horario()
+        
+        #   # Se actualizan los elementos de la interfaz.
+            self.actualizar_tabla()
+            self.actualizar_lista_edificios()
+            self.actualizar_filas()
+            self.actualizar_apartado()
+        except Exception as e:
         #     mensaje_error: str = str(e)
-        #     self.alertar(mensaje_error)
+            self.alertar(e)
         
     def eliminar_edificio(self, e):
         """
@@ -150,7 +155,6 @@ class UI_Config_Edificios():
         nombre_edificio: str = self.lista_edificios.value or "" # Si es None toma valor ""
         print(f"Eliminar edificio: {nombre_edificio}")
         
-        # TODO
         try:
         #   # Se elimina el edificio en la "base de datos".
             self.ui_config.universidad.eliminar_edificio(nombre_edificio)

@@ -120,8 +120,19 @@ class Universidad:
         Returns
         -------
         None
+        Throws
+            - ElementoInvalidoException , si se trata de ingresar algun parametro vacio.
+
 
         """
+
+        if nombre_edificio=="":
+            raise(ElementoInvalidoException("Debe ingresar un edificio a modificar."))
+        if columna_a_modificar not in self.columnas_edificios():
+            raise(ElementoInvalidoException(f"La columna que desea modificar ({columna_a_modificar}) no se encuentra entre los datos del edificio ({self.columnas_edificio}.)"))
+        if valor_nuevo=="":
+            raise(ElementoInvalidoException("No se puede ingresar una cadena vacia como valor nuevo."))
+
 
         # Buscar la fila donde la primera columna (nombre de edificio) coincide
         filtro = self.edificios[self.edificios.iloc[:, 0] == nombre_edificio]

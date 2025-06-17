@@ -8,7 +8,6 @@ Parte "FrontEnd" - Interfaz Gráfica de Usuario (GUI)
 
 import flet as ft
 
-from colores import COLOR
 from menu import UI_Menu
 from config import UI_Config
 from universidad import Universidad

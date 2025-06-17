@@ -77,21 +77,24 @@ class UI_Config_Edificios():
         print(f"Agregar edificio: {nombre_edificio}")
         
         try:
-        #   # Se agrega el edificio a la "base de datos".
+            # Se agrega el edificio a la "base de datos".
             self.ui_config.universidad.agregar_edificio(nombre_edificio)
-        #   # Si es que no hay ningún problema:
-        #   # Limpia el campo de texto del edificio.
+            
+            # Si es que no hay ningún problema:
+            # Limpia el campo de texto del edificio.
             self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
-        #   # Limpia las listas de selección de horario.
+            
+            # Limpia las listas de selección de horario.
             self.limpiar_seleccion_horario()
-        #   # Se actualizan los elementos de la interfaz.
+            
+            # Se actualizan los elementos de la interfaz.
             self.actualizar_tabla()
             self.actualizar_lista_edificios()
             self.actualizar_filas()
             self.actualizar_apartado()
-        except Exception as e:
-        #   mensaje_error: str = str(e)
-            self.alertar(e)
+        except Exception as exc:
+            mensaje_error: str = str(exc)
+            self.alertar(mensaje_error)
     
     def modificar_edificio(self, e): #Nota: Solo modifica nombre, no horarios
         """
@@ -113,7 +116,6 @@ class UI_Config_Edificios():
         
         print(f"Modificar edificio: {nombre_edificio} -> {nuevo_nombre_edificio}")
         
-        
         try:
             # Se modifica el edificio en la "base de datos".
             print(self.ui_config.universidad.columnas_edificios())
@@ -123,21 +125,21 @@ class UI_Config_Edificios():
                 nuevo_nombre_edificio
             )
         
-        #   Si es que no hay ningún problema:
-        #   # Limpia el campo de texto del edificio.
+            # Si es que no hay ningún problema:
+            # Limpia el campo de texto del edificio.
             self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
         
-        #   # Limpia las listas de selección de horario.
+            # Limpia las listas de selección de horario.
             self.limpiar_seleccion_horario()
         
-        #   # Se actualizan los elementos de la interfaz.
+            # Se actualizan los elementos de la interfaz.
             self.actualizar_tabla()
             self.actualizar_lista_edificios()
             self.actualizar_filas()
             self.actualizar_apartado()
-        except Exception as e:
-        #     mensaje_error: str = str(e)
-            self.alertar(e)
+        except Exception as exc:
+            mensaje_error: str = str(exc)
+            self.alertar(mensaje_error)
         
     def eliminar_edificio(self, e): #Nota: Si no se puede eliminar porque hay aulas que lo usa, lo resuelvo en universidad.py
         """
@@ -156,23 +158,23 @@ class UI_Config_Edificios():
         print(f"Eliminar edificio: {nombre_edificio}")
         
         try:
-        #   # Se elimina el edificio en la "base de datos".
+            # Se elimina el edificio en la "base de datos".
             self.ui_config.universidad.eliminar_edificio(nombre_edificio)
         
-        #   # Si es que no hay ningún problema:
-        #   # Limpia el campo de texto del edificio.
+            # Si es que no hay ningún problema:
+            # Limpia el campo de texto del edificio.
             self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
         
-        #   # Limpia las listas de selección de horario.
+            # Limpia las listas de selección de horario.
             self.limpiar_seleccion_horario()
         
-        #   # Se actualizan los elementos de la interfaz.
+            # Se actualizan los elementos de la interfaz.
             self.actualizar_tabla()
             self.actualizar_lista_edificios()
             self.actualizar_filas()
             self.actualizar_apartado()
-        except Exception as e:
-        #   mensaje_error: str = str(e)
+        except Exception as exc:
+            mensaje_error: str = str(exc)
             self.alertar(mensaje_error)
         
     def establecer_horario(self, e):
@@ -200,8 +202,8 @@ class UI_Config_Edificios():
         
     
         try:
-        #   # Se establece el horario del día elegido del edificio en la
-        #   # "base de datos".
+            # Se establece el horario del día elegido del edificio en la
+            # "base de datos".
             self.ui_config.universidad.modificar_horario_edificio(
                 nombre_edificio,
                 dia,
@@ -211,16 +213,13 @@ class UI_Config_Edificios():
                 int(minutos_cierre)
             )
         
-        #   # Si es que no hay ningún problema:
-        #   # Limpia las listas de selección de horario.
-            #self.limpiar_seleccion_horario()  # ES MAS COMODO PARA EL USUARIO SI NO SE LIMPIA ESE CAMPO.
-        
             # Se actualizan los elementos de la interfaz.
             self.actualizar_tabla()
             self.actualizar_filas()
             self.actualizar_apartado()
-        except Exception as e:
-            self.alertar(e)
+        except Exception as exc:
+            mensaje_error: str = str(exc)
+            self.alertar(mensaje_error)
     
     def eliminar_horario(self, e):
         """
@@ -240,24 +239,25 @@ class UI_Config_Edificios():
         print(f"Eliminar horario: {dia} -> Edificio: {nombre_edificio}")
         
         try:
-        #   # Se "elimina" (se marca como cerrado) el horario del día elegido
-        #   # del edificio en la "base de datos".
+            # Se "elimina" (se marca como cerrado) el horario del día elegido
+            # del edificio en la "base de datos".
             self.ui_config.universidad.modificar_edificio(
                 nombre_edificio,
                 dia,
                 "CERRADO"
             )
         
-        #   # Si es que no hay ningún problema:
-        #   # Limpia las listas de selección de horario.
+            # Si es que no hay ningún problema:
+            # Limpia las listas de selección de horario.
             self.limpiar_seleccion_horario()
         
-        #   # Se actualizan los elementos de la interfaz.
+            # Se actualizan los elementos de la interfaz.
             self.actualizar_tabla()
             self.actualizar_filas()
             self.actualizar_apartado()
-        except Exception as e:
-            self.alertar(e)
+        except Exception as exc:
+            mensaje_error: str = str(exc)
+            self.alertar(mensaje_error)
     
     def seleccionar_edificio(self, e):
         # Limpia el campo de texto del edificio.
@@ -466,17 +466,19 @@ class UI_Config_Edificios():
         self.actualizar_handlers()
         self.actualizar_filas()
     
-    def cargar_datos_inicio(self): # TODO: Posible limpieza de codigo
-        # (ES EL MISMO QUE EN actualizar_lista_edificios MAS ABAJO)
-        # # Se cargan todos los nombres de los edificios. #TODO esto cuenta como reuso de codigo? ver si se puede limpiar
+    def cargar_datos_edificios(self):
         opciones_edificios: List[ft.dropdown.Option] = []
         for edificio in self.ui_config.universidad.nombres_edificios():
             opciones_edificios.append(ft.dropdown.Option(str(edificio)))
         self.lista_edificios = self.crear_lista_edificios()
         self.lista_edificios.options = opciones_edificios
-        # (ES EL MISMO QUE EN actualizar_tabla MAS ABAJO) #TODO esto cuenta como reuso de codigo? Ver si se puede limpiar.
-        #self.actualizar_tabla()
+    
+    def cargar_datos_tabla(self):
         self.tabla = crear_tabla(self.ui_config.universidad.mostrar_edificios())
+    
+    def cargar_datos_inicio(self):
+        self.cargar_datos_edificios()
+        self.cargar_datos_tabla()
     
     def crear_lista_edificios(self) -> ft.Dropdown:
         dropdown = ft.Dropdown(
@@ -521,7 +523,7 @@ class UI_Config_Edificios():
         )
         return dropdown
     
-    def crear_lista_minutos(self) -> ft.Dropdown: # Modificado a intervalos de a 15 minutos
+    def crear_lista_minutos(self) -> ft.Dropdown:
         dropdown = ft.Dropdown(
             label="Minutos",
             options=[
@@ -603,7 +605,7 @@ class UI_Config_Edificios():
         None.
 
         """
-        # # Se cargan todos los nombres de los edificios.
+        # Se cargan todos los nombres de los edificios.
         opciones_edificios: List[ft.dropdown.Option] = []
         for edificio in self.ui_config.universidad.nombres_edificios():
             opciones_edificios.append(ft.dropdown.Option(str(edificio)))
@@ -623,7 +625,7 @@ class UI_Config_Edificios():
         None.
 
         """
-        # # Crea una tabla nueva con todos los datos nuevos. (tristemente se
+        # Crea una tabla nueva con todos los datos nuevos. (tristemente se
         # tiene que crear la tabla de cero porque sino flet no lo actualiza).
         # Vuelve a leer el dataframe de edificios y lo carga a la tabla
         self.tabla = crear_tabla(self.ui_config.universidad.mostrar_edificios())
@@ -645,6 +647,3 @@ class UI_Config_Edificios():
     
     def dibujar(self) -> ft.Container:
         return self.container
-
-
-    # Posible implementar aca una funcion helper para leer los datos

@@ -72,7 +72,7 @@ class UI_Config_Edificios():
 
         """
         # Toma el input del usuario.
-        nombre_edificio: str = limpiar_texto(self.campo_nombre_edificio.value) # datos.py
+        nombre_edificio: str = limpiar_texto(str(self.campo_nombre_edificio.value)) # datos.py
         
         print(f"Agregar edificio: {nombre_edificio}")
         
@@ -111,8 +111,8 @@ class UI_Config_Edificios():
 
         """
         # Toma el input del usuario.
-        nombre_edificio: str = self.lista_edificios.value or "" # Si es None toma valor ""
-        nuevo_nombre_edificio: str = limpiar_texto(self.campo_nombre_edificio.value)
+        nombre_edificio: str = str(self.lista_edificios.value or "") # Si es None toma valor ""
+        nuevo_nombre_edificio: str = limpiar_texto(str(self.campo_nombre_edificio.value))
         
         print(f"Modificar edificio: {nombre_edificio} -> {nuevo_nombre_edificio}")
         
@@ -154,7 +154,7 @@ class UI_Config_Edificios():
         None.
 
         """
-        nombre_edificio: str = self.lista_edificios.value or "" # Si es None toma valor ""
+        nombre_edificio: str = str(self.lista_edificios.value or "") # Si es None toma valor ""
         print(f"Eliminar edificio: {nombre_edificio}")
         
         try:
@@ -233,8 +233,8 @@ class UI_Config_Edificios():
         None.
 
         """
-        nombre_edificio: str = self.lista_edificios.value or "" # Si es None toma valor ""
-        dia: str = self.lista_dias.value or "" # Si es None toma valor ""
+        nombre_edificio: str = str(self.lista_edificios.value or "") # Si es None toma valor ""
+        dia: str = str(self.lista_dias.value or "") # Si es None toma valor ""
         
         print(f"Eliminar horario: {dia} -> Edificio: {nombre_edificio}")
         
@@ -271,8 +271,8 @@ class UI_Config_Edificios():
         self.actualizar_apartado()
     
     def seleccionar_dia(self, e): # TODO No se que hace pero no obstruye la implementacion no tenerla, al menos no todavia
-        nombre_edificio: str = self.lista_edificios.value
-        if nombre_edificio == None:
+        nombre_edificio: str = str(self.lista_edificios.value or "")
+        if nombre_edificio == "":
             self.alertar("Para poder seleccionar y establecer el horario de un edificio, primero debe seleccionar el edificio al que se le aplicarán los cambios.")
         
             # Limpia el campo de texto del edificio.
@@ -285,7 +285,7 @@ class UI_Config_Edificios():
             self.actualizar_filas()
             self.actualizar_apartado()
         else:
-            dia: str = self.lista_dias.value
+            dia: str = str(self.lista_dias.value or "")
             if dia in self.ui_config.universidad.nombres_columnas()[1:]:
                 # TODO
                 # PODES CAMBIAR LA IMPLEMENTACION PERO DEBE SER ACORDE A LO QUE ESTA PARA QUE FUNCIONE
@@ -307,8 +307,8 @@ class UI_Config_Edificios():
                 
     
     def seleccionar_hora_apertura(self, e):
-        nombre_edificio: str = self.lista_edificios.value
-        if nombre_edificio == None:
+        nombre_edificio: str = str(self.lista_edificios.value or "")
+        if nombre_edificio == "":
             self.alertar("Para poder seleccionar y establecer el horario de un edificio, primero debe seleccionar el edificio al que se le aplicarán los cambios.")
         
             # Limpia el campo de texto del edificio.
@@ -322,8 +322,8 @@ class UI_Config_Edificios():
             self.actualizar_apartado()
     
     def seleccionar_minutos_apertura(self, e):
-        nombre_edificio: str = self.lista_edificios.value
-        if nombre_edificio == None:
+        nombre_edificio: str = str(self.lista_edificios.value or "")
+        if nombre_edificio == "":
             self.alertar("Para poder seleccionar y establecer el horario de un edificio, primero debe seleccionar el edificio al que se le aplicarán los cambios.")
         
             # Limpia el campo de texto del edificio.
@@ -337,8 +337,8 @@ class UI_Config_Edificios():
             self.actualizar_apartado()
     
     def seleccionar_hora_cierre(self, e):
-        nombre_edificio: str = self.lista_edificios.value
-        if nombre_edificio == None:
+        nombre_edificio: str = str(self.lista_edificios.value or "")
+        if nombre_edificio == "":
             self.alertar("Para poder seleccionar y establecer el horario de un edificio, primero debe seleccionar el edificio al que se le aplicarán los cambios.")
         
             # Limpia el campo de texto del edificio.
@@ -352,8 +352,8 @@ class UI_Config_Edificios():
             self.actualizar_apartado()
     
     def seleccionar_minutos_cierre(self, e):
-        nombre_edificio: str = self.lista_edificios.value
-        if nombre_edificio == None:
+        nombre_edificio: str = str(self.lista_edificios.value or "")
+        if nombre_edificio == "":
             self.alertar("Para poder seleccionar y establecer el horario de un edificio, primero debe seleccionar el edificio al que se le aplicarán los cambios.")
         
             # Limpia el campo de texto del edificio.

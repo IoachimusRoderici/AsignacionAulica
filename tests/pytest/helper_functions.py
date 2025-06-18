@@ -15,23 +15,14 @@ def make_aulas(*data):
         'nombre': 'aula',
         'capacidad': 1,
         'equipamiento': set(),
-        'horario_apertura': {
-            'lunes': 0,
-            'martes': 0,
-            'miércoles': 0,
-            'jueves': 0,
-            'viernes': 0,
-            'sábado': 0,
-            'domingo': 0
-        },
-        'horario_cierre': {
-            'lunes': 24,
-            'martes': 24,
-            'miércoles': 24,
-            'jueves': 24,
-            'viernes': 24,
-            'sábado': 24,
-            'domingo': 24
+        'horarios': {
+            'lunes':     (0, 24),
+            'martes':    (0, 24),
+            'miércoles': (0, 24),
+            'jueves':    (0, 24),
+            'viernes':   (0, 24),
+            'sábado':    (0, 24),
+            'domingo':   (0, 24)
         }
     }
 

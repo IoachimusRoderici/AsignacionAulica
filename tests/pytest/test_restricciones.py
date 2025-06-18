@@ -24,12 +24,12 @@ def test_superposición():
 
 def test_aulas_cerradas():
     aulas = make_aulas(
-        dict(horario_apertura={'lunes': 10}, horario_cierre={'lunes': 13}), # Igual que la clase
-        dict(horario_apertura={'lunes': 10}, horario_cierre={'lunes': 11}), # Cierra temprano
-        dict(horario_apertura={'lunes': 11}, horario_cierre={'lunes': 13}), # Abre tarde
-        dict(horario_apertura={'lunes': 9},  horario_cierre={'lunes': 14}), # Sobra
-        dict(horario_apertura={'lunes': 11}, horario_cierre={'lunes': 12}), # Abre tarde y cierra temprano
-        dict(horario_apertura={'martes': 10}, horario_cierre={'martes': 13}), # No abre los lunes
+        dict(horarios={'lunes': (10, 13)}), # Igual que la clase
+        dict(horarios={'lunes': (10, 11)}), # Cierra temprano
+        dict(horarios={'lunes': (11, 13)}), # Abre tarde
+        dict(horarios={'lunes': (9, 14)}), # Sobra
+        dict(horarios={'lunes': (11, 12)}), # Abre tarde y cierra temprano
+        dict(horarios={'martes': (9, 14)}), # No abre los lunes
     )
     clases = make_clases(
         dict(horario_inicio=10, horario_fin=13, día='lunes')

@@ -64,7 +64,7 @@ def test_horarios_no_solapan():
     están superponiendo.
     '''
     aulas = make_aulas(
-        dict(horario_apertura={'lunes': 8}, horario_cierre={'lunes': 10})
+        dict(horarios={'lunes': (8, 10)})
     )
 
     clases = make_clases(
@@ -80,7 +80,7 @@ def test_horarios_no_solapan():
 
 def test_asignación_imposible_por_solapamiento_inevitable():
     aulas = make_aulas(
-        dict(horario_apertura={'lunes': 8}, horario_cierre={'lunes': 10})
+        dict(horarios={'lunes': (8, 10)})
     )
 
     clases = make_clases(
@@ -93,7 +93,7 @@ def test_asignación_imposible_por_solapamiento_inevitable():
 
 def test_asignación_imposible_por_aula_cerrada():
     aulas = make_aulas(
-        dict(horario_apertura={'lunes': 8}, horario_cierre={'lunes': 23})
+        dict(horarios={'lunes': (8, 23)})
     )
 
     clases = make_clases(

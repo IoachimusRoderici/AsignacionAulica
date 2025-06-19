@@ -4,7 +4,7 @@ import pytest
 
 from asignacion_aulica.backend.restricciones import no_superponer_clases
 from asignacion_aulica.backend import preferencias
-from helper_functions import *
+from helper_functions import make_aulas, make_clases, make_asignaciones
 
 def test_algunas_clases_exceden_capacidad():
     aulas = make_aulas(
@@ -26,7 +26,7 @@ def test_algunas_clases_exceden_capacidad():
         [0, 0, 1],
     ])
 
-    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(clases, aulas, modelo, asignaciones)
+    cantidad_excedida, cota_superior = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(clases, aulas, modelo, asignaciones)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -56,7 +56,7 @@ def test_ninguna_clase_excede_capacidad():
         [0, 0, 1],
     ])
 
-    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(clases, aulas, modelo, asignaciones)
+    cantidad_excedida, cota_superior = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(clases, aulas, modelo, asignaciones)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -86,8 +86,8 @@ def test_entran_justito():
         modelo.add(predicado)
 
     # Minizar capacidad excedida
-    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(clases, aulas, modelo, asignaciones)
-    modelo.minimize(cantidad_excedida)
+    cantidad_excedida, cota_superior = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(clases, aulas, modelo, asignaciones)
+    modelo.minimize((1 / cota_superior) * cantidad_excedida)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -130,7 +130,7 @@ def test_minimiza_capacidad_excedida():
         modelo.add(predicado)
 
     # Minizar capacidad excedida
-    cantidad_excedida = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(clases, aulas, modelo, asignaciones)
+    cantidad_excedida, cota_superior = preferencias.obtener_cantidad_de_alumnos_fuera_del_aula(clases, aulas, modelo, asignaciones)
     modelo.minimize(cantidad_excedida)
 
     # Resolver

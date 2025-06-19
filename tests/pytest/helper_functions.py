@@ -61,7 +61,7 @@ def make_asignaciones(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpMo
     :param clases: Tabla con los datos de las clases.
     :param aulas: Tabla con los datos de las aulas.
     :param modelo: El CpModel al que agregar variables.
-    :return: La expresión de penalización total.
+    :return: Matriz con los datos de asignaciones.
     '''
     asignaciones = np.empty(shape=(len(clases), len(aulas)), dtype=object)
     

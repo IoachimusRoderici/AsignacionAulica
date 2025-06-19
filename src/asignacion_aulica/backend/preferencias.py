@@ -6,7 +6,13 @@ y que se quieren minimizar o maximizar. En particular este módulo define
 penalizaciones, que son preferencias que se quieren minimizar.
 
 Cada penalización se define en una función que agrega al modelo las variables
-necesarias y devuelve una expresión que representa el valor a minimizar.
+necesarias y devuelve una tupla con: una expresión que representa el valor a
+minimizar, y el valor máximo que puede llegar a tener esa expresión una vez
+resuelto el modelo.
+
+Este valor máximo o cota superior se utiliza para normalizar los valores de las
+penalizaciones. Esto hace que las escalas de penalizaciones sean más
+comparables, facilitando la selección de pesos.
 
 Estas funciones toman los siguientes argumentos:
 - clases: DataFrame, tabla con los datos de las clases
@@ -43,9 +49,15 @@ def construir_edificios(aulas: DataFrame) -> dict[str, set[int]]:
 
     return edificios
 
-def obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpModel, asignaciones: np.ndarray):
+def obtener_cantidad_de_clases_fuera_del_edificio_preferido(
+        clases: DataFrame,
+        aulas: DataFrame,
+        modelo: cp_model.CpModel,
+        asignaciones: np.ndarray
+    ) -> tuple[Any, int]:
     '''
-    Devuelve una expresión que representa la cantidad de clases fuera de su edificio preferido.
+    Devuelve una expresión que representa la cantidad de clases fuera de su
+    edificio preferido, y su cota superior.
     '''
     edificios = construir_edificios(aulas)
 
@@ -53,20 +65,29 @@ def obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases: DataFrame, a
     # encuentra dentro de su edificio preferido se resta 1 a la cantidad de
     # clases fuera del edificio preferido
     cantidad_de_clases_fuera_del_edificio_preferido = len(clases)
+    cota_superior = len(clases)
+
     for clase in clases.itertuples():
         if clase.edificio_preferido:
             # Esta expresión da 1 o 0
             en_edificio_preferido = sum(asignaciones[clase.Index, aula] for aula in edificios[clase.edificio_preferido])
             cantidad_de_clases_fuera_del_edificio_preferido -= en_edificio_preferido
 
-    return cantidad_de_clases_fuera_del_edificio_preferido
+            # Cuando hay una asignación forzada, la cota puede ser menor
+            if isinstance(en_edificio_preferido, np.integer):
+                cota_superior -= en_edificio_preferido
 
-def obtener_cantidad_de_alumnos_fuera_del_aula(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpModel, asignaciones: np.ndarray) -> tuple[Any, int]:
+    return cantidad_de_clases_fuera_del_edificio_preferido, cota_superior
+
+def obtener_cantidad_de_alumnos_fuera_del_aula(
+        clases: DataFrame,
+        aulas: DataFrame,
+        modelo: cp_model.CpModel,
+        asignaciones: np.ndarray
+    ) -> tuple[Any, int]:
     '''
-    Calcula una expresión que representa la cantidad de alumnos que exceden la
-    capacidad del aula asignada a su clase, y el valor máximo que puede llegar
-    a alcanzar.
-    :return: Tupla donde el primer elemento es la expresión, y el segundo es la cota superior.
+    Devuelve una expresión que representa la cantidad de alumnos que exceden la
+    capacidad del aula asignada a su clase, y su cota superior.
     '''
     cantidad_de_alumnos_fuera_del_aula = 0
     cota_superior_total = 0
@@ -98,26 +119,45 @@ def obtener_cantidad_de_alumnos_fuera_del_aula(clases: DataFrame, aulas: DataFra
 
     return cantidad_de_alumnos_fuera_del_aula, cota_superior_total
 
-def obtener_capacidad_sobrante(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpModel, asignaciones: np.ndarray):
+def obtener_capacidad_sobrante(
+        clases: DataFrame,
+        aulas: DataFrame,
+        modelo: cp_model.CpModel,
+        asignaciones: np.ndarray
+    ) -> tuple[Any, int]:
     '''
     Devuelve una expresión que representa la cantidad de asientos que sobran en
-    el aula asignada a cada clase.
+    el aula asignada a cada clase, y su cota superior.
     '''
     capacidad_sobrante_total = 0
+    cota_superior_total = 0
 
     for clase in clases.itertuples():
         capacidad_sobrante = modelo.new_int_var(0, clase.cantidad_de_alumnos, f"capacidad_sobrante_{clase.nombre}")
+        cota_superior = 0
+
         for aula in aulas.itertuples():
             asignada_a_este_aula = asignaciones[clase.Index, aula.Index]
 
-            if clase.cantidad_de_alumnos < aula.capacidad:
-                modelo.add(capacidad_sobrante == aula.capacidad - clase.cantidad_de_alumnos).only_enforce_if(asignada_a_este_aula)
-            else:
-                modelo.add(capacidad_sobrante == 0).only_enforce_if(asignada_a_este_aula)
-        
-        capacidad_sobrante_total += capacidad_sobrante
+            posible_sobra = max(0, aula.capacidad - clase.cantidad_de_alumnos)
+            modelo.add(capacidad_sobrante == posible_sobra).only_enforce_if(asignada_a_este_aula)
 
-    return capacidad_sobrante_total
+            if not isinstance(asignada_a_este_aula, np.integer):
+                # Si no se sabe la asignación de antemano, la cota superior puede necesitar actualización
+                cota_superior = max(cota_superior, posible_sobra)
+            elif asignada_a_este_aula == 1:
+                # Cuando hay una asignación forzada, cota_superior == exceso_de_capacidad
+                cota_superior = posible_sobra
+                break
+
+        capacidad_sobrante_total += capacidad_sobrante
+        cota_superior_total += cota_superior
+
+    # Evitamos que la cota superior se 0 porque luego se usa para dividir
+    if cota_superior_total == 0:
+        cota_superior_total = 1
+
+    return capacidad_sobrante_total, cota_superior_total
 
 # Iterable de tuplas (peso, función)
 todas_las_penalizaciones = (
@@ -126,9 +166,15 @@ todas_las_penalizaciones = (
     (1, obtener_capacidad_sobrante),
 )
 
-def obtener_penalización(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpModel, asignaciones: np.ndarray):
+def obtener_penalización(
+        clases: DataFrame,
+        aulas: DataFrame,
+        modelo: cp_model.CpModel,
+        asignaciones: np.ndarray
+    ):
     '''
-    Calcula la suma de todas las penalizaciones con sus pesos.
+    Calcula la suma de todas las penalizaciones con sus pesos,
+    y normalizadas usando sus cotas máximas.
 
     :param clases: Tabla con los datos de las clases.
     :param aulas: Tabla con los datos de las aulas.
@@ -137,6 +183,8 @@ def obtener_penalización(clases: DataFrame, aulas: DataFrame, modelo: cp_model.
     '''
     penalización_total = 0
     for peso, función in todas_las_penalizaciones:
-        penalización_total += peso * función(clases, aulas, modelo, asignaciones)
+        penalización, cota_superior = función(clases, aulas, modelo, asignaciones)
+        penalización_total += (peso / cota_superior) * penalización
     
     return penalización_total
+

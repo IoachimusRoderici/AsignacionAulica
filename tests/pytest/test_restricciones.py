@@ -1,6 +1,11 @@
-from helper_functions import *
-
+from helper_functions import (
+    make_aulas,
+    make_clases,
+    make_asignaciones,
+    predicado_es_nand_entre_dos_variables_bool
+)
 from asignacion_aulica.backend import restricciones
+from ortools.sat.python import cp_model
 
 def test_superposición():
     aulas = make_aulas({})
@@ -35,7 +40,7 @@ def test_aulas_cerradas():
         dict(horario_inicio=10, horario_fin=13, día='lunes')
     )
     modelo = cp_model.CpModel()
-    asignaciones = make_asignaciones(clases, aulas, modelo)
+    make_asignaciones(clases, aulas, modelo)
 
     prohibidas = list(restricciones.no_asignar_en_aula_cerrada(clases, aulas))
 
@@ -56,7 +61,7 @@ def test_capacidad_suficiente():
         dict(cantidad_de_alumnos = 50)
     )
     modelo = cp_model.CpModel()
-    asignaciones = make_asignaciones(clases, aulas, modelo)
+    make_asignaciones(clases, aulas, modelo)
 
     prohibidas = list(restricciones.asignar_aulas_con_capacidad_suficiente(clases, aulas))
 
@@ -74,7 +79,7 @@ def test_equipamiento():
         dict(equipamiento_necesario = set(('proyector',)))
     )
     modelo = cp_model.CpModel()
-    asignaciones = make_asignaciones(clases, aulas, modelo)
+    make_asignaciones(clases, aulas, modelo)
 
     prohibidas = list(restricciones.asignar_aulas_con_el_equipamiento_requerido(clases, aulas))
 

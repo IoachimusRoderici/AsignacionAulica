@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from asignacion_aulica.backend import preferencias
-from helper_functions import *
+from helper_functions import make_aulas, make_clases, make_asignaciones
 
 def test_todas_las_aulas_en_el_edificio_preferido():
     aulas = make_aulas(
@@ -25,7 +25,7 @@ def test_todas_las_aulas_en_el_edificio_preferido():
         [0, 0, 1],
     ])
 
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
+    clases_fuera_del_edificio_preferido, cota_superior = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -68,7 +68,7 @@ def test_algunas_aulas_en_el_edificio_preferido():
         [1, 0, 0, 0]
     ])
 
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
+    clases_fuera_del_edificio_preferido, cota_superior = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -93,10 +93,10 @@ def test_elije_aula_en_edificio_preferido():
 
     asignaciones = make_asignaciones(clases, aulas, modelo)
 
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
+    clases_fuera_del_edificio_preferido, cota_superior = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
 
     # Pedir al modelo minimizar cantidad de clases fuera del edificio preferido 
-    modelo.minimize(clases_fuera_del_edificio_preferido)
+    modelo.minimize((1 / cota_superior) * clases_fuera_del_edificio_preferido)
 
     # Resolver
     solver = cp_model.CpSolver()

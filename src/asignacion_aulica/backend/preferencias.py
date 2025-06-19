@@ -31,9 +31,9 @@ La función `obtener_penalizaciones` es la que hay que llamar desde fuera de est
 módulo. Devuelve un diccionario con todas las penalizaciones, incluyendo una
 llamada "total" que es la que hay que minimizar.
 '''
+from ortools.sat.python.cp_model_helper import LinearExpr
 from ortools.sat.python import cp_model
 from pandas import DataFrame
-from typing import Any
 import numpy as np
 
 def construir_edificios(aulas: DataFrame) -> dict[str, set[int]]:
@@ -54,7 +54,7 @@ def obtener_cantidad_de_clases_fuera_del_edificio_preferido(
         aulas: DataFrame,
         modelo: cp_model.CpModel,
         asignaciones: np.ndarray
-    ) -> tuple[Any, int]:
+    ) -> tuple[LinearExpr, int]:
     '''
     Devuelve una expresión que representa la cantidad de clases fuera de su
     edificio preferido, y su cota superior.
@@ -84,7 +84,7 @@ def obtener_cantidad_de_alumnos_fuera_del_aula(
         aulas: DataFrame,
         modelo: cp_model.CpModel,
         asignaciones: np.ndarray
-    ) -> tuple[Any, int]:
+    ) -> tuple[LinearExpr, int]:
     '''
     Devuelve una expresión que representa la cantidad de alumnos que exceden la
     capacidad del aula asignada a su clase, y su cota superior.
@@ -124,7 +124,7 @@ def obtener_capacidad_sobrante(
         aulas: DataFrame,
         modelo: cp_model.CpModel,
         asignaciones: np.ndarray
-    ) -> tuple[Any, int]:
+    ) -> tuple[LinearExpr, int]:
     '''
     Devuelve una expresión que representa la cantidad de asientos que sobran en
     el aula asignada a cada clase, y su cota superior.

@@ -20,10 +20,10 @@ def make_aulas(*data):
         'horarios': {
             Día.LUNES:     (0, 24),
             Día.MARTES:    (0, 24),
-            Día.MIERCOLES: (0, 24),
+            Día.MIÉRCOLES: (0, 24),
             Día.JUEVES:    (0, 24),
             Día.VIERNES:   (0, 24),
-            Día.SABADO:    (0, 24),
+            Día.SÁBADO:    (0, 24),
             Día.DOMINGO:   (0, 24)
         }
     }

@@ -20,10 +20,7 @@ def test_todas_las_aulas_en_el_edificio_preferido():
     # Forzar asignaciones arbitrarias:
     # - Clase 0 con Aula 1
     # - Clase 1 con Aula 2
-    asignaciones = np.array([
-        [0, 1, 0],
-        [0, 0, 1],
-    ])
+    asignaciones = make_asignaciones(clases, aulas, modelo, asignaciones_forzadas={ 0: 1, 1: 2 })
 
     clases_fuera_del_edificio_preferido, cota_superior = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
 
@@ -34,6 +31,7 @@ def test_todas_las_aulas_en_el_edificio_preferido():
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
     
     assert solver.value(clases_fuera_del_edificio_preferido) == 0
+    assert cota_superior == 2
 
 def test_algunas_aulas_en_el_edificio_preferido():
     aulas = make_aulas(
@@ -59,14 +57,7 @@ def test_algunas_aulas_en_el_edificio_preferido():
     # - Clase 3 con Aula 1
     # - Clase 4 con Aula 2
     # - Clase 5 con Aula 0
-    asignaciones = np.array([
-        [0, 0, 0, 1],
-        [0, 0, 1, 0],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 0, 1, 0],
-        [1, 0, 0, 0]
-    ])
+    asignaciones = make_asignaciones(clases, aulas, modelo, asignaciones_forzadas={ 0: 3, 1: 2, 2: 1, 3: 1, 4: 2, 5: 0 })
 
     clases_fuera_del_edificio_preferido, cota_superior = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
 
@@ -77,6 +68,7 @@ def test_algunas_aulas_en_el_edificio_preferido():
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
     
     assert solver.value(clases_fuera_del_edificio_preferido) == 4
+    assert cota_superior == 6
 
 def test_elije_aula_en_edificio_preferido():
     aulas = make_aulas(
@@ -107,5 +99,6 @@ def test_elije_aula_en_edificio_preferido():
 
     # La clase se debe asignar al aula en el edificio preferido
     assert solver.value(clases_fuera_del_edificio_preferido) == 0
+    assert cota_superior == 1
     assert sum(asignaciones_finales[0,:]) == 1 and asignaciones_finales[0, 2] == 1
 

@@ -23,7 +23,7 @@ def test_minimiza_capacidad_sobrante_y_excedida():
 
     asignaciones = make_asignaciones(clases, aulas, modelo)
 
-    # Minizar penalización, principalmente capacidad sobrante y excedida
+    # Minimizar penalización, principalmente capacidad sobrante y excedida
     penalización = obtener_penalización(clases, aulas, modelo, asignaciones)
     modelo.minimize(penalización)
 

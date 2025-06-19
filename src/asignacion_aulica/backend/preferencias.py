@@ -8,7 +8,7 @@ penalizaciones, que son preferencias que se quieren minimizar.
 Cada penalización se define en una función que agrega al modelo las variables
 necesarias y devuelve una tupla con: una expresión que representa el valor a
 minimizar, y el valor máximo que puede llegar a tener esa expresión una vez
-resuelto el modelo.
+resuelto el modelo (excepto si el valor máximo es 0, en cuyo caso devuelve 1).
 
 Este valor máximo o cota superior se utiliza para normalizar los valores de las
 penalizaciones. Esto hace que las escalas de penalizaciones sean más
@@ -65,7 +65,6 @@ def obtener_cantidad_de_clases_fuera_del_edificio_preferido(
     # encuentra dentro de su edificio preferido se resta 1 a la cantidad de
     # clases fuera del edificio preferido
     cantidad_de_clases_fuera_del_edificio_preferido = len(clases)
-    cota_superior = len(clases)
 
     for clase in clases.itertuples():
         if clase.edificio_preferido:
@@ -73,10 +72,7 @@ def obtener_cantidad_de_clases_fuera_del_edificio_preferido(
             en_edificio_preferido = sum(asignaciones[clase.Index, aula] for aula in edificios[clase.edificio_preferido])
             cantidad_de_clases_fuera_del_edificio_preferido -= en_edificio_preferido
 
-            # Cuando hay una asignación forzada, la cota puede ser menor
-            if isinstance(en_edificio_preferido, np.integer):
-                cota_superior -= en_edificio_preferido
-
+    cota_superior = len(clases)
     return cantidad_de_clases_fuera_del_edificio_preferido, cota_superior
 
 def obtener_cantidad_de_alumnos_fuera_del_aula(
@@ -105,15 +101,11 @@ def obtener_cantidad_de_alumnos_fuera_del_aula(
             if not isinstance(asignada_a_este_aula, np.integer):
                 # Si no se sabe la asignación de antemano, la cota superior puede necesitar actualización
                 cota_superior = max(cota_superior, posible_exceso)
-            elif asignada_a_este_aula == 1:
-                # Cuando hay una asignación forzada, cota_superior == exceso_de_capacidad
-                cota_superior = posible_exceso
-                break
 
         cantidad_de_alumnos_fuera_del_aula += exceso_de_capacidad
         cota_superior_total += cota_superior
-    
-    # Evitamos que la cota superior se 0 porque luego se usa para dividir
+
+    # Evitamos que la cota superior sea 0 porque luego se usa para dividir
     if cota_superior_total == 0:
         cota_superior_total = 1
 
@@ -145,15 +137,11 @@ def obtener_capacidad_sobrante(
             if not isinstance(asignada_a_este_aula, np.integer):
                 # Si no se sabe la asignación de antemano, la cota superior puede necesitar actualización
                 cota_superior = max(cota_superior, posible_sobra)
-            elif asignada_a_este_aula == 1:
-                # Cuando hay una asignación forzada, cota_superior == exceso_de_capacidad
-                cota_superior = posible_sobra
-                break
 
         capacidad_sobrante_total += capacidad_sobrante
         cota_superior_total += cota_superior
 
-    # Evitamos que la cota superior se 0 porque luego se usa para dividir
+    # Evitamos que la cota superior sea 0 porque luego se usa para dividir
     if cota_superior_total == 0:
         cota_superior_total = 1
 

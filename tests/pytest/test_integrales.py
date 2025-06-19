@@ -21,11 +21,10 @@ def test_restricciones_y_preferencias():
         dict(día="miércoles", cantidad_de_alumnos=55),
     )
 
-    asignaciones = backend.asignar(clases, aulas)
+    backend.asignar(clases, aulas)
     asignaciones_esperadas = [1, 0, 0, 1]
 
-    for asignación, asignación_esperada in zip(asignaciones, asignaciones_esperadas):
-        assert asignación == asignación_esperada
+    assert all(clases['aula_asignada'] == asignaciones_esperadas)
 
 def test_aulas_dobles():
     '''
@@ -51,11 +50,10 @@ def test_aulas_dobles():
 
     aulas_dobles = { 3: (1, 2) }
 
-    asignaciones = backend.asignar(clases, aulas, aulas_dobles)
+    backend.asignar(clases, aulas, aulas_dobles)
     asignaciones_esperadas = [2, 1, 0]
 
-    for asignación, asignación_esperada in zip(asignaciones, asignaciones_esperadas):
-        assert asignación == asignación_esperada
+    assert all(clases['aula_asignada'] == asignaciones_esperadas)
 
 def test_horarios_no_solapan():
     '''
@@ -72,11 +70,10 @@ def test_horarios_no_solapan():
         dict(horario_inicio=9, horario_fin=10, día='lunes')
     )
 
-    asignaciones = backend.asignar(clases, aulas)
+    backend.asignar(clases, aulas)
     asignaciones_esperadas = [0, 0]
 
-    for asignación, asignación_esperada in zip(asignaciones, asignaciones_esperadas):
-        assert asignación == asignación_esperada
+    assert all(clases['aula_asignada'] == asignaciones_esperadas)
 
 def test_asignación_imposible_por_solapamiento_inevitable():
     aulas = make_aulas(

@@ -11,8 +11,7 @@ from pandas import DataFrame
 
 from typing import List
 
-from datos import *
-#from config import UI_Config
+from .datos import *
 
 
 class UI_Config_Carreras():

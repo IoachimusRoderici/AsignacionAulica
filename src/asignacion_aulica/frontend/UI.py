@@ -8,9 +8,10 @@ Parte "FrontEnd" - Interfaz Gráfica de Usuario (GUI)
 
 import flet as ft
 
-from menu import UI_Menu
-from config import UI_Config
-from universidad import Universidad
+from .colores import COLOR
+from .menu import UI_Menu
+from .config import UI_Config
+from .universidad import Universidad
 
 
 def main(page: ft.Page):
@@ -50,9 +51,9 @@ def main(page: ft.Page):
     
     # Fuente de la app
     page.fonts = {
-        "Karla": "./fonts/Karla-Regular.ttf",
-        "Open Sans": "./fonts/OpenSans-Regular.ttf",
-        "Open Sans Condensed": "./fonts/OpenSans_Condensed-Regular.ttf"
+        "Karla": "fonts/Karla-Regular.ttf",
+        "Open Sans": "fonts/OpenSans-Regular.ttf",
+        "Open Sans Condensed": "fonts/OpenSans_Condensed-Regular.ttf"
     }
     page.theme = ft.Theme(font_family="Karla")  # Font de la App por default
     
@@ -73,6 +74,3 @@ def main(page: ft.Page):
     
     page.update()
 
-
-if __name__ == "__main__":
-    ft.app(main)

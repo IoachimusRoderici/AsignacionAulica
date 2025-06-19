@@ -13,10 +13,10 @@ Menú encargado de la creación y apertura de archivos. Incluye:
 
 import flet as ft
 
-from colores import COLOR
-from iconos import UI_Icono
-from archivos import *
-from universidad import Universidad
+from .colores import COLOR
+from .iconos import UI_Icono
+from .archivos import nuevo_archivo, abrir_archivo, guardar_archivo, importar_archivo, exportar_archivo 
+from .universidad import Universidad
 
 
 class UI_UNRN:
@@ -25,7 +25,6 @@ class UI_UNRN:
     """
     def __init__(self, ruta_imagen: str):
         # Directorio donde se encuentra la imágen del icono.
-        # Ejemplo: "./ui/imgs/UNRN_Andina.png"
         self.ruta_imagen: str = ruta_imagen
         self.tamanio_imagen: int = 225
         self.tamanio_container: int = 250
@@ -66,7 +65,6 @@ class UI_MenuBoton:
             onclick
             ):
         # Directorio donde se encuentra la imágen del icono del boton.
-        # Ejemplo: "./ui/imgs/icono_menu.png"
         self.ruta_imagen: str = ruta_imagen
         # Texto que dirá el botón. Por ejemplo: "Menú"
         self.texto: str = texto
@@ -122,6 +120,7 @@ class UI_Menu:
     Panel (de navegación?) izquierdo o menú, con todos los botones necesarios
     para la creación de archivos.
     """
+
     def archivo_nuevo(self, e):
         nuevo_archivo(self.page, self.file_picker)
     
@@ -145,13 +144,13 @@ class UI_Menu:
         self.file_picker = ft.FilePicker()
         self.page.overlay.append(self.file_picker)
         
-        self.icono_UNRN = UI_UNRN("./imgs/UNRN_Andina.png")
-        self.boton_menu = UI_MenuBoton("./imgs/icono_menu.png", "Menú", self.archivo_nuevo)
-        self.boton_nuevo = UI_MenuBoton("./imgs/icono_nuevo.png", "Nuevo", self.archivo_nuevo)
-        self.boton_abrir = UI_MenuBoton("./imgs/icono_abrir.png", "Abrir", self.archivo_abrir)
-        self.boton_guardar = UI_MenuBoton("./imgs/icono_guardar.png", "Guardar", self.archivo_guardar)
-        self.boton_importar = UI_MenuBoton("./imgs/icono_importar.png", "Importar", self.archivo_importar)
-        self.boton_exportar = UI_MenuBoton("./imgs/icono_exportar.png", "Exportar", self.archivo_exportar)
+        self.icono_UNRN = UI_UNRN("logo_UNRN_Andina.png")
+        self.boton_menu = UI_MenuBoton("iconos/menu.png", "Menú", self.archivo_nuevo)
+        self.boton_nuevo = UI_MenuBoton("iconos/nuevo.png", "Nuevo", self.archivo_nuevo)
+        self.boton_abrir = UI_MenuBoton("iconos/abrir.png", "Abrir", self.archivo_abrir)
+        self.boton_guardar = UI_MenuBoton("iconos/guardar.png", "Guardar", self.archivo_guardar)
+        self.boton_importar = UI_MenuBoton("iconos/importar.png", "Importar", self.archivo_importar)
+        self.boton_exportar = UI_MenuBoton("iconos/exportar.png", "Exportar", self.archivo_exportar)
         
         self.subcolumna = ft.Column(
             controls=[

@@ -11,8 +11,8 @@ from pandas import DataFrame
 
 from typing import List
 
-from datos import *
-from alertas import VentanaAlerta
+from .datos import *
+from .alertas import VentanaAlerta
 
 
 class UI_Config_Edificios():

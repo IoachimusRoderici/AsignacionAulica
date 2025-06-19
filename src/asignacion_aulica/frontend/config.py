@@ -11,13 +11,14 @@ Apartados de configuración, inputs y outputs de datos. Incluye:
 
 import flet as ft
 
-from colores import COLOR
-
 # Apartados:
-from config_edificios import UI_Config_Edificios
-from config_aulas import UI_Config_Aulas
-from config_carreras import UI_Config_Carreras
-from config_actividades import UI_Config_Actividades
+from .config_edificios import UI_Config_Edificios
+from .config_aulas import UI_Config_Aulas
+from .config_carreras import UI_Config_Carreras
+from .config_actividades import UI_Config_Actividades
+
+from .colores import COLOR
+from .datos import *
 
 
 class UI_BotonConfig():

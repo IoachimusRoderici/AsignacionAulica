@@ -2,19 +2,17 @@ import pandas as pd
 from datetime import time
 
 from asignacion_aulica.frontend.excepciones_universidad import *
-
+from asignacion_aulica.get_asset_path import get_asset_path
 
 
 
 class Universidad:
     def __init__(self, 
-        edificios=pd.read_excel("./src/asignacion_aulica/data/edificios.xlsx"), 
-        aulas = pd.read_excel("./src/asignacion_aulica/data/aulas.xlsx")
+        edificios=pd.read_excel(get_asset_path('edificios_default/edificios.xlsx')), 
+        aulas = pd.read_excel(get_asset_path('edificios_default/aulas.xlsx'))
     ):        
         self.edificios = edificios
         self.aulas = aulas
-
-        print(self.edificios.columns.tolist())
 
 
     # Sector de edificios:

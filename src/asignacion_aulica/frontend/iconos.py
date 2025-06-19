@@ -10,41 +10,39 @@ import flet as ft
 
 class UI_Icono():
     def __init__(self):
-        self.TAMANIO: int = 40 # 40 px
+        self.TAMAÑO: int = 40 # 40 px
         
-        # Las rutas están escritas relativas al directorio padre, porque al
-        # ejecutarse se instanciarán desde un archivo en esa carpeta. (De lo
-        # contrario no funcionará)
+        # Las rutas están escritas relativas al directorio src/assets/
         
-        self.MENU = ft.Image(src="./imgs/icono_menu.png",
-                             height=self.TAMANIO,
-                             width=self.TAMANIO,
+        self.MENU = ft.Image(src="iconos/menu.png",
+                             height=self.TAMAÑO,
+                             width=self.TAMAÑO,
                              fit=ft.ImageFit.CONTAIN)
-        self.NUEVO = ft.Image(src="./imgs/icono_nuevo.png",
-                              height=self.TAMANIO,
-                              width=self.TAMANIO,
+        self.NUEVO = ft.Image(src="iconos/nuevo.png",
+                              height=self.TAMAÑO,
+                              width=self.TAMAÑO,
                               fit=ft.ImageFit.CONTAIN)
-        self.IMPORTAR = ft.Image(src="./imgs/icono_importar.png",
-                                 height=self.TAMANIO,
-                                 width=self.TAMANIO,
+        self.IMPORTAR = ft.Image(src="iconos/importar.png",
+                                 height=self.TAMAÑO,
+                                 width=self.TAMAÑO,
                                  fit=ft.ImageFit.CONTAIN)
-        self.ABRIR = ft.Image(src="./imgs/icono_abrir.png",
-                              height=self.TAMANIO,
-                              width=self.TAMANIO,
+        self.ABRIR = ft.Image(src="iconos/abrir.png",
+                              height=self.TAMAÑO,
+                              width=self.TAMAÑO,
                               fit=ft.ImageFit.CONTAIN)
-        self.GUARDAR = ft.Image(src="./imgs/icono_guardar.png",
-                                height=self.TAMANIO,
-                                width=self.TAMANIO,
+        self.GUARDAR = ft.Image(src="iconos/guardar.png",
+                                height=self.TAMAÑO,
+                                width=self.TAMAÑO,
                                 fit=ft.ImageFit.CONTAIN)
-        self.EXPORTAR = ft.Image(src="./imgs/icono_exportar.png",
-                                 height=self.TAMANIO,
-                                 width=self.TAMANIO,
+        self.EXPORTAR = ft.Image(src="iconos/exportar.png",
+                                 height=self.TAMAÑO,
+                                 width=self.TAMAÑO,
                                  fit=ft.ImageFit.CONTAIN)
-        self.FLECHA_CLARA = ft.Image(src="./imgs/icono_flecha_clara.png",
-                                     height=self.TAMANIO,
-                                     width=self.TAMANIO,
+        self.FLECHA_CLARA = ft.Image(src="iconos/flecha_clara.png",
+                                     height=self.TAMAÑO,
+                                     width=self.TAMAÑO,
                                      fit=ft.ImageFit.CONTAIN)
-        self.FLECHA_OSCURA = ft.Image(src="./imgs/icono_flecha_oscura.png",
-                                      height=self.TAMANIO,
-                                      width=self.TAMANIO,
+        self.FLECHA_OSCURA = ft.Image(src="iconos/flecha_oscura.png",
+                                      height=self.TAMAÑO,
+                                      width=self.TAMAÑO,
                                       fit=ft.ImageFit.CONTAIN)

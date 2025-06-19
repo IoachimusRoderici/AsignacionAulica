@@ -19,10 +19,10 @@ class Modalidad(Enum):
 class Día(Enum):
     LUNES = auto()
     MARTES = auto()
-    MIERCOLES = auto()
+    MIÉRCOLES = auto()
     JUEVES = auto()
     VIERNES = auto()
-    SABADO = auto()
+    SÁBADO = auto()
     DOMINGO = auto()
     INDEFINIDO = auto()
 

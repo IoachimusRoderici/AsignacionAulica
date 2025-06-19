@@ -17,8 +17,8 @@ def test_restricciones_y_preferencias():
     clases = make_clases(
         dict(día=Día.LUNES, cantidad_de_alumnos=70, equipamiento_necesario={"proyector"}),
         dict(día=Día.LUNES, cantidad_de_alumnos=50),
-        dict(día=Día.MIERCOLES, cantidad_de_alumnos=56),
-        dict(día=Día.MIERCOLES, cantidad_de_alumnos=55),
+        dict(día=Día.MIÉRCOLES, cantidad_de_alumnos=56),
+        dict(día=Día.MIÉRCOLES, cantidad_de_alumnos=55),
     )
 
     backend.asignar(clases, aulas)

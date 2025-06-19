@@ -43,7 +43,8 @@ def make_clases(*data):
         'horario_fin': 11,
         'cantidad_de_alumnos': 1,
         'equipamiento_necesario': set(),
-        'edificio_preferido': 'edificio'
+        'edificio_preferido': 'edificio',
+        'aula_asignada': None
     }
 
     clases = DataFrame.from_records(default_values | explicit_values for explicit_values in data)

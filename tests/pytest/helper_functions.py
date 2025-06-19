@@ -2,6 +2,8 @@ from ortools.sat.python import cp_model
 from pandas import DataFrame
 import numpy as np
 
+from asignacion_aulica.frontend.clases import Día
+
 def make_aulas(*data):
     '''
     Recibe una lista de diccionarios con datos (posiblemente incompletos) de
@@ -16,13 +18,13 @@ def make_aulas(*data):
         'capacidad': 1,
         'equipamiento': set(),
         'horarios': {
-            'lunes':     (0, 24),
-            'martes':    (0, 24),
-            'miércoles': (0, 24),
-            'jueves':    (0, 24),
-            'viernes':   (0, 24),
-            'sábado':    (0, 24),
-            'domingo':   (0, 24)
+            Día.LUNES:     (0, 24),
+            Día.MARTES:    (0, 24),
+            Día.MIERCOLES: (0, 24),
+            Día.JUEVES:    (0, 24),
+            Día.VIERNES:   (0, 24),
+            Día.SABADO:    (0, 24),
+            Día.DOMINGO:   (0, 24)
         }
     }
 
@@ -38,7 +40,7 @@ def make_clases(*data):
     '''
     default_values = {
         'nombre': 'materia',
-        'día': 'lunes',
+        'día': Día.LUNES,
         'horario_inicio': 10,
         'horario_fin': 11,
         'cantidad_de_alumnos': 1,

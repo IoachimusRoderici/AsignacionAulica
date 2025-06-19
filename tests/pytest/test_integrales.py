@@ -15,10 +15,10 @@ def test_restricciones_y_preferencias():
     )
 
     clases = make_clases(
-        dict(día="lunes", cantidad_de_alumnos=70, equipamiento_necesario={"proyector"}),
-        dict(día="lunes", cantidad_de_alumnos=50),
-        dict(día="miércoles", cantidad_de_alumnos=56),
-        dict(día="miércoles", cantidad_de_alumnos=55),
+        dict(día=Día.LUNES, cantidad_de_alumnos=70, equipamiento_necesario={"proyector"}),
+        dict(día=Día.LUNES, cantidad_de_alumnos=50),
+        dict(día=Día.MIERCOLES, cantidad_de_alumnos=56),
+        dict(día=Día.MIERCOLES, cantidad_de_alumnos=55),
     )
 
     backend.asignar(clases, aulas)
@@ -62,12 +62,12 @@ def test_horarios_no_solapan():
     están superponiendo.
     '''
     aulas = make_aulas(
-        dict(horarios={'lunes': (8, 10)})
+        dict(horarios={Día.LUNES: (8, 10)})
     )
 
     clases = make_clases(
-        dict(horario_inicio=8, horario_fin=9, día='lunes'),
-        dict(horario_inicio=9, horario_fin=10, día='lunes')
+        dict(horario_inicio=8, horario_fin=9, día=Día.LUNES),
+        dict(horario_inicio=9, horario_fin=10, día=Día.LUNES)
     )
 
     backend.asignar(clases, aulas)
@@ -77,12 +77,12 @@ def test_horarios_no_solapan():
 
 def test_asignación_imposible_por_solapamiento_inevitable():
     aulas = make_aulas(
-        dict(horarios={'lunes': (8, 10)})
+        dict(horarios={Día.LUNES: (8, 10)})
     )
 
     clases = make_clases(
-        dict(horario_inicio=8, horario_fin=10, día='lunes'),
-        dict(horario_inicio=9, horario_fin=11, día='lunes')
+        dict(horario_inicio=8, horario_fin=10, día=Día.LUNES),
+        dict(horario_inicio=9, horario_fin=11, día=Día.LUNES)
     )
 
     with pytest.raises(backend.ImposibleAssignmentException):
@@ -90,11 +90,11 @@ def test_asignación_imposible_por_solapamiento_inevitable():
 
 def test_asignación_imposible_por_aula_cerrada():
     aulas = make_aulas(
-        dict(horarios={'lunes': (8, 23)})
+        dict(horarios={Día.LUNES: (8, 23)})
     )
 
     clases = make_clases(
-        dict(horario_inicio=7, horario_fin=9, día='lunes'),
+        dict(horario_inicio=7, horario_fin=9, día=Día.LUNES),
     )
 
     with pytest.raises(backend.ImposibleAssignmentException):
@@ -107,7 +107,7 @@ def test_asignación_imposible_por_equipamiento():
     )
 
     clases = make_clases(
-        dict(día="lunes", cantidad_de_alumnos=70, equipamiento_necesario={"proyector"}),
+        dict(día=Día.LUNES, cantidad_de_alumnos=70, equipamiento_necesario={"proyector"}),
     )
 
     with pytest.raises(backend.ImposibleAssignmentException):

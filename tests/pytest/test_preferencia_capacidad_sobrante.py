@@ -22,7 +22,7 @@ def test_algunas_clases_les_sobra_capacidad():
     # Forzar asignaciones arbitrarias (clase i con aula i)
     asignaciones = make_asignaciones(clases, aulas, modelo, asignaciones_forzadas={ 0: 0, 1: 1, 2: 2 })
 
-    cantidad_sobrante, cota_superior = preferencias.obtener_capacidad_sobrante(clases, aulas, modelo, asignaciones, True)
+    cantidad_sobrante, cota_superior = preferencias.obtener_capacidad_sobrante(clases, aulas, modelo, asignaciones)
 
     # Resolver
     solver = cp_model.CpSolver()

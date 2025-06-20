@@ -75,16 +75,9 @@ def asignar(clases: DataFrame, aulas: DataFrame, aulas_dobles: dict[ int, tuple[
     '''
     # Las clases con asignaciones manuales no son parte del problema de
     # asignación, sólo generan restricciones de aulas ocupadas.
-    clases_sin_asignar, índices_sin_asignar, asignaciones_manuales = separar_asignaciones_manuales(clases)
-    aulas_ocupadas = {(
-            aula,
-            clases.at[clase, 'día'],
-            clases.at[clase, 'hoario_inicio'],
-            clases.at[clase, 'horario_fin']
-        ) for clase, aula in asignaciones_manuales.items()
-    }
+    clases_sin_asignar, índices_sin_asignar, aulas_ocupadas = separar_asignaciones_manuales(clases)
 
-    # Resolver el problema de asignación con las aulas no asignadas manualmente
+    # Resolver el problema de asignación de las aulas no asignadas manualmente
     asignaciones = resolver_problema_de_asignación(clases_sin_asignar, aulas, aulas_dobles, aulas_ocupadas)
 
     # Escribir los resultados en la tabla de clases
@@ -100,16 +93,20 @@ def separar_asignaciones_manuales(clases: DataFrame) -> tuple[ DataFrame, list[i
           asignación manual
         - Una lista de los índices (en la tabla original) de las clases sin
           asignación manual
-        - Un diccionario que mapea índices de clases (en la tabla original) a
-          índices de aula asignada manualmente.
+        - Un set de horarios en los que algunas aulas están ocupadas con
+          las asignaciones maunales, en tuplas (aula, día, inicio, fin).
     '''
     sin_asignar = clases['aula_asignada'].isnull()
     clases_sin_asignar = clases[sin_asignar].copy()
     indices_sin_asignar = list(clases_sin_asignar.index)
     clases_sin_asignar.reset_index(drop=True, inplace=True)
-    asignaciones_manuales = dict(clases['aula_asignada'].drop(indices_sin_asignar))
+    
+    aulas_ocupadas = {
+        (clase.aula_asignada, clase.día, clase.horario_inicio, clase.horario_fin)
+        for clase in clases.itertuples() if clase.aula_asignada
+    }
 
-    return clases_sin_asignar, indices_sin_asignar, asignaciones_manuales
+    return clases_sin_asignar, indices_sin_asignar, aulas_ocupadas
 
 def resolver_problema_de_asignación(
     clases: DataFrame,

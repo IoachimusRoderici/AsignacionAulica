@@ -121,14 +121,16 @@ def obtener_capacidad_sobrante(
     Devuelve una expresión que representa la cantidad de asientos que sobran en
     el aula asignada a cada clase, y su cota superior.
     '''
+    máxima_capacidad_sobrante = max(aulas["capacidad"])
+
     capacidad_sobrante_total = 0
     cota_superior_total = 0
 
-    for aula in aulas.itertuples():
-        capacidad_sobrante = modelo.new_int_var(0, aula.capacidad, f"capacidad_sobrante_{aula.nombre}")
+    for clase in clases.itertuples():
+        capacidad_sobrante = modelo.new_int_var(0, máxima_capacidad_sobrante, f"capacidad_sobrante_{clase.nombre}")
         cota_superior = 0
 
-        for clase in clases.itertuples():
+        for aula in aulas.itertuples():
             asignada_a_este_aula = asignaciones[clase.Index, aula.Index]
 
             posible_sobra = max(0, aula.capacidad - clase.cantidad_de_alumnos)

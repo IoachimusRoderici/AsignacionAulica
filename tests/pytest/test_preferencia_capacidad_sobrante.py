@@ -31,7 +31,7 @@ def test_algunas_clases_les_sobra_capacidad():
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
     
     assert solver.value(cantidad_sobrante) == (31 - 30 + 50 - 40 + 100 - 25)
-    assert cota_superior == (31 - 25 + 50 - 25 + 100 - 25)
+    assert cota_superior == (100 - 30 + 100 - 40 + 100 - 25)
 
 def test_ninguna_clase_le_sobra_capacidad():
     aulas = make_aulas(
@@ -93,7 +93,7 @@ def test_entran_justito():
     asignaciones_finales = np.vectorize(solver.value)(asignaciones)
     
     assert solver.value(cantidad_sobrante) == 0
-    assert cota_superior == (10 - 10 + 20 - 10 + 30 - 10)
+    assert cota_superior == (30 - 10 + 30 - 20 + 30 - 30)
     assert sum(asignaciones_finales[0,:]) == 1 and asignaciones_finales[0, 0] == 1
     assert sum(asignaciones_finales[1,:]) == 1 and asignaciones_finales[1, 1] == 1
     assert sum(asignaciones_finales[2,:]) == 1 and asignaciones_finales[2, 2] == 1
@@ -138,7 +138,7 @@ def test_minimiza_capacidad_sobrante():
     asignaciones_finales = np.vectorize(solver.value)(asignaciones)
 
     assert solver.value(cantidad_sobrante) == 3
-    assert cota_superior == (31 - 10 + 21 - 10 + 11 - 10)
+    assert cota_superior == (31 - 10 + 31 - 20 + 31 - 30)
     assert sum(asignaciones_finales[0,:]) == 1 and asignaciones_finales[0, 0] == 1
     assert sum(asignaciones_finales[1,:]) == 1 and asignaciones_finales[1, 1] == 1
     assert sum(asignaciones_finales[2,:]) == 1 and asignaciones_finales[2, 2] == 1

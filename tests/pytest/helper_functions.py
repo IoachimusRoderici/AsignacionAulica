@@ -30,7 +30,7 @@ def make_aulas(*data):
 
     return DataFrame.from_records(default_values | explicit_values for explicit_values in data)
 
-def make_clases(*data):
+def make_clases(*clases: dict):
     '''
     Recibe una lista de diccionarios con datos (posiblemente incompletos) de
     clases.
@@ -48,10 +48,12 @@ def make_clases(*data):
         'edificio_preferido': 'edificio',
         'aula_asignada': None
     }
+    data = {
+        columna: [clase.get(columna, default) for clase in clases]
+        for columna, default in default_values.items()
+    }
 
-    clases = DataFrame.from_records(default_values | explicit_values for explicit_values in data)
-
-    return clases
+    return DataFrame(data, dtype=object)
 
 def make_asignaciones(
         clases: DataFrame,

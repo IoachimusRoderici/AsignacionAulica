@@ -173,9 +173,9 @@ class Universidad:
     def agregar_aula(self, identificador_aula:str , capacidad:int, edificio_aula:str): #TODO implementar. Que no permita aulas huerfanas.
         
         aux_dict = {col:None for col in self.columnas_aulas}
-        aux[self.columnas_aulas[0]] = identificador_aula    #   Primer columna es identificador aula. Escribo
-        aux[self.columnas_aulas[1]] = capacidad
-        aux[self.columnas_aulas[-1]] = edificio_aula        #   Ultima columna es edificio. Escribo.
+        aux_dict[self.columnas_aulas[0]] = identificador_aula    #   Primer columna es identificador aula. Escribo
+        aux_dict[self.columnas_aulas[1]] = capacidad
+        aux_dict[self.columnas_aulas[-1]] = edificio_aula        #   Ultima columna es edificio. Escribo.
         print("falta IMPLEMENTAR TODAVIA")
 
     def eliminar_aula(self, id_aula): #TODO implementar

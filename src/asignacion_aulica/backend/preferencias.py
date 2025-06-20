@@ -124,11 +124,11 @@ def obtener_capacidad_sobrante(
     capacidad_sobrante_total = 0
     cota_superior_total = 0
 
-    for clase in clases.itertuples():
-        capacidad_sobrante = modelo.new_int_var(0, clase.cantidad_de_alumnos, f"capacidad_sobrante_{clase.nombre}")
+    for aula in aulas.itertuples():
+        capacidad_sobrante = modelo.new_int_var(0, aula.capacidad, f"capacidad_sobrante_{aula.nombre}")
         cota_superior = 0
 
-        for aula in aulas.itertuples():
+        for clase in clases.itertuples():
             asignada_a_este_aula = asignaciones[clase.Index, aula.Index]
 
             posible_sobra = max(0, aula.capacidad - clase.cantidad_de_alumnos)

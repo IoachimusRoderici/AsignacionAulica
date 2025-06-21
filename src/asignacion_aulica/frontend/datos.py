@@ -4,7 +4,7 @@ from pandas import DataFrame
 import re
 
 
-def crear_tabla(df: DataFrame) -> ft.DataTable:
+def generar_tabla(df: DataFrame) -> ft.DataTable:
     """
     Crea una ft.DataTable (UI, Flet) a partir de una DataFrame.
 

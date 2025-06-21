@@ -11,7 +11,7 @@ from pandas import DataFrame
 
 from typing import List
 
-from .datos import *
+from .datos import limpiar_texto, generar_tabla
 from .alertas import VentanaAlerta
 
 
@@ -47,22 +47,27 @@ class UI_Config_Edificios():
         None.
 
         """
+        # Se vuelven a crear los elementos para que estén vacíos en selección.
         self.lista_dias = self.crear_lista_dias()
         self.lista_hora_apertura.value = self.crear_lista_horas()
         self.lista_hora_cierre.value = self.crear_lista_horas()
         self.lista_minutos_apertura.value = self.crear_lista_minutos()
         self.lista_minutos_cierre.value = self.crear_lista_minutos()
         
+        # Se actualizan los elementos de la interfaz.
         self.actualizar_filas()
         self.actualizar_apartado()
     
     def agregar_edificio(self, e):
         """
         Función "handler" para el click del botón "Agregar edificio".
+        
         Agrega el nombre del edificio nuevo, con un horario predeterminado a
         la "base de datos" del programa.
+        
         Al hacer click, limpia la selección del edificio, del campo de texto y
         del horario, para prevenir posibles errores futuros.
+        
         Nota: limpia el input del usuario de símbolos como '@', '!' y espacios
         innecesarios.
 
@@ -88,20 +93,20 @@ class UI_Config_Edificios():
             self.limpiar_seleccion_horario()
             
             # Se actualizan los elementos de la interfaz.
-            self.actualizar_tabla()
-            self.actualizar_lista_edificios()
-            self.actualizar_filas()
-            self.actualizar_apartado()
+            self.actualizar_todo()
         except Exception as exc:
             mensaje_error: str = str(exc)
             self.alertar(mensaje_error)
     
-    def modificar_edificio(self, e): #Nota: Solo modifica nombre, no horarios
+    def modificar_edificio(self, e):
         """
         Función "handler" para el click del botón "Modificar edificio".
-        Modifica el nombre de un edificio ya agregado a "base de datos" del
-        programa.
+        
+        Modifica el nombre de un edificio ya agregado a la "base de datos" del
+        programa. (No modifica horarios).
+        
         Al hacer click, limpia la selección del edificio y del campo de texto.
+        
         Nota: limpia el input del usuario de símbolos como '@', '!' y espacios
         innecesarios.
 
@@ -133,10 +138,7 @@ class UI_Config_Edificios():
             self.limpiar_seleccion_horario()
         
             # Se actualizan los elementos de la interfaz.
-            self.actualizar_tabla()
-            self.actualizar_lista_edificios()
-            self.actualizar_filas()
-            self.actualizar_apartado()
+            self.actualizar_todo()
         except Exception as exc:
             mensaje_error: str = str(exc)
             self.alertar(mensaje_error)
@@ -144,8 +146,11 @@ class UI_Config_Edificios():
     def eliminar_edificio(self, e): #Nota: Si no se puede eliminar porque hay aulas que lo usa, lo resuelvo en universidad.py
         """
         Función "handler" para el click del botón "Eliminar edificio".
-        Elimina un edificio ya agregado a "base de datos" del programa.
+        
+        Elimina un edificio ya agregado a la "base de datos" del programa.
+        
         Al hacer click, limpia la selección del edificio y del campo de texto.
+        
         Nota: limpia el input del usuario de símbolos como '@', '!' y espacios
         innecesarios.
 
@@ -169,10 +174,7 @@ class UI_Config_Edificios():
             self.limpiar_seleccion_horario()
         
             # Se actualizan los elementos de la interfaz.
-            self.actualizar_tabla()
-            self.actualizar_lista_edificios()
-            self.actualizar_filas()
-            self.actualizar_apartado()
+            self.actualizar_todo()
         except Exception as exc:
             mensaje_error: str = str(exc)
             self.alertar(mensaje_error)
@@ -180,8 +182,10 @@ class UI_Config_Edificios():
     def establecer_horario(self, e):
         """
         Función "handler" para el click del botón "Establecer horario".
-        Establece el horario de un día elegido de un edificio ya agregado a
+        
+        Establece el horario de un día elegido de un edificio ya agregado a la
         "base de datos" del programa.
+        
         Al hacer click, limpia la selección del horario y día.
 
         Returns
@@ -215,8 +219,6 @@ class UI_Config_Edificios():
         
             # Se actualizan los elementos de la interfaz.
             self.actualizar_tabla()
-            self.actualizar_filas()
-            self.actualizar_apartado()
         except Exception as exc:
             mensaje_error: str = str(exc)
             self.alertar(mensaje_error)
@@ -224,8 +226,10 @@ class UI_Config_Edificios():
     def eliminar_horario(self, e):
         """
         Función "handler" para el click del botón "Eliminar edificio".
-        Elimina un horario de un día elegido de un edificio ya agregado a "base
-        de datos" del programa.
+        
+        Elimina un horario de un día elegido de un edificio ya agregado a la
+        "base de datos" del programa.
+        
         Al hacer click, limpia la selección del horario y día.
 
         Returns
@@ -253,13 +257,23 @@ class UI_Config_Edificios():
         
             # Se actualizan los elementos de la interfaz.
             self.actualizar_tabla()
-            self.actualizar_filas()
-            self.actualizar_apartado()
         except Exception as exc:
             mensaje_error: str = str(exc)
             self.alertar(mensaje_error)
     
     def seleccionar_edificio(self, e):
+        """
+        Funcion "handler" al seleccionar un edificio.
+        
+        Limpia el campo de texto del nombre del edificio al hacer una selección
+        de un edificio ya existente (evita que el usuario lo modifique
+        accidentalmente).
+
+        Returns
+        -------
+        None.
+
+        """
         # Limpia el campo de texto del edificio.
         self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
     
@@ -270,10 +284,34 @@ class UI_Config_Edificios():
         self.actualizar_filas()
         self.actualizar_apartado()
     
-    def seleccionar_dia(self, e): # TODO No se que hace pero no obstruye la implementacion no tenerla, al menos no todavia
+    def seleccionar_dia(self, e):
+        """
+        Funcion "handler" al seleccionar un día de la selección de horario.
+        
+        Si el usuario no seleccionó ningún edificio de la lista de selección,
+        le alerta con una ventana para que haga la selección correspondiente.
+        
+        De lo contrario, si al seleccionar un día determinado tiene un horario
+        definido (no está cerrado), se seleccionan los valores de horas y
+        minutos para las listas de selección de ese horario (para ahorrarle el
+        trabajo de tener que hacer toda la selección de cero, si lo que quiere
+        es hacer un pequeño cambio, por ejemplo en los minutos de cierre).
+
+        Returns
+        -------
+        None.
+
+        """
         nombre_edificio: str = str(self.lista_edificios.value or "")
+        
         if nombre_edificio == "":
-            self.alertar("Para poder seleccionar y establecer el horario de un edificio, primero debe seleccionar el edificio al que se le aplicarán los cambios.")
+            self.alertar(
+                """
+                Para poder seleccionar y establecer el horario de un edificio,
+                primero debe seleccionar el edificio al que se le aplicarán los
+                cambios.
+                """
+            )
         
             # Limpia el campo de texto del edificio.
             self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
@@ -289,6 +327,10 @@ class UI_Config_Edificios():
             if dia in self.ui_config.universidad.nombres_columnas()[1:]:
                 # TODO
                 # PODES CAMBIAR LA IMPLEMENTACION PERO DEBE SER ACORDE A LO QUE ESTA PARA QUE FUNCIONE
+                # Falta verificar que el día no esté cerrado para que haga la
+                # autoselección. Si el día que seleccionó está cerrado, que no
+                # haga nada la autoselección.
+                
                 # hora_apertura: str = self.ui_config.universidad.TU_FUNCION()
                 # hora_cierre: str = self.ui_config.universidad.TU_FUNCION()
                 # minutos_apertura: str = self.ui_config.universidad.TU_FUNCION()
@@ -304,12 +346,52 @@ class UI_Config_Edificios():
                 # Se actualizan los elementos de la interfaz.
                 self.actualizar_filas()
                 self.actualizar_apartado()
-                
     
-    def seleccionar_hora_apertura(self, e):
+    def seleccionar_hora(self, e):
+        """
+        Funcion "handler" al seleccionar una hora.
+        
+        Si el usuario no seleccionó ningún edificio de la lista de selección,
+        le alerta con una ventana para que haga la selección correspondiente.
+        
+        De lo contrario, si selecciona una hora y no ha seleccionado un día
+        determinado, le alerta con una ventana para que haga la selección
+        correspondiente.
+
+        Returns
+        -------
+        None.
+
+        """
         nombre_edificio: str = str(self.lista_edificios.value or "")
+        dia: str = str(self.lista_dias.value or "")
+        
         if nombre_edificio == "":
-            self.alertar("Para poder seleccionar y establecer el horario de un edificio, primero debe seleccionar el edificio al que se le aplicarán los cambios.")
+            self.alertar(
+                """
+                Para poder seleccionar y establecer el horario de un edificio,
+                primero debe seleccionar el edificio al que se le aplicarán los
+                cambios.
+                """
+            )
+        
+            # Limpia el campo de texto del edificio.
+            self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
+        
+            # Limpia las listas de selección de horario.
+            self.limpiar_seleccion_horario()
+        
+            # Se actualizan los elementos de la interfaz.
+            self.actualizar_filas()
+            self.actualizar_apartado()
+        elif dia == "":
+            self.alertar(
+                """
+                Para poder seleccionar y establecer el horario de un edificio,
+                primero debe seleccionar el día al que se le aplicarán los
+                cambios.
+                """
+            )
         
             # Limpia el campo de texto del edificio.
             self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
@@ -321,10 +403,33 @@ class UI_Config_Edificios():
             self.actualizar_filas()
             self.actualizar_apartado()
     
-    def seleccionar_minutos_apertura(self, e):
+    def seleccionar_minutos(self, e):
+        """
+        Funcion "handler" al seleccionar los minutos de una hora.
+        
+        Si el usuario no seleccionó ningún edificio de la lista de selección,
+        le alerta con una ventana para que haga la selección correspondiente.
+        
+        De lo contrario, si selecciona los minutos y no ha seleccionado un día
+        determinado, le alerta con una ventana para que haga la selección
+        correspondiente.
+
+        Returns
+        -------
+        None.
+
+        """
         nombre_edificio: str = str(self.lista_edificios.value or "")
+        dia: str = str(self.lista_dias.value or "")
+        
         if nombre_edificio == "":
-            self.alertar("Para poder seleccionar y establecer el horario de un edificio, primero debe seleccionar el edificio al que se le aplicarán los cambios.")
+            self.alertar(
+                """
+                Para poder seleccionar y establecer el horario de un edificio,
+                primero debe seleccionar el edificio al que se le aplicarán los
+                cambios.
+                """
+             )
         
             # Limpia el campo de texto del edificio.
             self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
@@ -335,26 +440,14 @@ class UI_Config_Edificios():
             # Se actualizan los elementos de la interfaz.
             self.actualizar_filas()
             self.actualizar_apartado()
-    
-    def seleccionar_hora_cierre(self, e):
-        nombre_edificio: str = str(self.lista_edificios.value or "")
-        if nombre_edificio == "":
-            self.alertar("Para poder seleccionar y establecer el horario de un edificio, primero debe seleccionar el edificio al que se le aplicarán los cambios.")
-        
-            # Limpia el campo de texto del edificio.
-            self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
-        
-            # Limpia las listas de selección de horario.
-            self.limpiar_seleccion_horario()
-        
-            # Se actualizan los elementos de la interfaz.
-            self.actualizar_filas()
-            self.actualizar_apartado()
-    
-    def seleccionar_minutos_cierre(self, e):
-        nombre_edificio: str = str(self.lista_edificios.value or "")
-        if nombre_edificio == "":
-            self.alertar("Para poder seleccionar y establecer el horario de un edificio, primero debe seleccionar el edificio al que se le aplicarán los cambios.")
+        elif dia == "":
+            self.alertar(
+                """
+                Para poder seleccionar y establecer el horario de un edificio,
+                primero debe seleccionar el día al que se le aplicarán los
+                cambios.
+                """
+            )
         
             # Limpia el campo de texto del edificio.
             self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
@@ -460,13 +553,25 @@ class UI_Config_Edificios():
         # 7) Tabla con datos de los edificios cargados
         self.tabla = self.crear_tabla()
         
-        # Carga inicial de los datos:
+        # Carga inicial de todos los datos:
         self.cargar_datos_inicio()
         
+        # Se actualizan los handlers para los botones y se agregan las filas
+        # para la interfaz.
         self.actualizar_handlers()
         self.actualizar_filas()
     
     def cargar_datos_edificios(self):
+        """
+        Carga los datos para la lista de selección de edificios.
+        NOTA: NO actualiza los elementos. Simplemente carga los datos. Para
+        eso, existen las funciones actualizar_*.
+
+        Returns
+        -------
+        None.
+
+        """
         opciones_edificios: List[ft.dropdown.Option] = []
         for edificio in self.ui_config.universidad.nombres_edificios():
             opciones_edificios.append(ft.dropdown.Option(str(edificio)))
@@ -474,13 +579,43 @@ class UI_Config_Edificios():
         self.lista_edificios.options = opciones_edificios
     
     def cargar_datos_tabla(self):
-        self.tabla = crear_tabla(self.ui_config.universidad.mostrar_edificios())
+        """
+        Carga los datos para la tabla.
+        NOTA: NO actualiza los elementos. Simplemente carga los datos. Para
+        eso, existen las funciones actualizar_*.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.tabla = generar_tabla(self.ui_config.universidad.mostrar_edificios())
     
     def cargar_datos_inicio(self):
+        """
+        Carga TODOS los datos de TODOS los elementos disponibles en el
+        apartado.
+        NOTA: NO actualiza los elementos. Simplemente carga los datos. Para
+        eso, existen las funciones actualizar_*.
+
+        Returns
+        -------
+        None.
+
+        """
         self.cargar_datos_edificios()
         self.cargar_datos_tabla()
     
     def crear_lista_edificios(self) -> ft.Dropdown:
+        """
+        Crea el elemento de lista para la selección de edificios ya cargados.
+
+        Returns
+        -------
+        dropdown : ft.Dropdown
+            Lista de selección de edificios.
+
+        """
         dropdown = ft.Dropdown(
             label="Edificios",
             options=[
@@ -492,12 +627,31 @@ class UI_Config_Edificios():
         return dropdown
     
     def crear_campo_nombre_edificio(self) -> ft.TextField:
+        """
+        Crea el elemento de campo de texto para ingreso del nombre del edificio
+        a crear/agregar.
+
+        Returns
+        -------
+        textfield : ft.TextField
+            Campo de texto para el input del nombre de edificio.
+
+        """
         textfield = ft.TextField(
             label="Nombre del edificio",
         )
         return textfield
     
     def crear_lista_dias(self) -> ft.Dropdown:
+        """
+        Crea una lista para el ingreso del día en el horario.
+
+        Returns
+        -------
+        dropdown : ft.Dropdown
+            Lista de selección de días (Lun-Dom).
+
+        """
         dropdown = ft.Dropdown(
             label="Día",
             options=[
@@ -514,6 +668,15 @@ class UI_Config_Edificios():
         return dropdown
     
     def crear_lista_horas(self) -> ft.Dropdown:
+        """
+        Crea una lista para el ingreso de horas en el horario.
+
+        Returns
+        -------
+        dropdown : ft.Dropdown
+            Lista de selección de horas (00-23 hs).
+
+        """
         dropdown = ft.Dropdown(
             label="Hora",
             options=[
@@ -524,6 +687,15 @@ class UI_Config_Edificios():
         return dropdown
     
     def crear_lista_minutos(self) -> ft.Dropdown:
+        """
+        Crea una lista para el ingreso de minutos en el horario.
+
+        Returns
+        -------
+        dropdown : ft.Dropdown
+            Lista de selección de minutos (00-45 mins).
+
+        """
         dropdown = ft.Dropdown(
             label="Minutos",
             options=[
@@ -534,12 +706,32 @@ class UI_Config_Edificios():
         return dropdown
     
     def crear_linea(self) -> ft.Divider:
+        """
+        Crea un elemento línea separadora para la interfaz.
+
+        Returns
+        -------
+        divider : ft.Divider
+            Línea separadora.
+
+        """
         divider = ft.Divider(
             thickness=1
         )
         return divider
     
-    def crear_tabla(self):
+    def crear_tabla(self) -> ft.DataTable:
+        """
+        Crea el elemento tabla para la interfaz.
+        Nota: esta función no carga los datos que debe tener, simplemente crea
+        el elemento para luego añadirle sus datos.
+
+        Returns
+        -------
+        ft.DataTable
+            Tabla del apartado actual.
+
+        """
         data = {
             "Nombre del Edificio": [],
             "Lunes": [],
@@ -551,24 +743,43 @@ class UI_Config_Edificios():
             "Domingo": [],
         }
         df = DataFrame(data)
-        return crear_tabla(df)
+        return generar_tabla(df)
     
     def actualizar_handlers(self):
-        # Define el comportamiento "on_click" de cada elemento.
+        """
+        Actualiza, define o establece las funciones "handlers" encargadas del
+        comportamiento de cada botón.
+
+        Returns
+        -------
+        None.
+
+        """
+        # Define el comportamiento "on_click" de cada elemento (botones).
         self.boton_agregar_edificio.on_click = self.agregar_edificio
         self.boton_eliminar_edificio.on_click = self.eliminar_edificio
         self.boton_modificar_edificio.on_click = self.modificar_edificio
         self.boton_establecer_horario.on_click = self.establecer_horario
         self.boton_eliminar_horario.on_click = self.eliminar_horario
+        
+        # Define el comportamiento "on_change" de cada elemento (listas).
         self.lista_edificios.on_change = self.seleccionar_edificio
         self.lista_dias.on_change = self.seleccionar_dia
-        self.lista_hora_apertura.on_change = self.seleccionar_hora_apertura
-        self.lista_minutos_apertura.on_change = self.seleccionar_minutos_apertura
-        self.lista_hora_cierre.on_change = self.seleccionar_hora_cierre
-        self.lista_minutos_cierre.on_change = self.seleccionar_minutos_cierre
+        self.lista_hora_apertura.on_change = self.seleccionar_hora
+        self.lista_minutos_apertura.on_change = self.seleccionar_minutos
+        self.lista_hora_cierre.on_change = self.seleccionar_hora
+        self.lista_minutos_cierre.on_change = self.seleccionar_minutos
     
     def actualizar_filas(self):
-        self.fila = []
+        """
+        Agrega o actualiza todas las filas del layout del apartado actual.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.fila: List[ft.Row] = []
         
         # Agrega todas las filas a la columna resultado.
         self.fila.append(ft.Row([self.titulo]))
@@ -606,11 +817,7 @@ class UI_Config_Edificios():
 
         """
         # Se cargan todos los nombres de los edificios.
-        opciones_edificios: List[ft.dropdown.Option] = []
-        for edificio in self.ui_config.universidad.nombres_edificios():
-            opciones_edificios.append(ft.dropdown.Option(str(edificio)))
-        self.lista_edificios = self.crear_lista_edificios()
-        self.lista_edificios.options = opciones_edificios
+        self.cargar_datos_edificios()
         
         # Se actualizan los elementos de la interfaz.
         self.actualizar_filas()
@@ -618,19 +825,34 @@ class UI_Config_Edificios():
     
     def actualizar_tabla(self):
         """
-        Actualiza la lista de edificios en la interfaz.
+        Actualiza la tabla con los datos cargados.
 
         Returns
         -------
         None.
 
         """
-        # Crea una tabla nueva con todos los datos nuevos. (tristemente se
-        # tiene que crear la tabla de cero porque sino flet no lo actualiza).
-        # Vuelve a leer el dataframe de edificios y lo carga a la tabla
-        self.tabla = crear_tabla(self.ui_config.universidad.mostrar_edificios())
+        # Se cargan todos los datos del apartado para la tabla.
+        self.cargar_datos_tabla()
         
         # Se actualizan los elementos de la interfaz.
+        self.actualizar_filas()
+        self.actualizar_apartado()
+    
+    def actualizar_todo(self):
+        """
+        Actualiza todos los elementos del apartado, INCLUYENDO los datos que
+        contienen.
+
+        Returns
+        -------
+        None.
+
+        """
+        # Actualiza los datos de todos los elementos.
+        self.cargar_datos_inicio()
+        
+        # Actualiza los elementos de la interfaz.
         self.actualizar_filas()
         self.actualizar_apartado()
     

@@ -104,6 +104,8 @@ def obtener_cantidad_de_alumnos_fuera_del_aula(
         for aula in aulas.itertuples():
             asignada_a_este_aula = asignaciones[clase.Index, aula.Index]
 
+            # Esta lógica asume que no va a haber asignaciones en 1 nunca;
+            # que van a ser 0 (asignaciones prohibidas) o variables del modelo
             if isinstance(asignada_a_este_aula, cp_model.IntVar):
                 posible_exceso = max(0, clase.cantidad_de_alumnos - aula.capacidad)
                 modelo.add(exceso_de_capacidad == posible_exceso).only_enforce_if(asignada_a_este_aula)
@@ -145,6 +147,8 @@ def obtener_capacidad_sobrante(
         for aula in aulas.itertuples():
             asignada_a_este_aula = asignaciones[clase.Index, aula.Index]
 
+            # Esta lógica asume que no va a haber asignaciones en 1 nunca;
+            # que van a ser 0 (asignaciones prohibidas) o variables del modelo
             if isinstance(asignada_a_este_aula, cp_model.IntVar):
                 posible_sobra = max(0, aula.capacidad - clase.cantidad_de_alumnos)
                 modelo.add(capacidad_sobrante == posible_sobra).only_enforce_if(asignada_a_este_aula)

@@ -563,7 +563,7 @@ class UI_Config_Carreras():
         
         # Define el comportamiento "on_change" de cada elemento (listas).
         self.lista_carreras.on_change = self.seleccionar_carrera
-        self.lista_edificio.on_change = self.seleccionar_edificio
+        self.lista_edificios.on_change = self.seleccionar_edificio
     
     def actualizar_filas(self):
         """

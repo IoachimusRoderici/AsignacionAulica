@@ -84,7 +84,7 @@ def asignar(clases: DataFrame, aulas: DataFrame, aulas_dobles: dict[ int, tuple[
     clases.loc[índices_sin_asignar, 'aula_asignada'] = asignaciones
 
 
-def separar_asignaciones_manuales(clases: DataFrame) -> tuple[ DataFrame, list[int], dict[int, int] ]:
+def separar_asignaciones_manuales(clases: DataFrame) -> tuple[ DataFrame, list[int], set[tuple[int, Día, int, int]] ]:
     '''
     Separa los datos de la clases que ya tienen aulas asignadas.
 
@@ -98,15 +98,15 @@ def separar_asignaciones_manuales(clases: DataFrame) -> tuple[ DataFrame, list[i
     '''
     sin_asignar = clases['aula_asignada'].isnull()
     clases_sin_asignar = clases[sin_asignar].copy()
-    indices_sin_asignar = list(clases_sin_asignar.index)
+    índices_sin_asignar = list(clases_sin_asignar.index)
     clases_sin_asignar.reset_index(drop=True, inplace=True)
     
     aulas_ocupadas = {
         (clase.aula_asignada, clase.día, clase.horario_inicio, clase.horario_fin)
-        for clase in clases.itertuples() if clase.aula_asignada
+        for clase in clases[~sin_asignar].itertuples()
     }
 
-    return clases_sin_asignar, indices_sin_asignar, aulas_ocupadas
+    return clases_sin_asignar, índices_sin_asignar, aulas_ocupadas
 
 def resolver_problema_de_asignación(
     clases: DataFrame,
@@ -126,7 +126,7 @@ def resolver_problema_de_asignación(
     '''
     # Crear modelo, variables, restricciones, y penalizaciones
     modelo = cp_model.CpModel()
-    asignaciones = crear_matriz_de_asignaciones(clases, aulas, aulas_ocupadas, modelo)
+    asignaciones = crear_matriz_de_asignaciones(clases, aulas, aulas_dobles, aulas_ocupadas, modelo)
 
     for predicado in restricciones.restricciones_con_variables(clases, aulas, aulas_dobles, asignaciones):
         modelo.add(predicado)
@@ -150,6 +150,7 @@ def resolver_problema_de_asignación(
 def crear_matriz_de_asignaciones(
     clases: DataFrame,
     aulas: DataFrame,
+    aulas_dobles: dict[ int, tuple[int,int] ],
     aulas_ocupadas: set[tuple[int, Día, int, int]],
     modelo: cp_model.CpModel
     ) -> np.ndarray:
@@ -170,6 +171,9 @@ def crear_matriz_de_asignaciones(
 
     :param clases: Tabla con los datos de las clases.
     :param aulas: Tabla con los datos de las aulas.
+    :param aulas_dobles: Diccionario donde las keys son los índices de las
+        aulas dobles y los valores son tuplas con las aulas individuales que
+        conforman el aula doble.
     :param aulas_ocupadas: Horarios en los que algunas aulas están ocupadas con
         otra cosa, en tuplas (aula, día, inicio, fin).
     :param modelo: El CpModel al que agregar variables.
@@ -178,7 +182,7 @@ def crear_matriz_de_asignaciones(
     asignaciones = np.empty(shape=(len(clases), len(aulas)), dtype=object)
 
     # Popular con constantes
-    for índices in restricciones.aulas_prohibidas(clases, aulas, aulas_ocupadas):
+    for índices in restricciones.aulas_prohibidas(clases, aulas, aulas_dobles, aulas_ocupadas):
         asignaciones[*índices] = 0
     
     # Rellenar los elementos vacíos con variables

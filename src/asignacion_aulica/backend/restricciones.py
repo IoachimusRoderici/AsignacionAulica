@@ -88,11 +88,16 @@ def asignar_aulas_con_el_equipamiento_requerido(clases: DataFrame, aulas: DataFr
         if not clase.equipamiento_necesario.issubset(aula.equipamiento):
             yield (clase.Index, aula.Index)
 
-def no_asignar_aulas_ocupadas(clases: DataFrame, aulas: DataFrame, aulas_ocupadas: set[tuple[int, Día, int, int]]) -> Iterable[ tuple[int, int] ]:
+def no_asignar_aulas_ocupadas(
+    clases: DataFrame,
+    aulas: DataFrame,
+    aulas_dobles: dict[ int, tuple[int, int] ],
+    aulas_ocupadas: set[tuple[int, Día, int, int]]
+    ) -> Iterable[ tuple[int, int] ]:
     '''
     Una clase no puede ser asignada a un aula que está ocupada en ese horario.
 
-    Esta función recibe un argumento más que las otras, así que no está en
+    Esta función recibe argumentos distintos que las otras, así que no está en
     funciones_de_restricciones_de_aulas_prohibidas.
     '''
     for clase, aula_ocupada in product(clases.itertuples(), aulas_ocupadas):
@@ -102,6 +107,9 @@ def no_asignar_aulas_ocupadas(clases: DataFrame, aulas: DataFrame, aulas_ocupada
                         clase.horario_fin > inicio
         if se_superponen:
             yield (clase.Index, aula)
+            if aula in aulas_dobles:
+                yield (clase.Index, aulas_dobles[aula][0])
+                yield (clase.Index, aulas_dobles[aula][1])
 
 funciones_de_restricciones_de_aulas_prohibidas = (
     no_asignar_en_aula_cerrada,
@@ -114,12 +122,20 @@ funciones_de_restricciones_con_variables = (
     no_asignar_aula_doble_y_sus_hijas_al_mismo_tiempo
 )
 
-def aulas_prohibidas(clases: DataFrame, aulas: DataFrame, aulas_ocupadas: set[tuple[int, Día, int, int]]) -> Iterable[ tuple[int, int] ]:
+def aulas_prohibidas(
+    clases: DataFrame,
+    aulas: DataFrame,
+    aulas_dobles: dict[ int, tuple[int, int] ],
+    aulas_ocupadas: set[tuple[int, Día, int, int]]
+    ) -> Iterable[ tuple[int, int] ]:
     '''
     Genera las combinaciones de clases y aulas que no pueden ser asignadas entre sí.
 
     :param clases: Tabla con los datos de las clases.
     :param aulas: Tabla con los datos de las aulas.
+    :param aulas_dobles: Diccionario donde las keys son los índices de las
+        aulas dobles y los valores son tuplas con las aulas individuales que
+        conforman el aula doble.
     :param aulas_ocupadas: Tuplas (aula, día, inicio, fin) de momentos en los
         que no se pueden usar algunas aulas.
     :return: Iterable de tuplas (clase, aula), representando índices de la
@@ -129,7 +145,7 @@ def aulas_prohibidas(clases: DataFrame, aulas: DataFrame, aulas_ocupadas: set[tu
         for índices in restricción(clases, aulas):
             yield índices
     
-    for índices in no_asignar_aulas_ocupadas(clases, aulas, aulas_ocupadas):
+    for índices in no_asignar_aulas_ocupadas(clases, aulas, aulas_dobles, aulas_ocupadas):
         yield índices
 
 def restricciones_con_variables(clases: DataFrame, aulas: DataFrame, aulas_dobles: dict[ int, tuple[int, int] ], asignaciones: np.ndarray) -> Iterable:

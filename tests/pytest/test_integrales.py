@@ -1,7 +1,7 @@
 import pytest
 
 from asignacion_aulica import backend
-from helper_functions import make_aulas, make_clases
+from helper_functions import make_aulas, make_clases, Día
 
 def test_restricciones_y_preferencias():
     '''

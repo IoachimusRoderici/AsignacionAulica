@@ -2,7 +2,8 @@ from helper_functions import (
     make_aulas,
     make_clases,
     make_asignaciones,
-    predicado_es_nand_entre_dos_variables_bool
+    predicado_es_nand_entre_dos_variables_bool,
+    Día
 )
 from asignacion_aulica.backend import restricciones
 from ortools.sat.python import cp_model

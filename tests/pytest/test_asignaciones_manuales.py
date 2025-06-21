@@ -1,7 +1,6 @@
-import pandas as pd
 import pytest
 
-from helper_functions import *
+from helper_functions import make_clases, make_aulas, Día
 
 from asignacion_aulica.backend.lógica_de_asignación import separar_asignaciones_manuales, asignar
 from asignacion_aulica.backend.restricciones import no_asignar_aulas_ocupadas
@@ -178,7 +177,7 @@ def test_asignaciones_manuales_que_inclumplen_restricciones():
         dict(día=Día.INDEFINIDO, equipamiento_necesario={'pizarrón', 'proyector'}, aula_asignada=3), # Equipamiento insuficiente
     )
     
-    asignar(clases, aulas)
+    asignar(clases, aulas, aulas_dobles)
     assert clases.at[0, 'aula_asignada'] in aulas.index # Verificar que se asignó algún aula
     assert clases.at[1, 'aula_asignada'] == 1
     assert clases.at[2, 'aula_asignada'] == 1

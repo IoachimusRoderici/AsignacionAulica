@@ -46,7 +46,7 @@ def test_algunas_aulas_en_el_edificio_preferido():
         dict(edificio_preferido='preferido 2'),
         dict(edificio_preferido='preferido'),
         dict(edificio_preferido='preferido 2'),
-        dict(edificio_preferido='preferido')
+        dict(edificio_preferido=None)
     )
     modelo = cp_model.CpModel()
 
@@ -68,7 +68,7 @@ def test_algunas_aulas_en_el_edificio_preferido():
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
     
     assert solver.value(clases_fuera_del_edificio_preferido) == 4
-    assert cota_superior == 6
+    assert cota_superior == 5
 
 def test_elije_aula_en_edificio_preferido():
     aulas = make_aulas(

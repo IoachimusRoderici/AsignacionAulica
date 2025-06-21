@@ -65,14 +65,18 @@ def obtener_cantidad_de_clases_fuera_del_edificio_preferido(
     # encuentra dentro de su edificio preferido se resta 1 a la cantidad de
     # clases fuera del edificio preferido
     cantidad_de_clases_fuera_del_edificio_preferido = len(clases)
+    cota_superior = len(clases)
 
     for clase in clases.itertuples():
         if clase.edificio_preferido:
             # Esta expresión da 1 o 0
             en_edificio_preferido = sum(asignaciones[clase.Index, aula] for aula in edificios[clase.edificio_preferido])
             cantidad_de_clases_fuera_del_edificio_preferido -= en_edificio_preferido
+        else:
+            # Si no tiene edificio preferido, no puede estar fuera de su edificio preferido
+            cantidad_de_clases_fuera_del_edificio_preferido -= 1
+            cota_superior -= 1
 
-    cota_superior = len(clases)
     return cantidad_de_clases_fuera_del_edificio_preferido, cota_superior
 
 def obtener_cantidad_de_alumnos_fuera_del_aula(

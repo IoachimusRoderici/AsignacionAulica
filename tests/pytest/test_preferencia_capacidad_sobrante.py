@@ -31,7 +31,8 @@ def test_algunas_clases_les_sobra_capacidad():
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
     
     assert solver.value(cantidad_sobrante) == (31 - 30 + 50 - 40 + 100 - 25)
-    assert cota_superior == (100 - 30 + 100 - 40 + 100 - 25)
+    # Como está forzado, la cantidad sobrante es igual a su cota superior
+    assert cota_superior == solver.value(cantidad_sobrante)
 
 def test_ninguna_clase_le_sobra_capacidad():
     aulas = make_aulas(

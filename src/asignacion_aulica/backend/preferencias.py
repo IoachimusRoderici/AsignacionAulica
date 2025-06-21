@@ -89,20 +89,25 @@ def obtener_cantidad_de_alumnos_fuera_del_aula(
     Devuelve una expresión que representa la cantidad de alumnos que exceden la
     capacidad del aula asignada a su clase, y su cota superior.
     '''
+    mínima_capacidad = min(aulas["capacidad"])
+
     cantidad_de_alumnos_fuera_del_aula = 0
     cota_superior_total = 0
 
     for clase in clases.itertuples():
-        exceso_de_capacidad = modelo.new_int_var(0, clase.cantidad_de_alumnos, f"exceso_de_capacidad_de_{clase.nombre}")
+        # Un modelo es inválido si una variable tiene un upper bound menor a su
+        # lower bound, así que tenemos que limitarlo
+        máximo_exceso_de_capacidad = max(0, clase.cantidad_de_alumnos - mínima_capacidad)
+        exceso_de_capacidad = modelo.new_int_var(0, máximo_exceso_de_capacidad, f"exceso_de_capacidad_de_{clase.nombre}")
         cota_superior = 0
 
         for aula in aulas.itertuples():
             asignada_a_este_aula = asignaciones[clase.Index, aula.Index]
 
-            posible_exceso = max(0, clase.cantidad_de_alumnos - aula.capacidad)
-            modelo.add(exceso_de_capacidad == posible_exceso).only_enforce_if(asignada_a_este_aula)
+            if isinstance(asignada_a_este_aula, cp_model.IntVar):
+                posible_exceso = max(0, clase.cantidad_de_alumnos - aula.capacidad)
+                modelo.add(exceso_de_capacidad == posible_exceso).only_enforce_if(asignada_a_este_aula)
 
-            if not isinstance(asignada_a_este_aula, np.integer):
                 # Si no se sabe la asignación de antemano, la cota superior puede necesitar actualización
                 cota_superior = max(cota_superior, posible_exceso)
 
@@ -125,22 +130,25 @@ def obtener_capacidad_sobrante(
     Devuelve una expresión que representa la cantidad de asientos que sobran en
     el aula asignada a cada clase, y su cota superior.
     '''
-    máxima_capacidad_sobrante = max(aulas["capacidad"])
+    máxima_capacidad = max(aulas["capacidad"])
 
     capacidad_sobrante_total = 0
     cota_superior_total = 0
 
     for clase in clases.itertuples():
+        # Un modelo es inválido si una variable tiene un upper bound menor a su
+        # lower bound, así que tenemos que limitarlo
+        máxima_capacidad_sobrante = max(0, máxima_capacidad - clase.cantidad_de_alumnos)
         capacidad_sobrante = modelo.new_int_var(0, máxima_capacidad_sobrante, f"capacidad_sobrante_{clase.nombre}")
         cota_superior = 0
 
         for aula in aulas.itertuples():
             asignada_a_este_aula = asignaciones[clase.Index, aula.Index]
 
-            posible_sobra = max(0, aula.capacidad - clase.cantidad_de_alumnos)
-            modelo.add(capacidad_sobrante == posible_sobra).only_enforce_if(asignada_a_este_aula)
+            if isinstance(asignada_a_este_aula, cp_model.IntVar):
+                posible_sobra = max(0, aula.capacidad - clase.cantidad_de_alumnos)
+                modelo.add(capacidad_sobrante == posible_sobra).only_enforce_if(asignada_a_este_aula)
 
-            if not isinstance(asignada_a_este_aula, np.integer):
                 # Si no se sabe la asignación de antemano, la cota superior puede necesitar actualización
                 cota_superior = max(cota_superior, posible_sobra)
 

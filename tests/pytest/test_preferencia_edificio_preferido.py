@@ -68,6 +68,8 @@ def test_algunas_aulas_en_el_edificio_preferido():
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
     
     assert solver.value(clases_fuera_del_edificio_preferido) == 4
+    # La clase que no tiene edificio preferido no puede estar fuera de su
+    # edificio preferido, y la cota máxima refleja este hecho
     assert cota_superior == 5
 
 def test_elije_aula_en_edificio_preferido():

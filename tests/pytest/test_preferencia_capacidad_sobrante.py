@@ -6,7 +6,7 @@ from asignacion_aulica.backend.restricciones import no_superponer_clases
 from asignacion_aulica.backend import preferencias
 from helper_functions import make_aulas, make_clases, make_asignaciones
 
-def test_algunas_clases_les_sobra_capacidad():
+def test_a_algunas_clases_les_sobra_capacidad():
     aulas = make_aulas(
         dict(capacidad=31),
         dict(capacidad=50),
@@ -34,7 +34,7 @@ def test_algunas_clases_les_sobra_capacidad():
     # Como está forzado, la cantidad sobrante es igual a su cota superior
     assert cota_superior == solver.value(cantidad_sobrante)
 
-def test_ninguna_clase_le_sobra_capacidad():
+def test_a_ninguna_clase_le_sobra_capacidad():
     aulas = make_aulas(
         dict(capacidad=31),
         dict(capacidad=50),

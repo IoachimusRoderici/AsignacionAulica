@@ -48,7 +48,7 @@ class UI_Config_Carreras():
 
         """
         # Se vuelven a crear los elementos para que estén vacíos en selección.
-        self.lista_carreras = self.crear_lista_carreras()
+        self.lista_carreras.value = ""
         
         # Se actualizan los elementos de la interfaz.
         self.actualizar_filas()
@@ -66,7 +66,7 @@ class UI_Config_Carreras():
 
         """
         # Se vuelven a crear los elementos para que estén vacíos en selección.
-        self.lista_edificios = self.crear_lista_edificios()
+        self.lista_edificios.value = ""
         
         # Se actualizan los elementos de la interfaz.
         self.actualizar_filas()
@@ -239,6 +239,68 @@ class UI_Config_Carreras():
             mensaje_error: str = str(exc)
             self.alertar(mensaje_error)
     
+    def seleccionar_carrera(self, e):
+        """
+        Funcion "handler" al seleccionar una carrera.
+        
+        Limpia el campo de texto del nombre de la carrera al hacer una
+        selección de una carrera ya existente (evita que el usuario lo modifique
+        accidentalmente). También selecciona automáticamente el edificio de
+        preferencia de la carrera seleccionada (si es que tiene uno).
+
+        Returns
+        -------
+        None.
+
+        """
+        # TODO
+        # nombre_carrera: str = str(self.lista_carreras.value or "")
+        # nombre_edificio: str = self.ui_config.universidad.edificio_preferencia_de_carrera(nombre_carrera)
+        
+        # if nombre_edificio == "":
+        #     # Limpia la lista de selección de edificio.
+        #     self.limpiar_seleccion_edificio()
+        # else:
+        #     # Selecciona automáticamente el edificio que tenía de preferencia.
+        #     self.lista_edificios.value = nombre_edificio
+    
+        # Se actualizan los elementos de la interfaz.
+        self.actualizar_filas()
+        self.actualizar_apartado()
+
+    def seleccionar_edificio(self, e):
+        """
+        Funcion "handler" al seleccionar un edificio.
+        
+        Limpia el campo de texto del nombre del edificio al hacer una selección
+        de un edificio ya existente (evita que el usuario lo modifique
+        accidentalmente).
+    
+        Returns
+        -------
+        None.
+    
+        """
+        # TODO
+        # nombre_carrera: str = str(self.lista_carreras.value or "")
+        # nombre_edificio: str = self.ui_config.universidad.edificio_preferencia_de_carrera(nombre_carrera)
+        
+        # if nombre_carrera == "":
+        #     self.alertar(
+        #         """
+        #         Para poder seleccionar y establecer el edificio de preferencia
+        #         de una carrera, primero debe seleccionar la carrera al que se
+        #         le aplicarán los cambios.
+        #         """
+        #     )
+            
+        #     # Limpia la lista de selección de edificio.
+        #     self.limpiar_seleccion_edificio()
+    
+        #     # Se actualizan los elementos de la interfaz.
+        #     self.actualizar_filas()
+        #     self.actualizar_apartado()
+    
     def __init__(
             self,
             ui_config
@@ -339,11 +401,11 @@ class UI_Config_Carreras():
 
         """
         # TODO
-        opciones_edificios: List[ft.dropdown.Option] = []
-        # for edificio in self.ui_config.universidad.nombres_carreras():
+        opciones_carreras: List[ft.dropdown.Option] = []
+        # for carrera in self.ui_config.universidad.nombres_carreras():
         #     opciones_carreras.append(ft.dropdown.Option(str(carrera)))
         self.lista_carreras = self.crear_lista_carreras()
-        self.lista_edificios.options = opciones_edificios
+        self.lista_carreras.options = opciones_carreras
         
     def cargar_datos_edificios(self):
         """
@@ -356,12 +418,12 @@ class UI_Config_Carreras():
         None.
 
         """
-        # Se cargan todos los nombres de las carreras.
-        opciones_carreras: List[ft.dropdown.Option] = []
-        for carrera in self.ui_config.universidad.nombres_carreras():
-            opciones_carreras.append(ft.dropdown.Option(str(carrera)))
-        self.lista_carreras = self.crear_lista_carreras()
-        self.lista_carreras.options = opciones_carreras
+        # Se cargan todos los nombres de los edificios.
+        opciones_edificios: List[ft.dropdown.Option] = []
+        for edificio in self.ui_config.universidad.nombres_edificios():
+            opciones_edificios.append(ft.dropdown.Option(str(edificio)))
+        self.lista_edificios = self.crear_lista_edificios()
+        self.lista_edificios.options = opciones_edificios
     
     def cargar_datos_tabla(self):
         """
@@ -500,8 +562,8 @@ class UI_Config_Carreras():
         self.boton_eliminar_preferencia.on_click=self.eliminar_preferencia_edificio
         
         # Define el comportamiento "on_change" de cada elemento (listas).
-        # self.lista_carreras.on_change = self.seleccionar_carrera
-        # self.lista_edificio.on_change = self.seleccionar_edificio
+        self.lista_carreras.on_change = self.seleccionar_carrera
+        self.lista_edificio.on_change = self.seleccionar_edificio
     
     def actualizar_filas(self):
         """

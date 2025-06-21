@@ -14,11 +14,12 @@ import flet as ft
 # Apartados:
 from .config_edificios import UI_Config_Edificios
 from .config_aulas import UI_Config_Aulas
+#from .config_aulas_dobles import UI_Config_Aulas_Dobles
 from .config_carreras import UI_Config_Carreras
 from .config_actividades import UI_Config_Actividades
+#from .config_horarios import UI_Config_Horarios
 
 from .colores import COLOR
-from .datos import *
 
 
 class UI_BotonConfig():
@@ -83,6 +84,7 @@ class UI_BotonConfig():
 class APARTADO():
     EDIFICIOS = "edificios"
     AULAS = "aulas"
+    AULAS_DOBLES = "aulas_dobles"
     CARRERAS = "carreras"
     ACTIVIDADES = "actividades"
     HORARIOS = "horarios"
@@ -103,8 +105,10 @@ class UI_Config():
         # Botones para configurar cada apartado.
         self.btn_edificios = UI_BotonConfig(self, "Edificios", APARTADO.EDIFICIOS)
         self.btn_aulas = UI_BotonConfig(self, "Aulas", APARTADO.AULAS)
+        self.btn_aulas_dobles = UI_BotonConfig(self, "Aulas \"Dobles\"", APARTADO.AULAS_DOBLES)
         self.btn_carreras = UI_BotonConfig(self, "Carreras", APARTADO.CARRERAS)
         self.btn_actividades = UI_BotonConfig(self, "Actividades/materias", APARTADO.ACTIVIDADES)
+        self.btn_horarios = UI_BotonConfig(self, "Horarios", APARTADO.HORARIOS)
         
         self.fila_botones = ft.Row(
             [
@@ -120,8 +124,10 @@ class UI_Config():
         
         self.apartado_edificios = UI_Config_Edificios(self)
         self.apartado_aulas = UI_Config_Aulas()
-        self.apartado_carreras = UI_Config_Carreras()
+        #self.apartado_aulas = UI_Config_Aulas_Dobles(self)
+        self.apartado_carreras = UI_Config_Carreras(self)
         self.apartado_actividades = UI_Config_Actividades()
+        #self.apartado_horarios = UI_Config_Horarios(self)
         
         self.apartado = self.apartado_edificios
         
@@ -131,7 +137,6 @@ class UI_Config():
                 self.apartado.dibujar()
             ],
             alignment=ft.MainAxisAlignment.START,
-            #expand=True
         )
         
         self.container = ft.Container(
@@ -139,13 +144,28 @@ class UI_Config():
             alignment=ft.alignment.top_left,
             padding=20,
             expand=False,
-            border=ft.border.all(1, "black")
+            border=ft.border.all(1, "black") # esto es para hacer un borde negro y ver bien como se distribuyen los elementos, hay que borrarlo cuando ya esté una versión "estable"
         )
     
-    def dibujar(self) -> ft.Container:
-        return self.container
-    
     def actualizar_apartado(self):
+        """
+        Actualiza el cambio de apartado.
+        
+        Recarga los datos para evitar inconsistencias y actualiza los elementos
+        de la interfaz.
+
+        Returns
+        -------
+        None.
+
+        """
+        # Se actualizan los datos que deben cargar inicialmente los apartados,
+        # para no generar inconsistencias al agregar, eliminar o modificar
+        # datos relacionados en diferentes apartados.
+        # self.apartado.cargar_datos_inicio()
+        # self.apartado.actualizar_filas()
+        
+        # Se actualizan los elementos de la vista actual.
         self.menu_config.controls.clear()
         self.menu_config.controls.append(self.fila_botones)
         self.menu_config.controls.append(self.apartado.dibujar())
@@ -178,3 +198,6 @@ class UI_Config():
             case _:
                 self.apartado = self.apartado_edificios
         self.actualizar_apartado()
+    
+    def dibujar(self) -> ft.Container:
+        return self.container

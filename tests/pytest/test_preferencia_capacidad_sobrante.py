@@ -23,6 +23,7 @@ def test_a_algunas_clases_les_sobra_capacidad():
     asignaciones = make_asignaciones(clases, aulas, modelo, asignaciones_forzadas={ 0: 0, 1: 1, 2: 2 })
 
     cantidad_sobrante, cota_superior = preferencias.obtener_capacidad_sobrante(clases, aulas, modelo, asignaciones)
+    assert cota_superior == (31 - 30 + 50 - 40 + 100 - 25)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -30,9 +31,8 @@ def test_a_algunas_clases_les_sobra_capacidad():
     if status != cp_model.OPTIMAL:
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
     
-    assert solver.value(cantidad_sobrante) == (31 - 30 + 50 - 40 + 100 - 25)
     # Como está forzado, la cantidad sobrante es igual a su cota superior
-    assert cota_superior == solver.value(cantidad_sobrante)
+    assert solver.value(cantidad_sobrante) == cota_superior
 
 def test_a_ninguna_clase_le_sobra_capacidad():
     aulas = make_aulas(
@@ -47,10 +47,12 @@ def test_a_ninguna_clase_le_sobra_capacidad():
     )
     modelo = cp_model.CpModel()
 
-    # Forzar asignaciones arbitrarias (clase i con aula i)
-    asignaciones = make_asignaciones(clases, aulas, modelo, asignaciones_forzadas={ 0: 0, 1: 1, 2: 2 })
+    asignaciones = make_asignaciones(clases, aulas, modelo)
 
     cantidad_sobrante, cota_superior = preferencias.obtener_capacidad_sobrante(clases, aulas, modelo, asignaciones)
+    # La cota superior sería 0, pero en cambio se devuelve 1 porque si no
+    # fallaría al normalizar, siendo que debe dividir por la cota superior
+    assert cota_superior == 1
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -59,9 +61,6 @@ def test_a_ninguna_clase_le_sobra_capacidad():
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
     
     assert solver.value(cantidad_sobrante) == 0
-    # La cota superior sería 0, pero en cambio se devuelve 1 porque si no
-    # fallaría al normalizar, siendo que debe dividir por la cota superior
-    assert cota_superior == 1
 
 def test_entran_justito():
     aulas = make_aulas(
@@ -84,20 +83,20 @@ def test_entran_justito():
 
     # Minimizar capacidad sobrante
     cantidad_sobrante, cota_superior = preferencias.obtener_capacidad_sobrante(clases, aulas, modelo, asignaciones)
-    modelo.minimize((1 / cota_superior) * cantidad_sobrante)
+    assert cota_superior == (30 - 10 + 30 - 20 + 30 - 30)
 
     # Resolver
+    modelo.minimize((1 / cota_superior) * cantidad_sobrante)
     solver = cp_model.CpSolver()
     status = solver.solve(modelo)
     if status != cp_model.OPTIMAL:
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
     asignaciones_finales = np.vectorize(solver.value)(asignaciones)
     
-    assert solver.value(cantidad_sobrante) == 0
-    assert cota_superior == (30 - 10 + 30 - 20 + 30 - 30)
     assert sum(asignaciones_finales[0,:]) == 1 and asignaciones_finales[0, 0] == 1
     assert sum(asignaciones_finales[1,:]) == 1 and asignaciones_finales[1, 1] == 1
     assert sum(asignaciones_finales[2,:]) == 1 and asignaciones_finales[2, 2] == 1
+    assert solver.value(cantidad_sobrante) == 0
 
 def test_minimiza_capacidad_sobrante():
     '''
@@ -129,18 +128,17 @@ def test_minimiza_capacidad_sobrante():
 
     # Minimizar capacidad sobrante
     cantidad_sobrante, cota_superior = preferencias.obtener_capacidad_sobrante(clases, aulas, modelo, asignaciones)
-    modelo.minimize((1 / cota_superior) * cantidad_sobrante)
+    assert cota_superior == (31 - 10 + 31 - 20 + 31 - 30)
 
     # Resolver
+    modelo.minimize((1 / cota_superior) * cantidad_sobrante)
     solver = cp_model.CpSolver()
     status = solver.solve(modelo)
     if status != cp_model.OPTIMAL:
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
     asignaciones_finales = np.vectorize(solver.value)(asignaciones)
 
-    assert solver.value(cantidad_sobrante) == 3
-    assert cota_superior == (31 - 10 + 31 - 20 + 31 - 30)
     assert sum(asignaciones_finales[0,:]) == 1 and asignaciones_finales[0, 0] == 1
     assert sum(asignaciones_finales[1,:]) == 1 and asignaciones_finales[1, 1] == 1
     assert sum(asignaciones_finales[2,:]) == 1 and asignaciones_finales[2, 2] == 1
-
+    assert solver.value(cantidad_sobrante) == 3

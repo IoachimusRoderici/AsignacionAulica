@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from asignacion_aulica.backend import preferencias
-from helper_functions import *
+from helper_functions import make_aulas, make_clases, make_asignaciones
 
 def test_todas_las_aulas_en_el_edificio_preferido():
     aulas = make_aulas(
@@ -20,12 +20,9 @@ def test_todas_las_aulas_en_el_edificio_preferido():
     # Forzar asignaciones arbitrarias:
     # - Clase 0 con Aula 1
     # - Clase 1 con Aula 2
-    asignaciones = np.array([
-        [0, 1, 0],
-        [0, 0, 1],
-    ])
+    asignaciones = make_asignaciones(clases, aulas, modelo, asignaciones_forzadas={ 0: 1, 1: 2 })
 
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
+    clases_fuera_del_edificio_preferido, cota_superior = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -34,6 +31,7 @@ def test_todas_las_aulas_en_el_edificio_preferido():
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
     
     assert solver.value(clases_fuera_del_edificio_preferido) == 0
+    assert cota_superior == 2
 
 def test_algunas_aulas_en_el_edificio_preferido():
     aulas = make_aulas(
@@ -48,7 +46,7 @@ def test_algunas_aulas_en_el_edificio_preferido():
         dict(edificio_preferido='preferido 2'),
         dict(edificio_preferido='preferido'),
         dict(edificio_preferido='preferido 2'),
-        dict(edificio_preferido='preferido')
+        dict(edificio_preferido=None)
     )
     modelo = cp_model.CpModel()
 
@@ -59,16 +57,9 @@ def test_algunas_aulas_en_el_edificio_preferido():
     # - Clase 3 con Aula 1
     # - Clase 4 con Aula 2
     # - Clase 5 con Aula 0
-    asignaciones = np.array([
-        [0, 0, 0, 1],
-        [0, 0, 1, 0],
-        [0, 1, 0, 0],
-        [0, 1, 0, 0],
-        [0, 0, 1, 0],
-        [1, 0, 0, 0]
-    ])
+    asignaciones = make_asignaciones(clases, aulas, modelo, asignaciones_forzadas={ 0: 3, 1: 2, 2: 1, 3: 1, 4: 2, 5: 0 })
 
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
+    clases_fuera_del_edificio_preferido, cota_superior = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -77,6 +68,9 @@ def test_algunas_aulas_en_el_edificio_preferido():
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
     
     assert solver.value(clases_fuera_del_edificio_preferido) == 4
+    # La clase que no tiene edificio preferido no puede estar fuera de su
+    # edificio preferido, y la cota máxima refleja este hecho
+    assert cota_superior == 5
 
 def test_elije_aula_en_edificio_preferido():
     aulas = make_aulas(
@@ -93,10 +87,10 @@ def test_elije_aula_en_edificio_preferido():
 
     asignaciones = make_asignaciones(clases, aulas, modelo)
 
-    clases_fuera_del_edificio_preferido = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
+    clases_fuera_del_edificio_preferido, cota_superior = preferencias.obtener_cantidad_de_clases_fuera_del_edificio_preferido(clases, aulas, modelo, asignaciones)
 
     # Pedir al modelo minimizar cantidad de clases fuera del edificio preferido 
-    modelo.minimize(clases_fuera_del_edificio_preferido)
+    modelo.minimize((1 / cota_superior) * clases_fuera_del_edificio_preferido)
 
     # Resolver
     solver = cp_model.CpSolver()
@@ -107,5 +101,6 @@ def test_elije_aula_en_edificio_preferido():
 
     # La clase se debe asignar al aula en el edificio preferido
     assert solver.value(clases_fuera_del_edificio_preferido) == 0
+    assert cota_superior == 1
     assert sum(asignaciones_finales[0,:]) == 1 and asignaciones_finales[0, 2] == 1
 

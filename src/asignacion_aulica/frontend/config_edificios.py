@@ -48,11 +48,11 @@ class UI_Config_Edificios():
 
         """
         # Se vuelven a crear los elementos para que estén vacíos en selección.
-        self.lista_dias = self.crear_lista_dias()
-        self.lista_hora_apertura.value = self.crear_lista_horas()
-        self.lista_hora_cierre.value = self.crear_lista_horas()
-        self.lista_minutos_apertura.value = self.crear_lista_minutos()
-        self.lista_minutos_cierre.value = self.crear_lista_minutos()
+        self.lista_dias.value = ""
+        self.lista_hora_apertura.value = ""
+        self.lista_hora_cierre.value = ""
+        self.lista_minutos_apertura.value = ""
+        self.lista_minutos_cierre.value = ""
         
         # Se actualizan los elementos de la interfaz.
         self.actualizar_filas()
@@ -87,7 +87,7 @@ class UI_Config_Edificios():
             
             # Si es que no hay ningún problema:
             # Limpia el campo de texto del edificio.
-            self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
+            self.campo_nombre_edificio.value = ""
             
             # Limpia las listas de selección de horario.
             self.limpiar_seleccion_horario()
@@ -132,7 +132,7 @@ class UI_Config_Edificios():
         
             # Si es que no hay ningún problema:
             # Limpia el campo de texto del edificio.
-            self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
+            self.campo_nombre_edificio.value = ""
         
             # Limpia las listas de selección de horario.
             self.limpiar_seleccion_horario()
@@ -168,7 +168,7 @@ class UI_Config_Edificios():
         
             # Si es que no hay ningún problema:
             # Limpia el campo de texto del edificio.
-            self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
+            self.campo_nombre_edificio.value = ""
         
             # Limpia las listas de selección de horario.
             self.limpiar_seleccion_horario()
@@ -275,7 +275,7 @@ class UI_Config_Edificios():
 
         """
         # Limpia el campo de texto del edificio.
-        self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
+        self.campo_nombre_edificio.value = ""
     
         # Limpia las listas de selección de horario.
         self.limpiar_seleccion_horario()
@@ -303,6 +303,9 @@ class UI_Config_Edificios():
 
         """
         nombre_edificio: str = str(self.lista_edificios.value or "")
+        print(f"Edificio: {nombre_edificio}")
+        dia: str = str(self.lista_dias.value or "")
+        print(f"Dia: {dia}")
         
         if nombre_edificio == "":
             self.alertar(
@@ -314,7 +317,7 @@ class UI_Config_Edificios():
             )
         
             # Limpia el campo de texto del edificio.
-            self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
+            self.campo_nombre_edificio.value = ""
         
             # Limpia las listas de selección de horario.
             self.limpiar_seleccion_horario()
@@ -322,24 +325,25 @@ class UI_Config_Edificios():
             # Se actualizan los elementos de la interfaz.
             self.actualizar_filas()
             self.actualizar_apartado()
-        else:
-            dia: str = str(self.lista_dias.value or "")
-            if dia in self.ui_config.universidad.columnas_edificios()[1:]:
+        elif dia in self.ui_config.universidad.columnas_edificios()[1:]:
                 try:
                     # Si explota aca por falta de argumentos de retorno, no hace el update.
                     # El metodo retorna los atributos en ese orden:
                     hora_apertura, minutos_apertura, hora_cierre, minutos_cierre = (
-                        self.ui_config.universidad.horario_segmentado_edificio(nombre_edificio, dia))
+                        self.ui_config.universidad.horario_segmentado_edificio(nombre_edificio, dia)
+                    )
+                    
                     # "Autoselecciona" o muestra el horario del edificio para el día
                     # elegido.
                     self.lista_hora_apertura.value = hora_apertura
                     self.lista_hora_cierre.value = hora_cierre
                     self.lista_minutos_apertura.value = minutos_apertura
                     self.lista_minutos_cierre.value = minutos_cierre
+                    
                     # Se actualizan los elementos de la interfaz.
                     self.actualizar_filas()
                     self.actualizar_apartado()
-                except Exception as e:
+                except Exception as exc:
                     print("Intente actualizar una lista de horarios de un dia cerrado. Loggeo en print para saber nomas.")
                     pass
     
@@ -372,7 +376,7 @@ class UI_Config_Edificios():
             )
         
             # Limpia el campo de texto del edificio.
-            self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
+            self.campo_nombre_edificio.value = ""
         
             # Limpia las listas de selección de horario.
             self.limpiar_seleccion_horario()
@@ -390,7 +394,7 @@ class UI_Config_Edificios():
             )
         
             # Limpia el campo de texto del edificio.
-            self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
+            self.campo_nombre_edificio.value = ""
         
             # Limpia las listas de selección de horario.
             self.limpiar_seleccion_horario()
@@ -428,7 +432,7 @@ class UI_Config_Edificios():
              )
         
             # Limpia el campo de texto del edificio.
-            self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
+            self.campo_nombre_edificio.value = ""
         
             # Limpia las listas de selección de horario.
             self.limpiar_seleccion_horario()
@@ -446,7 +450,7 @@ class UI_Config_Edificios():
             )
         
             # Limpia el campo de texto del edificio.
-            self.campo_nombre_edificio = self.crear_campo_nombre_edificio()
+            self.campo_nombre_edificio.value = ""
         
             # Limpia las listas de selección de horario.
             self.limpiar_seleccion_horario()
@@ -571,7 +575,6 @@ class UI_Config_Edificios():
         opciones_edificios: List[ft.dropdown.Option] = []
         for edificio in self.ui_config.universidad.nombres_edificios():
             opciones_edificios.append(ft.dropdown.Option(str(edificio)))
-        self.lista_edificios = self.crear_lista_edificios()
         self.lista_edificios.options = opciones_edificios
     
     def cargar_datos_tabla(self):

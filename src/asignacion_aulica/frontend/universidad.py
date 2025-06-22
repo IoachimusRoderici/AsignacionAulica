@@ -31,7 +31,6 @@ class Universidad:
             List[str]
         """
         return self.edificios.columns.tolist()
-        
     def mostrar_edificios(self):
         """
         Retorna el dataframe de los edificios instanciados
@@ -44,7 +43,6 @@ class Universidad:
             DataFrame
         """
         return self.edificios
-
     def nombres_edificios(self):
         """
         Metodo para mostrar los nombres de los edificios instanciados.
@@ -86,7 +84,7 @@ class Universidad:
         aux_row = pd.DataFrame([aux_dict])
         self.edificios = pd.concat([self.edificios, aux_row], ignore_index=True)
 
-    def eliminar_edificio(self, nombre_edificio:str): #TODO Prohibir si hay aulas que usan el edificio
+    def eliminar_edificio(self, nombre_edificio:str):
         """
         Metodo para eliminar un edificio existente de la universidad
 
@@ -100,7 +98,7 @@ class Universidad:
             ElementoNoExisteException, si se trata de borrar un edificio que no existe en sistema.
             EdificioTieneAulasException , si se trata de agregar un edificio ya existente.
         """
-        if nombre_edificio in self.aulas['Edificio']:
+        if nombre_edificio in self.aulas['Edificio'].values:
             raise(ElementoTieneDependenciasException("Hay aulas que contienen este edificio, eliminacion cancelada."))
         if nombre_edificio not in self.nombres_edificios():
             raise(ElementoNoExisteException("El edificio que desea borrar no existe en el sistema."))
@@ -126,9 +124,7 @@ class Universidad:
         Throws
             - ElementoInvalidoException , si se trata de ingresar algun parametro vacio.
 
-
         """
-
         if nombre_edificio=="":
             raise(ElementoInvalidoException("Debe ingresar un edificio a modificar."))
         if columna_a_modificar=="":
@@ -138,13 +134,7 @@ class Universidad:
         if valor_nuevo=="":
             raise(ElementoInvalidoException("No se puede ingresar una cadena vacia como valor nuevo."))
 
-
-        # Buscar la fila donde la primera columna (nombre de edificio) coincide
-        filtro = self.edificios[self.edificios['Edificio'] == nombre_edificio]
-        # Obtener el índice de esa fila
-        index = filtro.index[0]
-        # Modificar el valor
-        self.edificios.at[index, columna_a_modificar] = valor_nuevo
+        self.edificios.at[self.indice_edificio(nombre_edificio), columna_a_modificar] = valor_nuevo
 
     def modificar_horario_edificio(self, nombre_edificio:str, dia:str, 
         hora1:int, hora2:int, minuto1:int, minuto2:int):
@@ -157,28 +147,27 @@ class Universidad:
         ):
             raise(HorarioInvalidoException("Error: Los datos de horario deben estar en un rango de 0-23 horas y 0-59 minutos."))
 
-
         if time(hora1, minuto1) < time(hora2, minuto2):
             self.modificar_edificio(nombre_edificio, dia, f"{hora1}:{minuto1:02}-{hora2}:{minuto2:02}")
         else:
             raise(HorarioInvalidoException("La hora de cierre no puede ser menor que la de apertura"))
 
-    def edificio_esta_cerrado(self, nombre_edificio:str, dia:str):
+    def indice_edificio(self, nombre_edificio:str):
+        """"Metodo auxiliar que retorna el indice de un edificio en el dataframe. Para evitar reusar codigo."""
         filtro = self.edificios[self.edificios['Edificio'] == nombre_edificio]
-        index = filtro.index[0]
-        # Modificar el valor
-        cadena = self.edificios.at[index, dia]
-        return cadena=="CERRADO"
+        return filtro.index[0]
 
+    def horario_edificio(self, nombre_edificio:str, dia:str):
+        """Metodo que retorna la cadena de horario de un edificio, sin importar si esta cerrado o no.
+        Usado para parsear los horarios completos, o para instanciar horarios por defecto en aulas.
+        """
+        return self.edificios.at[self.indice_edificio(nombre_edificio), dia]
 
     def horario_segmentado_edificio(self, nombre_edificio:str, dia:str):
-
-        filtro = self.edificios[self.edificios['Edificio'] == nombre_edificio]
-        index = filtro.index[0]
-        # Modificar el valor
-        cadena = self.edificios.at[index, dia]
-        if cadena=="CERRADO":
-            pass
+        """Metodo que retorna el horario de un edificio, pero segmentado en los cuatro valores componentes.
+        Sigue el orden que tenia la cadena (Hora apertura, minuto apertura, hora cierre, minuto cierre).
+        Si ese edificio estaba cerrado, retorna cadenas vacias."""
+        cadena = self.horario_edificio(nombre_edificio, dia)
         matches = re.findall(r'\d+', cadena) 
         if len(matches)==4:
             return matches
@@ -191,17 +180,39 @@ class Universidad:
 
 
     # Sector de aulas
-    def columnas_aulas(self): # Retorna lista de columnnames
+    def columnas_aulas(self):
         return self.aulas.columns.tolist()
-    def mostrar_aulas(self): # Retorna el dataframe de aulas
+    def mostrar_aulas(self):
         return self.aulas
-    def agregar_aula(self, identificador_aula:str , capacidad:int, edificio_aula:str): #TODO implementar. Que no permita aulas huerfanas.
-        
-        aux_dict = {col:None for col in self.columnas_aulas}
-        aux_dict[self.columnas_aulas[0]] = identificador_aula    #   Primer columna es identificador aula. Escribo
-        aux_dict[self.columnas_aulas[1]] = capacidad
-        aux_dict[self.columnas_aulas[-1]] = edificio_aula        #   Ultima columna es edificio. Escribo.
-        print("falta IMPLEMENTAR TODAVIA")
+    def nombres_aulas(self):
+        """
+        Metodo para mostrar los nombres de las aulas instanciadas.
+
+        Parameters
+        -None
+        Returns
+            La lista de nombres de las aulas instanciadas
+        TYPE
+            List[str]
+        """
+        return self.aulas.iloc[:,0].tolist()
+    
+    def agregar_aula(self, identificador_aula:str , capacidad:int, edificio_aula:str):
+        """Metodo para agregar un aula al dataframe de aulas. Verifica unicidad y edificio existente."""
+        if edificio_aula not in self.nombres_edificios():
+            raise(ElementoNoExisteException("No se agrego el aula con un edificio valido."))
+        if identificador_aula in self.nombres_aulas():
+            raise(ElementoDuplicadoException("Ya existe un aula con ese nombre en el sistema."))
+
+        aux_dict = {col:None for col in self.columnas_aulas()}
+        aux_dict['Aula'] = identificador_aula    #   Primer columna es identificador aula. Escribo
+        aux_dict['Capacidad'] = capacidad
+        aux_dict['Edificio'] = edificio_aula        #   Ultima columna es edificio. Escribo.
+        for col in ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]:
+            aux_dict[col] = self.horario_edificio(edificio_aula, col)
+        aux_row = pd.DataFrame([aux_dict])
+        self.aulas = pd.concat([self.aulas, aux_row], ignore_index=True)
+
 
     def eliminar_aula(self, id_aula): #TODO implementar
         print("A IMPLEMENTAR")
@@ -226,16 +237,29 @@ def main():
 
     print("Edificios antes del eliminar:")
     print(uni.mostrar_edificios())
+    print("Aulas antes de operacion:")
+    print(uni.mostrar_aulas())
+    print("Edificios en las aulas:")
+    for edif in uni.aulas["Edificio"]:
+        print(edif)
+
+    if "Anasagasti 1" in uni.aulas["Edificio"].values:
+        print("DEBUG, SI ESTA")
 
     try:
-        for i in uni.horario_segmentado_edificio("Anasagasti 1", "Martes"):
-            print(i)
+        uni.agregar_aula("B-103", 40, "Anasagasti 1")
     except Exception as e:
         print(e)
 
+    try:
+        uni.eliminar_edificio("Anasagasti 1")
+    except Exception as e:
+        print(e)
 
-    print("Edificios despues del eliminar:")
+    print("Edificios despues del proceso:")
     print(uni.mostrar_edificios())
+    print("Aulas despues del agregar:")
+    print(uni.mostrar_aulas())
 
 
 

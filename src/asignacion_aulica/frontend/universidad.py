@@ -77,10 +77,10 @@ class Universidad:
         if nombre_edificio in self.nombres_edificios():
             raise(ElementoDuplicadoException("Ya existe un edificio con ese nombre"))
 
-        aux_dict = {self.edificios.columns[0]:nombre_edificio}
-        for col in self.edificios.columns[1:-1]:
+        aux_dict = {'Edificio':nombre_edificio}
+        for col in ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']:
             aux_dict[col] = "9:00-23:00"
-        aux_dict[self.edificios.columns[-1]] = "CERRADO"
+        aux_dict['Domingo'] = "CERRADO"
         aux_row = pd.DataFrame([aux_dict])
         self.edificios = pd.concat([self.edificios, aux_row], ignore_index=True)
 
@@ -102,7 +102,7 @@ class Universidad:
         if nombre_edificio not in self.nombres_edificios():
             raise(ElementoNoExisteException("El edificio que desea borrar no existe en el sistema."))
         
-        self.edificios = self.edificios[self.edificios.iloc[:, 0] != nombre_edificio].reset_index(drop=True)
+        self.edificios = self.edificios[self.edificios['Edificio'] != nombre_edificio].reset_index(drop=True)
     
     def modificar_edificio(self, nombre_edificio:str, columna_a_modificar:str, valor_nuevo:str):
         """
@@ -137,7 +137,7 @@ class Universidad:
 
 
         # Buscar la fila donde la primera columna (nombre de edificio) coincide
-        filtro = self.edificios[self.edificios.iloc[:, 0] == nombre_edificio]
+        filtro = self.edificios[self.edificios['Edificio'] == nombre_edificio]
         # Obtener el índice de esa fila
         index = filtro.index[0]
         # Modificar el valor

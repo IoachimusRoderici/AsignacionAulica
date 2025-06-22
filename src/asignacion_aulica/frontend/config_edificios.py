@@ -325,10 +325,8 @@ class UI_Config_Edificios():
         else:
             dia: str = str(self.lista_dias.value or "")
             if dia in self.ui_config.universidad.columnas_edificios()[1:]:
-                # Falta verificar que el día no esté cerrado para que haga la
-                # autoselección. Si el día que seleccionó está cerrado, que no
-                # haga nada la autoselección.
-                if self.ui_config.universidad.edificio_esta_abierto(nombre_edificio, dia):
+                try:
+                    # Si explota aca por falta de argumentos de retorno, no hace el update.
                     # El metodo retorna los atributos en ese orden:
                     hora_apertura, minutos_apertura, hora_cierre, minutos_cierre = (
                         self.ui_config.universidad.horario_segmentado_edificio(nombre_edificio, dia))
@@ -341,6 +339,9 @@ class UI_Config_Edificios():
                     # Se actualizan los elementos de la interfaz.
                     self.actualizar_filas()
                     self.actualizar_apartado()
+                except Exception as e:
+                    print("Intente actualizar una lista de horarios de un dia cerrado. Loggeo en print para saber nomas.")
+                    pass
     
     def seleccionar_hora(self, e):
         """

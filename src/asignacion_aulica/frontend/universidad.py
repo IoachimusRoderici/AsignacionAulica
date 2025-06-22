@@ -1,5 +1,6 @@
 import pandas as pd
 from datetime import time
+import re
 
 from asignacion_aulica.frontend.excepciones_universidad import *
 from asignacion_aulica.get_asset_path import get_asset_path
@@ -9,6 +10,7 @@ from asignacion_aulica.get_asset_path import get_asset_path
 class Universidad:
     def __init__(self, 
         df_list = pd.read_excel(get_asset_path('edificios_default/Universidad.xlsx'), sheet_name=None)
+        #df_list = pd.read_excel("./src/assets/edificios_default/Universidad.xlsx", sheet_name=None)
     ):        
         
         self.edificios = df_list['Edificios']
@@ -98,7 +100,8 @@ class Universidad:
             ElementoNoExisteException, si se trata de borrar un edificio que no existe en sistema.
             EdificioTieneAulasException , si se trata de agregar un edificio ya existente.
         """
-        ### TODO prohibir si hay aulas instanciadas que usen ese edificio
+        if nombre_edificio in self.aulas['Edificio']:
+            raise(ElementoTieneDependenciasException("Hay aulas que contienen este edificio, eliminacion cancelada."))
         if nombre_edificio not in self.nombres_edificios():
             raise(ElementoNoExisteException("El edificio que desea borrar no existe en el sistema."))
         
@@ -160,6 +163,28 @@ class Universidad:
         else:
             raise(HorarioInvalidoException("La hora de cierre no puede ser menor que la de apertura"))
 
+    def edificio_esta_cerrado(self, nombre_edificio:str, dia:str):
+        filtro = self.edificios[self.edificios['Edificio'] == nombre_edificio]
+        index = filtro.index[0]
+        # Modificar el valor
+        cadena = self.edificios.at[index, dia]
+        return cadena=="CERRADO"
+
+
+    def horario_segmentado_edificio(self, nombre_edificio:str, dia:str):
+
+        filtro = self.edificios[self.edificios['Edificio'] == nombre_edificio]
+        index = filtro.index[0]
+        # Modificar el valor
+        cadena = self.edificios.at[index, dia]
+        if cadena=="CERRADO":
+            pass
+        matches = re.findall(r'\d+', cadena) 
+        if len(matches)==4:
+            return matches
+        else:
+            raise(HorarioInvalidoException("Error, no se puede parsear el horario: " + cadena))
+
 
     
 
@@ -190,6 +215,11 @@ class Universidad:
     def horario_aula_salida(self, id_aula): #TODO
         print("A IMPLEMENTAR")
 
+################3
+###############CARRERAS
+#############3
+
+
 
 def main():
     uni = Universidad()
@@ -197,14 +227,10 @@ def main():
     print("Edificios antes del eliminar:")
     print(uni.mostrar_edificios())
 
-    
-    uni.modificar_edificio("Anasagasti 1", "Sábado", "CERRADO")
-    uni.modificar_edificio("Anasagasti 1", "Nombre del Edificio", "Viedma 1")
-    uni.modificar_horario_edificio("Mitre 1", "Domingo", 10, 11, 00, 00)
-
     try:
-        uni.modificar_horario_edificio("Mitre1", "Lunes", 11, 5, 00, 00)
-    except HorarioInvalidoException as e:
+        for i in uni.horario_segmentado_edificio("Anasagasti 1", "Martes"):
+            print(i)
+    except Exception as e:
         print(e)
 
 

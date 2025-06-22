@@ -324,28 +324,23 @@ class UI_Config_Edificios():
             self.actualizar_apartado()
         else:
             dia: str = str(self.lista_dias.value or "")
-            if dia in self.ui_config.universidad.nombres_columnas()[1:]:
-                # TODO
-                # PODES CAMBIAR LA IMPLEMENTACION PERO DEBE SER ACORDE A LO QUE ESTA PARA QUE FUNCIONE
+            if dia in self.ui_config.universidad.columnas_edificios()[1:]:
                 # Falta verificar que el día no esté cerrado para que haga la
                 # autoselección. Si el día que seleccionó está cerrado, que no
                 # haga nada la autoselección.
-                
-                # hora_apertura: str = self.ui_config.universidad.TU_FUNCION()
-                # hora_cierre: str = self.ui_config.universidad.TU_FUNCION()
-                # minutos_apertura: str = self.ui_config.universidad.TU_FUNCION()
-                # minutos_cierre: str = self.ui_config.universidad.TU_FUNCION()
-                
-                # "Autoselecciona" o muestra el horario del edificio para el día
-                # elegido.
-                # self.lista_hora_apertura.value = hora_apertura
-                # self.lista_hora_cierre.value = hora_cierre
-                # self.lista_minutos_apertura.value = minutos_apertura
-                # self.lista_minutos_cierre.value = minutos_cierre
-            
-                # Se actualizan los elementos de la interfaz.
-                self.actualizar_filas()
-                self.actualizar_apartado()
+                if self.ui_config.universidad.edificio_esta_abierto(nombre_edificio, dia):
+                    # El metodo retorna los atributos en ese orden:
+                    hora_apertura, minutos_apertura, hora_cierre, minutos_cierre = (
+                        self.ui_config.universidad.horario_segmentado_edificio(nombre_edificio, dia))
+                    # "Autoselecciona" o muestra el horario del edificio para el día
+                    # elegido.
+                    self.lista_hora_apertura.value = hora_apertura
+                    self.lista_hora_cierre.value = hora_cierre
+                    self.lista_minutos_apertura.value = minutos_apertura
+                    self.lista_minutos_cierre.value = minutos_cierre
+                    # Se actualizan los elementos de la interfaz.
+                    self.actualizar_filas()
+                    self.actualizar_apartado()
     
     def seleccionar_hora(self, e):
         """

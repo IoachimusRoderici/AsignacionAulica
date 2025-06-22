@@ -96,7 +96,7 @@ class Universidad:
             None
         Throws:
             ElementoNoExisteException, si se trata de borrar un edificio que no existe en sistema.
-            EdificioTieneAulasException , si se trata de agregar un edificio ya existente.
+            ElementoTieneDependenciasException , si se trata de agregar un edificio ya existente.
         """
         if nombre_edificio in self.aulas['Edificio'].values:
             raise(ElementoTieneDependenciasException("Hay aulas que contienen este edificio, eliminacion cancelada."))
@@ -170,7 +170,7 @@ class Universidad:
         cadena = self.horario_edificio(nombre_edificio, dia)
         matches = re.findall(r'\d+', cadena) 
         if len(matches)==4:
-            return matches
+            return [match.zfill(2) for match in matches]
         else:
             raise(HorarioInvalidoException("Error, no se puede parsear el horario: " + cadena))
 
@@ -197,6 +197,11 @@ class Universidad:
         """
         return self.aulas.iloc[:,0].tolist()
     
+    def indice_aula(self, nombre_aula:str):
+        """"Metodo auxiliar que retorna el indice de un aula en el dataframe. Para evitar reusar codigo."""
+        filtro = self.aulas[self.aulas['Aula'] == nombre_aula]
+        return filtro.index[0]
+
     def agregar_aula(self, identificador_aula:str , capacidad:int, edificio_aula:str):
         """Metodo para agregar un aula al dataframe de aulas. Verifica unicidad y edificio existente."""
         if edificio_aula not in self.nombres_edificios():
@@ -213,9 +218,27 @@ class Universidad:
         aux_row = pd.DataFrame([aux_dict])
         self.aulas = pd.concat([self.aulas, aux_row], ignore_index=True)
 
+    def eliminar_aula(self, nombre_aula): #TODO definir si requiere un check de dependencias antes de borrar.
+        """
+        Metodo para eliminar un edificio existente de la universidad
 
-    def eliminar_aula(self, id_aula): #TODO implementar
-        print("A IMPLEMENTAR")
+        Parameters
+        ----------
+        nombre_edificio : str
+            El nombre del edificio a eliminar. Funciona como clave primaria.
+        Returns
+            None
+        Throws:
+            ElementoNoExisteException, si se trata de borrar un edificio que no existe en sistema.
+        """
+        # TODO posible chequeo de donde se usa el aula. Pensar, cuando esten las materias listas.
+        #if nombre_aula in self.aulas['Edificio'].values:
+        #    raise(ElementoTieneDependenciasException("Hay aulas que contienen este edificio, eliminacion cancelada."))
+        if nombre_aula not in self.nombres_aulas():
+            raise(ElementoNoExisteException("El aula que desea borrar no existe en el sistema."))
+        
+        self.aulas = self.aulas[self.aulas['Aula'] != nombre_aula].reset_index(drop=True)
+
     def modificar_aula(self, row_aula): #TODO implementar
         print("A IMPLEMENTAR")
     """Metodo para recuperar el horario de un aula.
@@ -260,6 +283,10 @@ def main():
     print(uni.mostrar_edificios())
     print("Aulas despues del agregar:")
     print(uni.mostrar_aulas())
+
+    print("Horario segmentado de edificio:")
+    for cadena in uni.horario_segmentado_edificio("Anasagasti 2", "Lunes"):
+        print(cadena)
 
 
 

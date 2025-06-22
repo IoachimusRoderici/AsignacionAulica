@@ -8,11 +8,11 @@ from asignacion_aulica.get_asset_path import get_asset_path
 
 class Universidad:
     def __init__(self, 
-        edificios=pd.read_excel(get_asset_path('edificios_default/edificios.xlsx')), 
-        aulas = pd.read_excel(get_asset_path('edificios_default/aulas.xlsx'))
+        df_list = pd.read_excel(get_asset_path('edificios_default/Universidad.xlsx'), sheet_name=None)
     ):        
-        self.edificios = edificios
-        self.aulas = aulas
+        
+        self.edificios = df_list['Edificios']
+        self.aulas = df_list['Aulas']
 
 
     # Sector de edificios:

@@ -56,7 +56,6 @@ class Universidad:
             List[str]
         """
         return self.edificios.iloc[:,0].tolist()
-
     def agregar_edificio(self, nombre_edificio:str):
         """
         Metodo para agregar un edificio a la universidad.
@@ -83,7 +82,6 @@ class Universidad:
         aux_dict['Domingo'] = "CERRADO"
         aux_row = pd.DataFrame([aux_dict])
         self.edificios = pd.concat([self.edificios, aux_row], ignore_index=True)
-
     def eliminar_edificio(self, nombre_edificio:str):
         """
         Metodo para eliminar un edificio existente de la universidad
@@ -103,8 +101,7 @@ class Universidad:
         if nombre_edificio not in self.nombres_edificios():
             raise(ElementoNoExisteException("El edificio que desea borrar no existe en el sistema."))
         
-        self.edificios = self.edificios[self.edificios['Edificio'] != nombre_edificio].reset_index(drop=True)
-    
+        self.edificios = self.edificios[self.edificios['Edificio'] != nombre_edificio].reset_index(drop=True)    
     def modificar_edificio(self, nombre_edificio:str, columna_a_modificar:str, valor_nuevo:str):
         """
         Modifica el valor de una columna específica para el edificio dado.
@@ -135,7 +132,6 @@ class Universidad:
             raise(ElementoInvalidoException("No se puede ingresar una cadena vacia como valor nuevo."))
 
         self.edificios.at[self.indice_edificio(nombre_edificio), columna_a_modificar] = valor_nuevo
-
     def modificar_horario_edificio(self, nombre_edificio:str, dia:str, hora1:int, hora2:int, minuto1:int, minuto2:int):
 
         if (
@@ -150,23 +146,20 @@ class Universidad:
             self.modificar_edificio(nombre_edificio, dia, f"{hora1}:{minuto1:02}-{hora2}:{minuto2:02}")
         else:
             raise(HorarioInvalidoException("La hora de cierre no puede ser menor que la de apertura"))
-
     def indice_edificio(self, nombre_edificio:str):
         """"Metodo auxiliar que retorna el indice de un edificio en el dataframe. Para evitar reusar codigo."""
         filtro = self.edificios[self.edificios['Edificio'] == nombre_edificio]
         return filtro.index[0]
-
-    def horario_edificio(self, nombre_edificio:str, dia:str):
+    def valor_de_edificio(self, nombre_edificio:str, dia:str):
         """Metodo que retorna la cadena de horario de un edificio, sin importar si esta cerrado o no.
         Usado para parsear los horarios completos, o para instanciar horarios por defecto en aulas.
         """
         return self.edificios.at[self.indice_edificio(nombre_edificio), dia]
-
     def horario_segmentado_edificio(self, nombre_edificio:str, dia:str):
         """Metodo que retorna el horario de un edificio, pero segmentado en los cuatro valores componentes.
         Sigue el orden que tenia la cadena (Hora apertura, minuto apertura, hora cierre, minuto cierre).
         Si ese edificio estaba cerrado, retorna cadenas vacias."""
-        cadena = self.horario_edificio(nombre_edificio, dia)
+        cadena = self.valor_de_edificio(nombre_edificio, dia)
         matches = re.findall(r'\d+', cadena) 
         if len(matches)==4:
             return [match.zfill(2) for match in matches]
@@ -194,13 +187,11 @@ class Universidad:
         TYPE
             List[str]
         """
-        return self.aulas.iloc[:,0].tolist()
-    
+        return self.aulas.iloc[:,0].tolist()    
     def indice_aula(self, nombre_aula:str):
         """"Metodo auxiliar que retorna el indice de un aula en el dataframe. Para evitar reusar codigo."""
         filtro = self.aulas[self.aulas['Aula'] == nombre_aula]
         return filtro.index[0]
-
     def agregar_aula(self, identificador_aula:str , capacidad:int, edificio_aula:str):
         """Metodo para agregar un aula al dataframe de aulas. Verifica unicidad y edificio existente."""
         if edificio_aula not in self.nombres_edificios():
@@ -213,10 +204,9 @@ class Universidad:
         aux_dict['Capacidad'] = capacidad
         aux_dict['Edificio'] = edificio_aula        #   Ultima columna es edificio. Escribo.
         for col in ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]:
-            aux_dict[col] = self.horario_edificio(edificio_aula, col)
+            aux_dict[col] = self.valor_de_edificio(edificio_aula, col)
         aux_row = pd.DataFrame([aux_dict])
         self.aulas = pd.concat([self.aulas, aux_row], ignore_index=True)
-
     def eliminar_aula(self, nombre_aula): #TODO Anda, pero definir si requiere un check de dependencias antes de eliminar aulas.
         """
         Metodo para eliminar un edificio existente de la universidad
@@ -237,7 +227,6 @@ class Universidad:
             raise(ElementoNoExisteException("El aula que desea borrar no existe en el sistema."))
         
         self.aulas = self.aulas[self.aulas['Aula'] != nombre_aula].reset_index(drop=True)
-
     def modificar_aula(self, nombre_aula:str, columna_a_modificar:str, valor_nuevo:str):
         """
         Modifica el valor de una columna específica para el aula dada.
@@ -268,17 +257,37 @@ class Universidad:
         if valor_nuevo=="":
             raise(ElementoInvalidoException("No se puede ingresar una cadena vacia como valor nuevo."))
 
-        print("PASE POR MODIFICAR")
-        print(f"Indice de aula es: {self.indice_aula(nombre_aula)}")
         self.aulas.at[self.indice_aula(nombre_aula), columna_a_modificar] = valor_nuevo
+    def modificar_horario_aula(self, nombre_aula:str, dia:str, hora1:int, hora2:int, minuto1:int, minuto2:int):
 
-    """Metodo para recuperar el horario de un aula.
-    Si el valor es null en el aula, devuelve el del edificio.
-    Si el edificio esta cerrado en ese horario, #TODO decidir que hacer"""
-    def horario_aula_entrada(self, id_aula): #TODO
-        print("A IMPLEMENTAR")
-    def horario_aula_salida(self, id_aula): #TODO
-        print("A IMPLEMENTAR")
+        if (
+            hora1 not in range(0,24) or
+            hora2 not in range(0,24) or
+            minuto1 not in range(0,60) or
+            minuto2 not in range(0,60)
+        ):
+            raise(HorarioInvalidoException("Error: Los datos de horario deben estar en un rango de 0-23 horas y 0-59 minutos."))
+
+        if time(hora1, minuto1) < time(hora2, minuto2):
+            self.modificar_aula(nombre_aula, dia, f"{hora1}:{minuto1:02}-{hora2}:{minuto2:02}")
+        else:
+            raise(HorarioInvalidoException("La hora de cierre no puede ser menor que la de apertura"))
+    def valor_de_aula(self, nombre_aula:str, dia:str):
+        """Metodo que retorna la cadena de horario de un aula, sin importar si esta cerrado o no.
+        """
+        return self.aulas.at[self.indice_aula(nombre_aula), dia]
+    def horario_segmentado_aula(self, nombre_aula:str, dia:str):
+        """Metodo que retorna el horario de un aula, pero segmentado en los cuatro valores componentes.
+        Sigue el orden que tenia la cadena (Hora apertura, minuto apertura, hora cierre, minuto cierre).
+        Si ese edificio estaba cerrado, explota en horarioinvalidoexception"""
+        cadena = self.valor_de_aula(nombre_aula, dia)
+        matches = re.findall(r'\d+', cadena) 
+        if len(matches)==4:
+            return [match.zfill(2) for match in matches]
+        else:
+            raise(HorarioInvalidoException("Error, no se puede parsear el horario: " + cadena))
+
+
 
 ################3
 ###############CARRERAS

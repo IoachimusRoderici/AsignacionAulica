@@ -136,8 +136,7 @@ class Universidad:
 
         self.edificios.at[self.indice_edificio(nombre_edificio), columna_a_modificar] = valor_nuevo
 
-    def modificar_horario_edificio(self, nombre_edificio:str, dia:str, 
-        hora1:int, hora2:int, minuto1:int, minuto2:int):
+    def modificar_horario_edificio(self, nombre_edificio:str, dia:str, hora1:int, hora2:int, minuto1:int, minuto2:int):
 
         if (
             hora1 not in range(0,24) or
@@ -218,7 +217,7 @@ class Universidad:
         aux_row = pd.DataFrame([aux_dict])
         self.aulas = pd.concat([self.aulas, aux_row], ignore_index=True)
 
-    def eliminar_aula(self, nombre_aula): #TODO definir si requiere un check de dependencias antes de borrar.
+    def eliminar_aula(self, nombre_aula): #TODO Anda, pero definir si requiere un check de dependencias antes de eliminar aulas.
         """
         Metodo para eliminar un edificio existente de la universidad
 
@@ -239,8 +238,40 @@ class Universidad:
         
         self.aulas = self.aulas[self.aulas['Aula'] != nombre_aula].reset_index(drop=True)
 
-    def modificar_aula(self, row_aula): #TODO implementar
-        print("A IMPLEMENTAR")
+    def modificar_aula(self, nombre_aula:str, columna_a_modificar:str, valor_nuevo:str):
+        """
+        Modifica el valor de una columna específica para el aula dada.
+
+        Parameters
+        ----------
+        nombre_aula : str
+            Nombre del aula a modificar (clave primaria, debe seguir la convencion de nombres dada en el README de formato).
+        columna_a_modificar : str
+            Nombre de la columna a modificar.
+        valor_nuevo : str
+            Valor nuevo a establecer en la celda correspondiente.
+        Returns
+        -------
+        None
+        Throws
+            - ElementoInvalidoException , si se trata de ingresar algun parametro vacio.
+
+        """
+        if nombre_aula not in self.nombres_aulas():
+            raise(ElementoInvalidoException("Para modificar un aula, debe elegir un aula que este en el sistema."))
+        if columna_a_modificar not in self.columnas_aulas():
+            raise(ElementoInvalidoException(f"La columna que desea modificar ({columna_a_modificar})" + 
+                                            f"no se encuentra entre los datos del edificio ({self.columnas_aulas()}.)"))
+        
+        valor_nuevo = str(valor_nuevo)
+        
+        if valor_nuevo=="":
+            raise(ElementoInvalidoException("No se puede ingresar una cadena vacia como valor nuevo."))
+
+        print("PASE POR MODIFICAR")
+        print(f"Indice de aula es: {self.indice_aula(nombre_aula)}")
+        self.aulas.at[self.indice_aula(nombre_aula), columna_a_modificar] = valor_nuevo
+
     """Metodo para recuperar el horario de un aula.
     Si el valor es null en el aula, devuelve el del edificio.
     Si el edificio esta cerrado en ese horario, #TODO decidir que hacer"""
@@ -270,19 +301,14 @@ def main():
         print("DEBUG, SI ESTA")
 
     try:
-        uni.agregar_aula("B-103", 40, "Anasagasti 1")
+        uni.modificar_aula("B-103", "Capacidad", 44)
     except Exception as e:
         print(e)
 
-    try:
-        uni.eliminar_edificio("Anasagasti 1")
-    except Exception as e:
-        print(e)
-
-    print("Edificios despues del proceso:")
-    print(uni.mostrar_edificios())
     print("Aulas despues del agregar:")
     print(uni.mostrar_aulas())
+
+
 
     print("Horario segmentado de edificio:")
     for cadena in uni.horario_segmentado_edificio("Anasagasti 2", "Lunes"):

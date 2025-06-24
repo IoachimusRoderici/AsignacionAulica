@@ -819,6 +819,14 @@ class UI_Config_Aulas():
         # 11) Tabla con datos de los aulas
         self.tabla = self.crear_tabla()
         
+        # Carga inicial de todos los datos:
+        self.cargar_datos_inicio()
+        
+        # Se actualizan los handlers para los botones y se agregan las filas
+        # para la interfaz.
+        self.actualizar_handlers()
+        self.actualizar_filas()
+        
     def cargar_datos_edificios(self):
         """
         Carga los datos para la lista de selección de edificios.

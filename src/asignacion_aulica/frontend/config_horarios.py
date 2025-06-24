@@ -521,7 +521,8 @@ class UI_Config_Horarios():
             ui_config
             ):
         """
-        Crea el apartado de aulas de los edificios la universidad.
+        Crea el apartado de horarios de las actividades/materias de la
+        universidad.
         
         Layout (por filas):
         -----------------------------------------------------------------------
@@ -549,9 +550,9 @@ class UI_Config_Horarios():
         self.ui_config = ui_config
         
         # Fila 0:
-        # 0) Título: "Configuración de Carreras de la Universidad"
+        # 0) Título: "Configuración de Horarios de cada Actividad/Materia de la Universidad"
         self.titulo = ft.Text(
-            value="Configuración de Carreras de la Universidad",
+            value="Configuración de Horarios de cada Actividad/Materia de la Universidad",
             size=20,
             selectable=False
         )

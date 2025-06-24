@@ -123,7 +123,7 @@ class UI_Config():
         )
         
         self.apartado_edificios = UI_Config_Edificios(self)
-        self.apartado_aulas = UI_Config_Aulas()
+        self.apartado_aulas = UI_Config_Aulas(self)
         #self.apartado_aulas = UI_Config_Aulas_Dobles(self)
         self.apartado_carreras = UI_Config_Carreras(self)
         self.apartado_actividades = UI_Config_Actividades()

@@ -84,15 +84,15 @@ class UI_Config_Aulas():
         """
         # TODO juan
         nombre_edificio: str = str(self.lista_edificios.value or "")
-        identificador_aula_nueva: str = limpiar_texto(str(self.campo_identificador_aula.value))
+        nombre_aula_nueva: str = limpiar_texto(str(self.campo_identificador_aula.value))
         capacidad_aula_nueva: str = limpiar_texto(str(self.campo_capacidad_aula.value))
         
-        print(f"Agregar aula: {identificador_aula_nueva} (capacidad -> {capacidad_aula_nueva}), en Edificio: {nombre_edificio}")
+        print(f"Agregar aula: {nombre_aula_nueva} (capacidad -> {capacidad_aula_nueva}), en Edificio: {nombre_edificio}")
         
         try:
             # Se agrega el aula a la "base de datos", con el horario
             # predeterminado por el horario del edificio.
-            # self.ui_config.universidad.agregar_aula(nombre_edificio, identificador_aula_nueva, capacidad_aula_nueva)
+            self.ui_config.universidad.agregar_aula(nombre_aula_nueva, capacidad_aula_nueva, nombre_edificio)
             
             # Si es que no hay ningún problema:
             # Limpia el campo de texto del aula.
@@ -372,20 +372,15 @@ class UI_Config_Aulas():
         """
         # TODO
         nombre_edificio: str = str(self.lista_edificios.value or "")
-        identificador_aula: str = str(self.lista_aulas.value or "")
+        nombre_aula: str = str(self.lista_aulas.value or "")
         dia: str = str(self.lista_dias.value or "")
         
-        print(f"Eliminar horario: {dia} -> Edificio: {nombre_edificio}, Aula: {identificador_aula}")
+        print(f"Eliminar horario: {dia} -> Edificio: {nombre_edificio}, Aula: {nombre_aula}")
         
         try:
             # Se "elimina" (se marca como cerrado) el horario del día elegido
             # del aula en la "base de datos".
-            # self.ui_config.universidad.cerrar_aula_dia(
-            #     nombre_edificio,
-            #     identificador_aula,
-            #     dia,
-            #     "CERRADO"
-            # )
+            self.ui_config.universidad.modificar_aula(nombre_aula, dia, "CERRADO")
         
             # Si es que no hay ningún problema:
             # Limpia las listas de selección de horario.
@@ -903,21 +898,21 @@ class UI_Config_Aulas():
         edificio_seleccionado: str = str(self.lista_edificios.value or "")
         aula_seleccionada: str = str(self.lista_aulas.value or "")
         
-        # match self.tabla_actual:
-        #     case TABLA.TODAS_LAS_AULAS:
-        #         self.tabla = generar_tabla(self.ui_config.universidad.mostrar_todas_aulas())
-        #     case TABLA.AULAS_POR_EDIFICIO:
-        #         self.tabla = generar_tabla(self.ui_config.universidad.mostrar_edificios(
-        #                 edificio_seleccionado
-        #             )
-        #         )
-        #     case TABLA.EQUIPAMIENTO:
-        #         self.tabla = generar_tabla(self.ui_config.universidad.mostrar_equipamiento(
-        #                 edificio_seleccionado, aula_seleccionada
-        #             )
-        #         )
-        #     case _:
-        #         self.tabla = generar_tabla(self.ui_config.universidad.mostrar_todas_aulas())
+        match self.tabla_actual:
+            case TABLA.TODAS_LAS_AULAS:
+                self.tabla = generar_tabla(self.ui_config.universidad.mostrar_aulas())
+        #    case TABLA.AULAS_POR_EDIFICIO:
+        #        self.tabla = generar_tabla(self.ui_config.universidad.mostrar_edificios(
+        #            edificio_seleccionado
+        #            )
+        #        )
+        #    case TABLA.EQUIPAMIENTO:
+        #        self.tabla = generar_tabla(self.ui_config.universidad.mostrar_equipamiento(
+        #            edificio_seleccionado, aula_seleccionada
+        #            )
+        #        )
+            case _:
+                self.tabla = generar_tabla(self.ui_config.universidad.mostrar_aulas())
     
     def cargar_datos_inicio(self):
         """
@@ -1192,7 +1187,7 @@ class UI_Config_Aulas():
         """
         # TODO (implementar y descomentar)
         # Define el comportamiento "on_click" de cada elemento.
-        # self.boton_agregar_aula.on_click = self.agregar_aula
+        self.boton_agregar_aula.on_click = self.agregar_aula
         # self.boton_modificar_aula.on_click = self.modificar_aula
         # self.boton_eliminar_aula.on_click = self.eliminar_aula
         # self.boton_agregar_equipamiento.on_click = self.agregar_equipamiento

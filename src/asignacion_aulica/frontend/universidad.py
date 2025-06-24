@@ -192,12 +192,19 @@ class Universidad:
         """"Metodo auxiliar que retorna el indice de un aula en el dataframe. Para evitar reusar codigo."""
         filtro = self.aulas[self.aulas['Aula'] == nombre_aula]
         return filtro.index[0]
-    def agregar_aula(self, identificador_aula:str , capacidad:int, edificio_aula:str):
+    def agregar_aula(self, identificador_aula:str , capacidad:str, edificio_aula:str):
         """Metodo para agregar un aula al dataframe de aulas. Verifica unicidad y edificio existente."""
         if edificio_aula not in self.nombres_edificios():
             raise(ElementoNoExisteException("No se agrego el aula con un edificio valido."))
         if identificador_aula in self.nombres_aulas():
             raise(ElementoDuplicadoException("Ya existe un aula con ese nombre en el sistema."))
+        try:
+            test_aux = int(capacidad)
+            if test_aux<=0:
+                raise Exception
+        except Exception as e:
+            raise(ElementoInvalidoException("La capacidad debe ser un numero entero positivo"))
+
 
         aux_dict = {col:None for col in self.columnas_aulas()}
         aux_dict['Aula'] = identificador_aula    #   Primer columna es identificador aula. Escribo

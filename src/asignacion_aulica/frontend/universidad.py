@@ -17,7 +17,7 @@ class Universidad:
         self.aulas = df_list['Aulas']
         self.carreras = df_list['Carreras']
         self.materias = df_list['Materias']
-        #self.clases = df_list['Clases']
+        self.horarios = df_list['Clases']
         self.aulas_backend = df_list['aulas_compatibles_backend']   # Tiene nombres de columna vistos en backend
         self.clases_backend = df_list['clases_compatibles_backend'] # Tiene nombres de columna vistos en backend
 
@@ -307,7 +307,8 @@ class Universidad:
 
 ################3
 ###############CARRERAS
-
+    def mostrar_carreras(self):
+        return self.carreras
     def nombres_carreras(self):
         return self.carreras.iloc[:,0].tolist()
 
@@ -318,12 +319,19 @@ class Universidad:
     def nombres_materias(self):
         return self.materias.iloc[:,0].tolist()
     
-    def nombres_materias_concatenados(self):
-
+    def nombres_materias_concatenados(self):    #TODO agregar parametro de validacion con carrera de la materia
+        print("PASE POR GENERAR NOMBRES CONCATENADOS")
         ret_df = pd.DataFrame()
         ret_df['Combinado'] = f"({self.materias['Código'].astype(str)}) {self.materias['Nombre']} ({self.materias['Comision'].astype(str)})"
+        
+        
         return ret_df.iloc[:,0].tolist() 
 
+#   clases
+
+    def mostrar_horarios(self):
+        return self.horarios
+    
 
 
 

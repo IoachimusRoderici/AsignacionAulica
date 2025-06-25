@@ -742,7 +742,7 @@ class UI_Config_Horarios():
         self.lista_carreras = self.crear_lista_carreras()
         self.lista_carreras.options = opciones_carreras
     
-    def cargar_datos_identificador_actividades(self):
+    def cargar_datos_identificador_actividades(self): #TODO
         """
         Carga los datos para la lista de selección de identificador de
         actividades.
@@ -769,7 +769,7 @@ class UI_Config_Horarios():
         self.lista_identificador_actividad = self.crear_lista_identificador_actividad()
         self.lista_identificador_actividad.options = opciones_identificadores
     
-    def cargar_datos_nombre_actividades(self):
+    def cargar_datos_nombre_actividades(self): #TODO discriminar por carrera
         """
         Carga los datos para la lista de selección de nombres de actividades.
         
@@ -790,8 +790,8 @@ class UI_Config_Horarios():
         # identificador seleccionados.
         # En caso de no seleccionar una carrera, que se seleccionen aquellas
         # que no tienen una carrera asignada. (PENSAR)
-        # for nombre_actividad in self.ui_config.universidad.obtener_nombre_actividad(carrera_seleccionada, identificador_seleccionado):
-        #     opciones_nombres_actividades.append(ft.dropdown.Option(str(nombre_actividad)))
+        for nombre_actividad in self.ui_config.universidad.nombres_materias_concatenados():
+            opciones_nombres_actividades.append(ft.dropdown.Option(str(nombre_actividad)))
         
         self.lista_nombre_actividad = self.crear_lista_nombre_actividad()
         self.lista_nombre_actividad.options = opciones_nombres_actividades
@@ -874,7 +874,7 @@ class UI_Config_Horarios():
 
         """
         # TODO
-        # self.tabla = generar_tabla(self.ui_config.universidad.mostrar_carreras())
+        self.tabla = generar_tabla(self.ui_config.universidad.mostrar_horarios())
         pass
     
     def cargar_datos_inicio(self):
@@ -890,6 +890,7 @@ class UI_Config_Horarios():
 
         """
         self.cargar_datos_carreras()
+        self.cargar_datos_nombre_actividades()
         self.cargar_datos_edificios()
         self.cargar_datos_aulas()
         self.cargar_datos_equipamiento()

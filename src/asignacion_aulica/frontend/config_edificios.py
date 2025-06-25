@@ -225,7 +225,7 @@ class UI_Config_Edificios():
     
     def eliminar_horario(self, e):
         """
-        Función "handler" para el click del botón "Eliminar edificio".
+        Función "handler" para el click del botón "Eliminar horario".
         
         Elimina un horario de un día elegido de un edificio ya agregado a la
         "base de datos" del programa.

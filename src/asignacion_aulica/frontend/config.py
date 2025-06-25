@@ -14,10 +14,10 @@ import flet as ft
 # Apartados:
 from .config_edificios import UI_Config_Edificios
 from .config_aulas import UI_Config_Aulas
-#from .config_aulas_dobles import UI_Config_Aulas_Dobles
+from .config_aulas_dobles import UI_Config_Aulas_Dobles
 from .config_carreras import UI_Config_Carreras
 from .config_actividades import UI_Config_Actividades
-#from .config_horarios import UI_Config_Horarios
+from .config_horarios import UI_Config_Horarios
 
 from .colores import COLOR
 
@@ -26,9 +26,21 @@ class UI_BotonConfig():
     """
     Botón para cambiar de apartado. Por ejemplo: Edificios, Aulas, ...
     """
+    def cambiar_apartado(self, e):
+        """
+        Le indica al contenedor "padre" de los apartados, que debe cambiar
+        de apartado.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.ui_config.cambiar_apartado(self.referencia)
+    
     def __init__(
             self,
-            config_ref, # UI_Config
+            ui_config, # UI_Config
             texto: str, # Nombre del botón
             referencia: str # Referencia al nombre del apartado
             ):
@@ -51,7 +63,7 @@ class UI_BotonConfig():
 
         """
         self.texto: str = texto
-        self.config_ref = config_ref
+        self.ui_config = ui_config
         self.referencia = referencia
         self.tamanio_letra: int = 18
         self.tamanio_alto: int = 36
@@ -72,7 +84,7 @@ class UI_BotonConfig():
             content=self.container_texto,
             bgcolor=COLOR.ROJO,
             ink=True,
-            on_click=lambda e: self.config_ref.cambiar_apartado(self.referencia), # llama a la función para cambiar de apartado de UI_Config
+            on_click=self.cambiar_apartado,
             height=self.tamanio_alto,
             border_radius=16,
         )
@@ -114,8 +126,10 @@ class UI_Config():
             [
                 self.btn_edificios.dibujar(),
                 self.btn_aulas.dibujar(),
+                self.btn_aulas_dobles.dibujar(),
                 self.btn_carreras.dibujar(),
-                self.btn_actividades.dibujar()
+                self.btn_actividades.dibujar(),
+                self.btn_horarios.dibujar()
             ],
             alignment=ft.MainAxisAlignment.START,
             spacing = 10,
@@ -124,10 +138,10 @@ class UI_Config():
         
         self.apartado_edificios = UI_Config_Edificios(self)
         self.apartado_aulas = UI_Config_Aulas(self)
-        #self.apartado_aulas = UI_Config_Aulas_Dobles(self)
+        self.apartado_aulas_dobles = UI_Config_Aulas_Dobles(self)
         self.apartado_carreras = UI_Config_Carreras(self)
-        self.apartado_actividades = UI_Config_Actividades()
-        #self.apartado_horarios = UI_Config_Horarios(self)
+        self.apartado_actividades = UI_Config_Actividades(self)
+        self.apartado_horarios = UI_Config_Horarios(self)
         
         self.apartado = self.apartado_edificios
         
@@ -144,7 +158,7 @@ class UI_Config():
             alignment=ft.alignment.top_left,
             padding=20,
             expand=False,
-            border=ft.border.all(1, "black") # esto es para hacer un borde negro y ver bien como se distribuyen los elementos, hay que borrarlo cuando ya esté una versión "estable"
+            #border=ft.border.all(1, "black") # esto es para hacer un borde negro y ver bien como se distribuyen los elementos, hay que borrarlo cuando ya esté una versión "estable"
         )
     
     def actualizar_apartado(self):
@@ -162,8 +176,8 @@ class UI_Config():
         # Se actualizan los datos que deben cargar inicialmente los apartados,
         # para no generar inconsistencias al agregar, eliminar o modificar
         # datos relacionados en diferentes apartados.
-        # self.apartado.cargar_datos_inicio()
-        # self.apartado.actualizar_filas()
+        self.apartado.cargar_datos_inicio()
+        self.apartado.actualizar_filas()
         
         # Se actualizan los elementos de la vista actual.
         self.menu_config.controls.clear()
@@ -191,10 +205,14 @@ class UI_Config():
                 self.apartado = self.apartado_edificios
             case APARTADO.AULAS:
                 self.apartado = self.apartado_aulas
+            case APARTADO.AULAS_DOBLES:
+                self.apartado = self.apartado_aulas_dobles
             case APARTADO.CARRERAS:
                 self.apartado = self.apartado_carreras
             case APARTADO.ACTIVIDADES:
                 self.apartado = self.apartado_actividades
+            case APARTADO.HORARIOS:
+                self.apartado = self.apartado_horarios
             case _:
                 self.apartado = self.apartado_edificios
         self.actualizar_apartado()

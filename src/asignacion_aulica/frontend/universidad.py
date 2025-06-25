@@ -4,7 +4,7 @@ import re
 
 from asignacion_aulica.frontend.excepciones_universidad import *
 from asignacion_aulica.get_asset_path import get_asset_path
-
+from asignacion_aulica.frontend import funciones_de_traduccion
 
 
 class Universidad:
@@ -16,7 +16,8 @@ class Universidad:
         self.edificios = df_list['Edificios']
         self.aulas = df_list['Aulas']
         self.carreras = df_list['Carreras']
-        self.materisa = df_list['Materias']
+        self.materias = df_list['Materias']
+        #self.clases = df_list['Clases']
         self.aulas_backend = df_list['aulas_compatibles_backend']   # Tiene nombres de columna vistos en backend
         self.clases_backend = df_list['clases_compatibles_backend'] # Tiene nombres de columna vistos en backend
 
@@ -313,30 +314,7 @@ class Universidad:
 def main():
     uni = Universidad()
 
-    print("Edificios antes del eliminar:")
-    print(uni.mostrar_edificios())
-    print("Aulas antes de operacion:")
-    print(uni.mostrar_aulas())
-    print("Edificios en las aulas:")
-    for edif in uni.aulas["Edificio"]:
-        print(edif)
 
-    if "Anasagasti 1" in uni.aulas["Edificio"].values:
-        print("DEBUG, SI ESTA")
-
-    try:
-        uni.modificar_aula("B-103", "Capacidad", 44)
-    except Exception as e:
-        print(e)
-
-    print("Aulas despues del agregar:")
-    print(uni.mostrar_aulas())
-
-
-
-    print("Horario segmentado de edificio:")
-    for cadena in uni.horario_segmentado_edificio("Anasagasti 2", "Lunes"):
-        print(cadena)
 
 
 

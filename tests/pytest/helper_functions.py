@@ -2,6 +2,8 @@ from ortools.sat.python import cp_model
 from pandas import DataFrame
 import numpy as np
 
+from asignacion_aulica.backend.dia import Día
+
 def make_aulas(*data):
     '''
     Recibe una lista de diccionarios con datos (posiblemente incompletos) de
@@ -16,19 +18,19 @@ def make_aulas(*data):
         'capacidad': 1,
         'equipamiento': set(),
         'horarios': {
-            'lunes':     (0, 24),
-            'martes':    (0, 24),
-            'miércoles': (0, 24),
-            'jueves':    (0, 24),
-            'viernes':   (0, 24),
-            'sábado':    (0, 24),
-            'domingo':   (0, 24)
+            Día.LUNES:     (0, 24),
+            Día.MARTES:    (0, 24),
+            Día.MIÉRCOLES: (0, 24),
+            Día.JUEVES:    (0, 24),
+            Día.VIERNES:   (0, 24),
+            Día.SÁBADO:    (0, 24),
+            Día.DOMINGO:   (0, 24)
         }
     }
 
     return DataFrame.from_records(default_values | explicit_values for explicit_values in data)
 
-def make_clases(*data):
+def make_clases(*clases: dict):
     '''
     Recibe una lista de diccionarios con datos (posiblemente incompletos) de
     clases.
@@ -38,22 +40,32 @@ def make_clases(*data):
     '''
     default_values = {
         'nombre': 'materia',
-        'día': 'lunes',
+        'día': Día.LUNES,
         'horario_inicio': 10,
         'horario_fin': 11,
         'cantidad_de_alumnos': 1,
         'equipamiento_necesario': set(),
-        'edificio_preferido': 'edificio'
+        'edificio_preferido': 'edificio',
+        'aula_asignada': None
+    }
+    data = {
+        columna: [clase.get(columna, default) for clase in clases]
+        for columna, default in default_values.items()
     }
 
-    clases = DataFrame.from_records(default_values | explicit_values for explicit_values in data)
+    return DataFrame(data, dtype=object)
 
-    return clases
-
-def make_asignaciones(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpModel) -> np.ndarray:
+def make_asignaciones(
+        clases: DataFrame,
+        aulas: DataFrame,
+        modelo: cp_model.CpModel,
+        asignaciones_forzadas: dict[int, int] = dict()
+    ) -> np.ndarray:
     '''
     Genera una matriz con las variables de asignación. No hay constantes, todas
-    son variables que se agregan al modelo.
+    son variables que se agregan al modelo, a menos que se especifiquen
+    asignaciones forzadas, en cuyo caso se colocan los ceros donde corresponda
+    (no unos, para simular como ocurriría en la asignación real).
 
     También se agregan restricciones para que cada clase se asigne exactamente a
     un aula.
@@ -61,12 +73,17 @@ def make_asignaciones(clases: DataFrame, aulas: DataFrame, modelo: cp_model.CpMo
     :param clases: Tabla con los datos de las clases.
     :param aulas: Tabla con los datos de las aulas.
     :param modelo: El CpModel al que agregar variables.
-    :return: La expresión de penalización total.
+    :param asignaciones_forzadas: Diccionario con índices de clases como keys e
+    índices de aulas como valores.
+    :return: Matriz con los datos de asignaciones.
     '''
     asignaciones = np.empty(shape=(len(clases), len(aulas)), dtype=object)
     
     for clase, aula in np.ndindex(asignaciones.shape):
-        asignaciones[clase, aula] = modelo.new_bool_var(f'clase_{clase}_asignada_al_aula_{aula}')
+        if clase not in asignaciones_forzadas or asignaciones_forzadas[clase] == aula:
+            asignaciones[clase, aula] = modelo.new_bool_var(f'clase_{clase}_asignada_al_aula_{aula}')
+        else:
+            asignaciones[clase, aula] = 0
     
     # Asegurar que cada clase se asigna a exactamente un aula
     for clase in clases.index:

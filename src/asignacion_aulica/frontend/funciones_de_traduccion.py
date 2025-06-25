@@ -14,7 +14,12 @@ def horario_a_minutos(cadena):
         horario_cierre = int(matches[2])*60 + int(matches[3])
         return horario_inicio, horario_cierre
 
-
+def horario_simple_a_minutos(cadena):
+    
+    matches = re.findall(r'\d+', cadena) 
+    if len(matches)==2:
+        horario_inicio = int(matches[0])*60 + int(matches[1])
+        return horario_inicio
 
 
 def construir_diccionario_de_horarios(aula):
@@ -48,22 +53,24 @@ def traducir_aulas(aulas_frontend:DataFrame):
     return aulas_backend
 
 
-"""
-    :param clases: Tabla con los datos de todas las clases.
-        Una clase por fila.
-        Columnas:
-        - nombre: str (materia y comisión)
-        - día: Día
-        - horario_inicio: int (medido en minutos)
-        - horario_fin: int (medido en minutos)
-        - cantidad_de_alumnos: int
-        - equipamiento_necesario: set[str]
-        - edificio_preferido: Optional[str]
-        - aula_asignada: Optional[int]"""
 
-
-
-#def traducir_actividades_a_clases(materias_frontend:DataFrame):
+def traducir_clases(clases_frontend:DataFrame):
+    """Metodo para traducir un dataframe de clases de frontend, al necesario para backend"""
+    mapeador_de_dias = {'Lunes':Día.LUNES ,
+                        'Martes':Día.MARTES,
+                        'Miércoles':Día.MIÉRCOLES,
+                        'Jueves':Día.JUEVES,
+                        'Viernes':Día.VIERNES,
+                        'Sábado':Día.SÁBADO,
+                        'Domingo':Día.DOMINGO   }
     
-
+    clases_backend = DataFrame()        
+    clases_backend['nombre'] = clases_frontend['Nombre']
+    clases_backend['día'] = mapeador_de_dias[clases_frontend['Día']]
+    clases_backend['horario_inicio']        =   horario_simple_a_minutos(clases_frontend['Horario de inicio'])
+    clases_backend['horario_fin']           =   horario_simple_a_minutos(clases_frontend['Horario de fin'])
+    clases_backend['cantidad_de_alumnos']   =   clases_frontend['Cantidad de alumnos']
+    clases_backend['equipamiento_necesario']=   list(map(parsear_equipamiento, clases_frontend['Equipamiento necesario']))
+    clases_backend['edificio_preferido']    =   clases_frontend['Edificio preferencial']
+    clases_backend['aula_asignada']         =   clases_frontend['Aula asignada']
 

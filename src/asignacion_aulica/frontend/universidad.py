@@ -15,6 +15,10 @@ class Universidad:
         
         self.edificios = df_list['Edificios']
         self.aulas = df_list['Aulas']
+        self.carreras = df_list['Carreras']
+        self.materisa = df_list['Materias']
+        self.aulas_backend = df_list['aulas_compatibles_backend']   # Tiene nombres de columna vistos en backend
+        self.clases_backend = df_list['clases_compatibles_backend'] # Tiene nombres de columna vistos en backend
 
 
     # Sector de edificios:
@@ -263,7 +267,7 @@ class Universidad:
         
         if valor_nuevo=="":
             raise(ElementoInvalidoException("No se puede ingresar una cadena vacia como valor nuevo."))
-
+        
         self.aulas.at[self.indice_aula(nombre_aula), columna_a_modificar] = valor_nuevo
     def modificar_horario_aula(self, nombre_aula:str, dia:str, hora1:int, hora2:int, minuto1:int, minuto2:int):
 
@@ -293,6 +297,10 @@ class Universidad:
             return [match.zfill(2) for match in matches]
         else:
             raise(HorarioInvalidoException("Error, no se puede parsear el horario: " + cadena))
+    def aulas_de_edificio(self, nombre_edificio:str):
+        return self.aulas[self.aulas['Edificio'] == nombre_edificio]['Aula'].tolist()
+
+
 
 
 

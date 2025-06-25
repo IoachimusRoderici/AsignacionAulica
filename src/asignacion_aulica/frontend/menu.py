@@ -14,7 +14,6 @@ Menú encargado de la creación y apertura de archivos. Incluye:
 import flet as ft
 
 from .colores import COLOR
-from .iconos import UI_Icono
 from .archivos import nuevo_archivo, abrir_archivo, guardar_archivo, importar_archivo, exportar_archivo 
 from .universidad import Universidad
 
@@ -145,7 +144,7 @@ class UI_Menu:
         self.page.overlay.append(self.file_picker)
         
         self.icono_UNRN = UI_UNRN("logo_UNRN_Andina.png")
-        self.boton_menu = UI_MenuBoton("iconos/menu.png", "Menú", self.archivo_nuevo)
+        self.boton_menu = UI_MenuBoton("iconos/menu.png", "Menú", None)
         self.boton_nuevo = UI_MenuBoton("iconos/nuevo.png", "Nuevo", self.archivo_nuevo)
         self.boton_abrir = UI_MenuBoton("iconos/abrir.png", "Abrir", self.archivo_abrir)
         self.boton_guardar = UI_MenuBoton("iconos/guardar.png", "Guardar", self.archivo_guardar)

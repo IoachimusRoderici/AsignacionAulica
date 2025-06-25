@@ -8,6 +8,7 @@ También importación y exportación.
 
 import flet as ft
 
+from .alertas import VentanaAlerta
 #from universidad import Universidad TODO
 
 
@@ -77,22 +78,30 @@ def abrir_archivo(page: ft.Page, file_picker: ft.FilePicker):
     """
     # Función que se llama cuando se selecciona una ruta.
     def resultado_apertura(e):
-        if file_picker.result != None and file_picker.result.path != None:
-            ruta = file_picker.result.path
+        if (file_picker.result != None) and file_picker.result.files:
+            ruta = file_picker.result.files[0].path
+            
+            print("Archivo seleccionado:", ruta)
             
             # TODO
-            # IMPLEMENTAR APERTURA DE ARCHIVO
-            # Se crea un archivo vacío.
-            # with open(ruta, "w") as f:
-            #     f.write("")
+            # Acá podés abrirlo, leerlo o procesarlo
+            try:
+                with open(ruta, "r", encoding="utf-8") as f:
+                    contenido = f.read()
+            except Exception as exc:
+                mensaje_de_alerta: str = "Error al abrir el archivo:\n"
+                mensaje_de_alerta += str(exc)
+                VentanaAlerta(page, mensaje_de_alerta)
+                
+            page.update()
     
     # Función que se llama cuando se clickeó en el botón "Guardar".
     file_picker.on_result = resultado_apertura
     
     # Se ejecuta la función para abrir la ventana de archivo.
-    file_picker.save_file(
+    file_picker.pick_files(
         dialog_title="Abrir archivo",
-        file_name="",
+        allow_multiple=False,
         allowed_extensions=["unrn"],
     )
 
@@ -159,22 +168,30 @@ def importar_archivo(page: ft.Page, file_picker: ft.FilePicker):
     """
     # Función que se llama cuando se selecciona una ruta.
     def resultado_importacion(e):
-        if file_picker.result != None and file_picker.result.path != None:
-            ruta = file_picker.result.path
+        if (file_picker.result != None) and file_picker.result.files:
+            ruta = file_picker.result.files[0].path
+            
+            print("Archivo seleccionado:", ruta)
             
             # TODO
-            # IMPLEMENTAR IMPORTACION DE ARCHIVO
-            # Se crea un archivo vacío.
-            # with open(ruta, "w") as f:
-            #     f.write("")
+            # Acá podés abrirlo, leerlo o procesarlo
+            try:
+                with open(ruta, "r", encoding="utf-8") as f:
+                    contenido = f.read()
+            except Exception as exc:
+                mensaje_de_alerta: str = "Error al abrir el archivo:\n"
+                mensaje_de_alerta += str(exc)
+                VentanaAlerta(page, mensaje_de_alerta)
+                
+            page.update()
     
     # Función que se llama cuando se clickeó en el botón "Guardar".
     file_picker.on_result = resultado_importacion
     
     # Se ejecuta la función para abrir la ventana de archivo.
-    file_picker.save_file(
+    file_picker.pick_files(
         dialog_title="Importar archivo",
-        file_name="",
+        allow_multiple=False,
         allowed_extensions=["csv", "xlsx"],
     )
 

@@ -71,3 +71,32 @@ def limpiar_texto(texto: str) -> str:
     texto = re.sub(r"\s+", " ", texto)
 
     return texto
+
+def limpiar_espacios_texto(texto: str) -> str:
+    """
+    Limpia un texto o string de espacios conflictivos que pudieran llegar a dar
+    problema en el procesamiento de los datos.
+    
+    Quita los espacios antes y después del texto. Suprime los múltiples
+    espacios a uno solo.
+    
+    NO quita otros simbolos, solamente espacios.
+
+    Parameters
+    ----------
+    texto : str
+        Texto/string a limpiar. Por ejemplo: " hola   soy   yo ".
+
+    Returns
+    -------
+    str
+        Texto/string limpio. Por ejemplo (usando el ejemplo del input): "hola soy yo".
+
+    """
+    # Se eliminan los espacios al principio y al final.
+    texto = texto.strip()
+
+    # Se reemplazan los múltiples espacios por uno solo.
+    texto = re.sub(r"\s+", " ", texto)
+
+    return texto

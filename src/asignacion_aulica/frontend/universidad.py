@@ -307,7 +307,23 @@ class Universidad:
 
 ################3
 ###############CARRERAS
-#############3
+
+    def nombres_carreras(self):
+        return self.carreras.iloc[:,0].tolist()
+
+
+############# Materias
+
+
+    def nombres_materias(self):
+        return self.materias.iloc[:,0].tolist()
+    
+    def nombres_materias_concatenados(self):
+
+        ret_df = pd.DataFrame()
+        ret_df['Combinado'] = f"({self.materias['Código'].astype(str)}) {self.materias['Nombre']} ({self.materias['Comision'].astype(str)})"
+        return ret_df.iloc[:,0].tolist() 
+
 
 
 

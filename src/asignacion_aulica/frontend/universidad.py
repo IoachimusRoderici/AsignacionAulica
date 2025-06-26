@@ -7,6 +7,9 @@ from asignacion_aulica.get_asset_path import get_asset_path
 from asignacion_aulica.frontend import funciones_de_traduccion
 from asignacion_aulica.backend.lógica_de_asignación   import asignar
 
+from openpyxl.utils import get_column_letter
+from openpyxl import load_workbook
+
 
 class Universidad:
     def __init__(self, 
@@ -19,7 +22,7 @@ class Universidad:
         self.carreras = df_list['Carreras']
         self.materias = df_list['Materias']
         self.horarios = df_list['Clases'].fillna("")
-        self.horarios = self.horarios.head(2)
+        self.horarios = self.horarios.head(2)  
 
 
 
@@ -315,19 +318,21 @@ class Universidad:
 
 
 ############# Materias
-
+    def mostrar_materias(self):
+        return self.materias.fillna("")
 
     def nombres_materias(self):
-        return self.materias.iloc[:,0].tolist()
+        mostrable = self.materias.copy()
+        return mostrable.iloc[:,0].tolist().drop_duplicates()
     
     #Usar cuando Materias este completamente implementado
-    #def nombres_materias_concatenados(self):    #TODO agregar parametro de validacion con carrera de la materia
+    def nombres_materias_concatenados(self):    #TODO agregar parametro de validacion con carrera de la materia
 
         ret_df = pd.DataFrame()
         ret_df['Combinado'] = (
-        "(" + self.materias['Código'].astype(str) + ") " +
-        self.materias['Nombre'] + " (" +
-        self.materias['Comisión'].astype(str) + ")"
+        self.materias['Código'].astype(str) + " - " +
+        self.materias['Nombre'] + " - " +
+        self.materias['Comisión'].astype(str)
         )
         
         return ret_df.iloc[:,0].tolist() 
@@ -352,12 +357,13 @@ class Universidad:
         aux_dict['Horario de inicio'] = f"{hora1}:{minuto1}"
         aux_dict['Horario de fin'] = f"{hora2}:{minuto2}"
         aux_dict['Cantidad de alumnos'] = int(cantidad)
-        aux_dict['Edificio preferido'] = edificio
+        aux_dict['Edificio preferido'] = "Anasagasti 2" # Des-hardcodear despues
+        # Despues implementar equipamiento
 
         aux_row = pd.DataFrame([aux_dict])
         self.horarios = pd.concat([self.horarios, aux_row], ignore_index=True)        
 
-    def modificar_horario(self, nombre_horario:str, dia, hora1, hora2, minuto1, minuto2, cantidad=50, edificio=""):
+    def modificar_horario(self, nombre_horario:str, dia:str, hora1, hora2, minuto1, minuto2, cantidad=50, edificio=""):
         
         try:
             cantidad = int(cantidad)
@@ -412,19 +418,44 @@ class Universidad:
 ##### INTERFACE CON BACKEND
 
     def asignacion_automatica(self):
+
+
+
         aulas_backend = funciones_de_traduccion.traducir_aulas(self.aulas)
         horarios_backend = funciones_de_traduccion.traducir_clases(self.horarios)        
         asignar(horarios_backend, aulas_backend)
-        horarios_backend['aula_asignada'] = horarios_backend['aula_asignada'].astype(int)
 
-        horarios_updated = self.horarios.copy()
 
         # Sintaxis para el mapeo
         index_to_aula = self.aulas['Aula']
-        horarios_updated['Aula asignada'] = horarios_backend['aula_asignada'].map(index_to_aula)
+        index_to_edificio = self.aulas['Edificio']
+        self.horarios['Aula asignada'] = horarios_backend['aula_asignada'].map(index_to_aula)
+        self.horarios['Edificio asignado'] = horarios_backend['aula_asignada'].map(index_to_edificio)
 
-        # Por defecto, por ahora, los manda al archivo asignaciones, en assets
-        horarios_updated.to_excel(get_asset_path("edificios_default/asignaciones.xlsx"), index=False)
+
+    def exportar_horarios(self, path):
+
+        self.horarios.to_excel(path, index=False)
+
+        # Trabajar con el excel para que se termine viendo bonito:
+        wb = load_workbook(path)
+        ws = wb.active
+
+        # Auto-adjust column widths
+        for col in ws.columns:
+            max_length = 0
+            col_letter = get_column_letter(col[0].column)
+            for cell in col:
+                try:
+                    if cell.value:
+                        max_length = max(max_length, len(str(cell.value)))
+                except:
+                    pass
+            adjusted_width = max_length + 2  # Add padding
+            ws.column_dimensions[col_letter].width = adjusted_width
+
+        # Save changes
+        wb.save(path)
         
 
 

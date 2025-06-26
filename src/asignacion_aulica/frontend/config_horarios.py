@@ -825,6 +825,8 @@ class UI_Config_Horarios():
         # identificador seleccionados.
         # En caso de no seleccionar una carrera, que se seleccionen aquellas
         # que no tienen una carrera asignada. (PENSAR)
+        #for nombre_actividad in self.ui_config.universidad.nombres_materias_concatenados(): # Implementar luego
+        
         for nombre_actividad in self.ui_config.universidad.nombres_horarios():
             opciones_nombres_actividades.append(ft.dropdown.Option(str(nombre_actividad)))
         

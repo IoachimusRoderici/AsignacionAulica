@@ -625,7 +625,6 @@ class UI_Config_Actividades():
             "Nombre": [],
             "Comisión": [],
             "Año": [],
-            "Cant. de Alumnos": [],
         }
         df = DataFrame(data)
         return generar_tabla(df)

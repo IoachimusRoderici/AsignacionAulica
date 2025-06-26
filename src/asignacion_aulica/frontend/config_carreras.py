@@ -472,6 +472,8 @@ class UI_Config_Carreras():
                 # ft.dropdown.Option("Ingeniería en Computación"),
             ],
             enable_filter=True,
+            editable=True,
+            menu_height=400,
         )
         return dropdown
     
@@ -491,6 +493,8 @@ class UI_Config_Carreras():
                 # ft.dropdown.Option("Anasagasti 2"),
             ],
             enable_filter=True,
+            editable=True,
+            menu_height=400,
         )
         return dropdown
     

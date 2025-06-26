@@ -914,7 +914,7 @@ class UI_Config_Horarios():
             options=[],
             enable_filter=True,
             editable=True,
-            menu_height=500
+            menu_height=500,
         )
         return dropdown
     
@@ -933,7 +933,7 @@ class UI_Config_Horarios():
             options=[],
             enable_filter=True,
             editable=True,
-            menu_height=400
+            menu_height=400,
         )
         return dropdown
     
@@ -952,7 +952,7 @@ class UI_Config_Horarios():
             options=[],
             enable_filter=True,
             editable=True,
-            menu_height=400
+            menu_height=400,
         )
         return dropdown
     
@@ -999,7 +999,7 @@ class UI_Config_Horarios():
             ],
             enable_filter=True,
             editable=True,
-            menu_height=300
+            menu_height=300,
         )
         return dropdown
     
@@ -1020,7 +1020,7 @@ class UI_Config_Horarios():
             ],
             enable_filter=True,
             editable=True,
-            menu_height=300
+            menu_height=300,
         )
         return dropdown
     
@@ -1039,7 +1039,7 @@ class UI_Config_Horarios():
             options=[],
             enable_filter=True,
             editable=True,
-            menu_height=400
+            menu_height=200
         )
         return dropdown
     

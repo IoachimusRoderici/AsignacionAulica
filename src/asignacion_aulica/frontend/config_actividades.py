@@ -468,6 +468,8 @@ class UI_Config_Actividades():
             label="Carrera",
             options=[],
             enable_filter=True,
+            editable=True,
+            menu_height=300,
         )
         return dropdown
     
@@ -485,6 +487,8 @@ class UI_Config_Actividades():
             label="Identificador",
             options=[],
             enable_filter=True,
+            editable=True,
+            menu_height=300,
         )
         return dropdown
     
@@ -502,6 +506,8 @@ class UI_Config_Actividades():
             label="Nombre",
             options=[],
             enable_filter=True,
+            editable=True,
+            menu_height=300,
         )
         return dropdown
     
@@ -519,6 +525,8 @@ class UI_Config_Actividades():
             label="Comisión",
             options=[],
             enable_filter=True,
+            editable=True,
+            menu_height=200,
         )
         return dropdown
     
@@ -538,6 +546,7 @@ class UI_Config_Actividades():
                 ft.dropdown.Option(f"{i}") for i in range(1, 7, 1)
             ],
             enable_filter=True,
+            editable=True,
         )
         return dropdown
     
@@ -558,6 +567,8 @@ class UI_Config_Actividades():
                 ft.dropdown.Option(f"{i}") for i in range(10, 130, 10)
             ],
             enable_filter=True,
+            editable=True,
+            menu_height=300,
         )
         return dropdown
     

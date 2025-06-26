@@ -429,6 +429,7 @@ class UI_Config_Actividades():
         #         )
         #     case _:
         #         self.tabla = generar_tabla(self.ui_config.universidad.mostrar_actividades())
+        self.tabla = generar_tabla(self.ui_config.universidad.mostrar_materias())
     
     def cargar_datos_inicio(self):
         """

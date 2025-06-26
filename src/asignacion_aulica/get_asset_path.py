@@ -1,6 +1,8 @@
-from os import getcwd, path
+from os import environ, getcwd, path
 
-assets_path = path.join(getcwd(), "assets")
+# Si no existe la variable de ambiente FLET_ASSETS_DIR significa que estamos en
+# el ejecutable, asignar assets_path usando getcwd()
+assets_path = environ.get('FLET_ASSETS_DIR', path.join(getcwd(), "assets"))
 
 def get_asset_path(path_relativo: str) -> str:
     '''

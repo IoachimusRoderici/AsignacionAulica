@@ -447,11 +447,59 @@ class UI_Config_Horarios():
 
         """
         # Carga los datos disponibles para esa carrera seleccionada.
-        self.cargar_datos_nombres_actividades()
+        self.cargar_datos_nombre_actividades()
         
         # Se actualizan los elementos de la interfaz.
         self.actualizar_filas()
         self.actualizar_apartado()
+    
+    def seleccionar_nombre_actividad(self, e):
+        """
+        Funcion "handler" al seleccionar una carrera.
+        
+        Filtra, cargando los datos de las actividades/materias, las listas de
+        selección.
+
+        Returns
+        -------
+        None.
+
+        """
+        # Se autoselecciona la cantidad de alumnos que había cargado en la
+        # "base de datos".
+        self.actualizar_cant_alumnos()
+    
+    def seleccionar_cant_alumnos(self, e):
+        """
+        Funcion "handler" al seleccionar la cantidad de alumnos de una
+        actividad.
+        
+        Establece la cantidad de alumnos para esa clase.
+
+        Returns
+        -------
+        None.
+
+        """
+        # TODO
+        carrera_seleccionada: str = str(self.lista_carreras.value or "")
+        actividad_seleccionada: str = str(self.lista_nombre_actividad or "")
+        cant_alumnos: str = str(self.lista_cant_alumnos or "")
+        
+        try:
+            # Se establece la cantidad de alumnos para una clase en la "base de
+            # datos".
+            # self.ui_config.universidad.establecer_cant_alumnos(
+            #     carrera_seleccionada,
+            #     actividad_seleccionada,
+            #     cant_alumnos,
+            # )
+            
+            # Se actualizan los valores cargados en la tabla.
+            self.actualizar_tabla()
+        except Exception as exc:
+            mensaje_error: str = str(exc)
+            self.alertar(mensaje_error)
     
     def seleccionar_dia(self, e):
         """
@@ -561,7 +609,6 @@ class UI_Config_Horarios():
         None.
 
         """
-        print("SELECCIONE UN EDIFICIO")
         self.cargar_datos_aulas()
     
         # Se actualizan los elementos de la interfaz.
@@ -579,9 +626,9 @@ class UI_Config_Horarios():
         Layout (por filas):
         -----------------------------------------------------------------------
         0) Título: "Configuración de Horarios de cada Actividad/Materia de la Universidad"
-        1) Dropdown carrera
-        2) Drop. nombre materia
-        3) ----- (linea divisora) -----
+        1) Dropdown carrera - Drop. nombre materia
+        2) ----- (linea divisora) -----
+        3) Título: "Cantidad de alumnos para la clase:" - Drop. Cantidad de alumnos
         4) Título: "Horarios de la actividad"
         5) Drop. con día - Hora apertura - Hora cierre - Btn. establecer horario - Btn. eliminar horario
         6) Titulo: "Asignar aula (opcional):" - Drop. Edificio - Drop Aula - Btn. Asignar aula - Btn. Eliminar asignación
@@ -612,16 +659,22 @@ class UI_Config_Horarios():
         )
         
         # Fila 1:
-        # 1) Dropdown carrera
+        # 1) Dropdown carrera - Drop. nombre materia
         self.lista_carreras = self.crear_lista_carreras()
-        
-        # Fila 2:
-        # 2) Drop. nombre materia
         self.lista_nombre_actividad = self.crear_lista_nombre_actividad()
         
-        # Fila 3:  
-        # 3) ----- (linea divisora) -----
+        # Fila 2:  
+        # 2) ----- (linea divisora) -----
         self.linea_0 = self.crear_linea()
+        
+        # Fila 2:
+        # 3) Título: "Cantidad de alumnos para la clase:" - Drop. Cantidad de alumnos
+        self.titulo_alumnos = ft.Text(
+            value="Cantidad de alumnos para la clase:",
+            size=20,
+            selectable=False
+        )
+        self.lista_cant_alumnos = self.crear_lista_cant_alumnos()
         
         # Fila 4:
         # 4) Título: "Horarios de la actividad"
@@ -875,6 +928,25 @@ class UI_Config_Horarios():
         self.cargar_datos_equipamiento()
         self.cargar_datos_tabla()
     
+    def crear_lista_carreras(self) -> ft.Dropdown:
+        """
+        Crea una lista para la selección de la carrera.
+
+        Returns
+        -------
+        dropdown : ft.Dropdown
+            Lista de selección de carreras.
+
+        """
+        dropdown = ft.Dropdown(
+            label="Carrera",
+            options=[],
+            enable_filter=True,
+            editable=True,
+            menu_height=500,
+        )
+        return dropdown
+    
     def crear_lista_nombre_actividad(self) -> ft.Dropdown:
         """
         Crea una lista para la selección del identificador de la actividad.
@@ -894,22 +966,25 @@ class UI_Config_Horarios():
         )
         return dropdown
     
-    def crear_lista_carreras(self) -> ft.Dropdown:
+    def crear_lista_cant_alumnos(self) -> ft.Dropdown:
         """
-        Crea una lista para la selección de la carrera.
+        Crea una lista para el ingreso de la cantidad de alumnos de la
+        actividad.
 
         Returns
         -------
         dropdown : ft.Dropdown
-            Lista de selección de carreras.
+            Lista de selección de la cantidad de alumnos de la actividad.
 
         """
         dropdown = ft.Dropdown(
-            label="Carrera",
-            options=[],
+            label="Cantidad de alumnos",
+            options=[
+                ft.dropdown.Option(f"{i}") for i in range(10, 130, 10)
+            ],
             enable_filter=True,
             editable=True,
-            menu_height=500,
+            menu_height=300,
         )
         return dropdown
     
@@ -964,13 +1039,13 @@ class UI_Config_Horarios():
         dropdown = ft.Dropdown(
             label="Día",
             options=[
-                ft.dropdown.Option(text="Lunes"),
-                ft.dropdown.Option(text="Martes"),
-                ft.dropdown.Option(text="Miércoles"),
-                ft.dropdown.Option(text="Jueves"),
-                ft.dropdown.Option(text="Viernes"),
-                ft.dropdown.Option(text="Sábado"),
-                ft.dropdown.Option(text="Domingo")
+                ft.dropdown.Option("Lunes"),
+                ft.dropdown.Option("Martes"),
+                ft.dropdown.Option("Miércoles"),
+                ft.dropdown.Option("Jueves"),
+                ft.dropdown.Option("Viernes"),
+                ft.dropdown.Option("Sábado"),
+                ft.dropdown.Option("Domingo")
             ],
             enable_filter=True,
             editable=True
@@ -1133,6 +1208,7 @@ class UI_Config_Horarios():
         
         # Define el comportamiento "on_change" de cada elemento (listas).
         self.lista_carreras.on_change = self.seleccionar_carrera
+        self.lista_cant_alumnos.on_change = self.seleccionar_cant_alumnos
         self.lista_dias.on_change = self.seleccionar_dia
         self.lista_hora_apertura.on_change = self.seleccionar_hora
         self.lista_minutos_apertura.on_change = self.seleccionar_minutos
@@ -1153,9 +1229,9 @@ class UI_Config_Horarios():
         
         # Agrega todas las filas a la columna resultado.
         self.fila.append(ft.Row([self.titulo]))
-        self.fila.append(ft.Row([self.lista_carreras]))
-        self.fila.append(ft.Row([self.lista_nombre_actividad]))
+        self.fila.append(ft.Row([self.lista_carreras, self.lista_nombre_actividad]))
         self.fila.append(ft.Row([self.linea_0]))
+        self.fila.append(ft.Row([self.titulo_alumnos, self.lista_cant_alumnos]))
         self.fila.append(ft.Row([self.titulo_horario]))
         self.fila.append(ft.Row([
             self.lista_dias,
@@ -1197,6 +1273,32 @@ class UI_Config_Horarios():
         # Se actualizan los elementos de la interfaz.
         self.actualizar_filas()
         self.actualizar_apartado()
+    
+    def actualizar_cant_alumnos(self):
+        """
+        Actualiza la lista de cantidad de alumnos en la interfaz.
+
+        Returns
+        -------
+        None.
+
+        """
+        # TODO
+        carrera_seleccionada: str = str(self.lista_carreras.value or "")
+        actividad_seleccionada: str = str(self.lista_nombre_actividad or "")
+        
+        # Se carga la cantidad de alumnos que se había ingresado en la "base de
+        # datos" y se autoselecciona en la lista de cantidad de alumnos.
+        # NOTA: Se espera que retorne un string con la cantidad de alumnos
+        # (número entero) o sino un string vacío ("").
+        cant_alumnos: str = str(self.ui_config.universidad.cargar_cant_alumnos(
+                carrera_seleccionada,
+                actividad_seleccionada,
+            )
+        )
+        
+        # Se autoselecciona el valor en el dropdown.
+        self.lista_cant_alumnos.value = cant_alumnos
     
     def actualizar_lista_edificios(self):
         """

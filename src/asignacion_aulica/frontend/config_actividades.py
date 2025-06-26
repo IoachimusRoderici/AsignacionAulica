@@ -59,7 +59,6 @@ class UI_Config_Actividades():
         nombre_actividad: str = limpiar_texto(str(self.campo_nombre_actividad))
         comision_actividad: str = limpiar_texto(str(self.campo_comision_actividad))
         año_seleccionado: str = str(self.lista_año or "")
-        cant_alumnos: str = str(self.lista_cant_alumnos or "")
         
         try:
             # Se agrega la actividad a la "base de datos".
@@ -78,7 +77,6 @@ class UI_Config_Actividades():
             self.lista_nombre_actividad.value = ""
             self.lista_comision_actividad.value = ""
             self.lista_año.value = ""
-            self.lista_cant_alumnos.value = ""
             
             # Limpia los campos.
             self.campo_identificador_actividad.value = ""
@@ -118,7 +116,6 @@ class UI_Config_Actividades():
         nombre_actividad: str = limpiar_texto(str(self.campo_nombre_actividad))
         comision_actividad: str = limpiar_texto(str(self.campo_comision_actividad))
         año_seleccionado: str = str(self.lista_año or "")
-        cant_alumnos: str = str(self.lista_cant_alumnos or "")
         
         try:
             # Se modifica la actividad en la "base de datos".
@@ -140,7 +137,6 @@ class UI_Config_Actividades():
             self.lista_nombre_actividad.value = ""
             self.lista_comision_actividad.value = ""
             self.lista_año.value = ""
-            self.lista_cant_alumnos.value = ""
             
             # Limpia los campos.
             self.campo_identificador_actividad.value = ""
@@ -190,7 +186,6 @@ class UI_Config_Actividades():
             self.lista_nombre_actividad.value = ""
             self.lista_comision_actividad.value = ""
             self.lista_año.value = ""
-            self.lista_cant_alumnos.value = ""
             
             # Limpia los campos.
             self.campo_identificador_actividad.value = ""
@@ -230,7 +225,7 @@ class UI_Config_Actividades():
         1) Dropdown carrera
         2) Drop. identificador - Drop. nombre actividad - Drop. comisión
         3) Campo identificador - Campo nombre - Campo comisión
-        4) Drop. año - Drop. Cantidad de alumnos
+        4) Drop. año
         5) Botón agregar actividad - Btn. modificar actividad - Btn. eliminar actividad
         9) ----- (linea divisora) -----
         10) Btn. Mostrar actividades - Btn. Mostrar equipamiento
@@ -270,7 +265,6 @@ class UI_Config_Actividades():
         # Fila 4:
         # 4) Drop. año - Drop. Cantidad de alumnos
         self.lista_año = self.crear_lista_año()
-        self.lista_cant_alumnos = self.crear_lista_cant_alumnos()
         
         # Fila 5:
         # 5) Botón agregar actividad - Btn. modificar actividad - Btn.
@@ -297,7 +291,7 @@ class UI_Config_Actividades():
         
         # Se actualizan los handlers para los botones y se agregan las filas
         # para la interfaz.
-        # self.actualizar_handlers()
+        self.actualizar_handlers()
         self.actualizar_filas()
     
     def cargar_datos_carreras(self):
@@ -550,28 +544,6 @@ class UI_Config_Actividades():
         )
         return dropdown
     
-    def crear_lista_cant_alumnos(self) -> ft.Dropdown:
-        """
-        Crea una lista para el ingreso de la cantidad de alumnos de la
-        actividad.
-
-        Returns
-        -------
-        dropdown : ft.Dropdown
-            Lista de selección de la cantidad de alumnos de la actividad.
-
-        """
-        dropdown = ft.Dropdown(
-            label="Cantidad de alumnos",
-            options=[
-                ft.dropdown.Option(f"{i}") for i in range(10, 130, 10)
-            ],
-            enable_filter=True,
-            editable=True,
-            menu_height=300,
-        )
-        return dropdown
-    
     def crear_campo_identificador_actividad(self) -> ft.TextField:
         """
         Crea el elemento de campo de texto para ingreso del identificador de la
@@ -669,17 +641,17 @@ class UI_Config_Actividades():
 
         """
         # Define el comportamiento "on_click" de cada elemento (botones).
-        self.boton_agregar_actividad.on_click = self.agregar_actividad
-        self.boton_modificar_actividad.on_click = self.modificar_actividad
-        self.boton_eliminar_actividad.on_click = self.eliminar_actividad
-        self.boton_mostrar_actividades.on_click = self.mostrar_actividades
-        self.boton_mostrar_equipamiento.on_click = self.mostrar_equipamiento
+        # self.boton_agregar_actividad.on_click = self.agregar_actividad
+        # self.boton_modificar_actividad.on_click = self.modificar_actividad
+        # self.boton_eliminar_actividad.on_click = self.eliminar_actividad
+        # self.boton_mostrar_actividades.on_click = self.mostrar_actividades
+        # self.boton_mostrar_equipamiento.on_click = self.mostrar_equipamiento
         
         # Define el comportamiento "on_change" de cada elemento (listas).
-        self.lista_carreras.on_change = self.seleccionar_lista
-        self.lista_identificador_actividad.on_change = self.seleccionar_lista
-        self.lista_nombre_actividad.on_change = self.seleccionar_lista
-        self.lista_comision_actividad.on_change = self.seleccionar_lista
+        # self.lista_carreras.on_change = self.seleccionar_lista
+        # self.lista_identificador_actividad.on_change = self.seleccionar_lista
+        # self.lista_nombre_actividad.on_change = self.seleccionar_lista
+        # self.lista_comision_actividad.on_change = self.seleccionar_lista
     
     def actualizar_filas(self):
         """
@@ -697,7 +669,7 @@ class UI_Config_Actividades():
         self.fila.append(ft.Row([self.lista_carreras]))
         self.fila.append(ft.Row([self.lista_identificador_actividad, self.lista_nombre_actividad, self.lista_comision_actividad]))
         self.fila.append(ft.Row([self.campo_identificador_actividad, self.campo_nombre_actividad, self.campo_comision_actividad]))
-        self.fila.append(ft.Row([self.lista_año, self.lista_cant_alumnos]))
+        self.fila.append(ft.Row([self.lista_año]))
         self.fila.append(ft.Row([self.boton_agregar_actividad, self.boton_modificar_actividad, self.boton_eliminar_actividad]))
         self.fila.append(ft.Row([self.linea]))
         self.fila.append(ft.Row([self.tabla]))

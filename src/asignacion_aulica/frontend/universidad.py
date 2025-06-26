@@ -19,6 +19,7 @@ class Universidad:
         self.carreras = df_list['Carreras']
         self.materias = df_list['Materias']
         self.horarios = df_list['Clases'].fillna("")
+        self.horarios = self.horarios.head(2)
 
 
 
@@ -340,11 +341,11 @@ class Universidad:
     def mostrar_horarios(self):
         return self.horarios
     
-    def agregar_horario(self, nombre:str, dia:str, hora1, minuto1, hora2, minuto2, cantidad, edificio=""):
+    def agregar_horario(self, nombre:str, dia:str, hora1, hora2, minuto1, minuto2, cantidad, edificio=""):
         """Metodo para agregar un horario al sistema.
         Dado que siempre se trata de modificar una materia existente, este metodo solo sera usado
         dentro de modificar_horario, cuando no se encuentra una combinacion de nombre y dia valida."""
-    
+
         aux_dict = {col:"" for col in self.horarios.columns.tolist()}
         aux_dict['Nombre'] = nombre
         aux_dict['Día'] = dia
@@ -356,7 +357,7 @@ class Universidad:
         aux_row = pd.DataFrame([aux_dict])
         self.horarios = pd.concat([self.horarios, aux_row], ignore_index=True)        
 
-    def modificar_horario(self, nombre_horario:str, dia, hora1, minuto1, hora2, minuto2, cantidad=50, edificio=""):
+    def modificar_horario(self, nombre_horario:str, dia, hora1, hora2, minuto1, minuto2, cantidad=50, edificio=""):
         
         try:
             cantidad = int(cantidad)
@@ -382,7 +383,7 @@ class Universidad:
 
         # Verificacion final para ver si modifica o agrega
         if indice==-1:
-            self.agregar_horario(nombre_horario,dia,hora1,minuto1, hora2, minuto2, cantidad, edificio)
+            self.agregar_horario(nombre_horario,dia,hora1,hora2, minuto1, minuto2, cantidad, edificio)
         else:
             self.horarios.at[indice, 'Día'] = dia
             self.horarios.at[indice, 'Hora de inicio'] = f"{hora1}:{minuto1}"
@@ -392,13 +393,15 @@ class Universidad:
 
     def eliminar_horario(self, nombre_materia:str, dia:str):
         """Metodo para eliminar una materia segun nombre y dia simultaneos."""
-        self.horarios = self.horarios[not (self.aulas['Nombre'] == nombre_materia 
-                                           and self.aulas['Día'==dia])].reset_index(drop=True)
+        condicion = (self.horarios['Nombre'] == nombre_materia) & (self.horarios['Día'] == dia)
+        self.horarios = self.horarios[~condicion].reset_index(drop=True)
+
 
     def indice_horario(self, nombre_horario:str, dia:str):
         """Metodo usado como filtro para encontrar un dato de horario segun nombre y dia.
         Si no existe, retorna -1."""
-        filtro = self.horarios[self.horarios['Nombre'] == nombre_horario and self.horarios['Día']==dia]
+        filtro = self.horarios[(self.horarios['Nombre'] == nombre_horario) & (self.horarios['Día'] == dia)]
+
         ret = -1
         try:
             ret = filtro.index[0]

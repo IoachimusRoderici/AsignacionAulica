@@ -110,7 +110,7 @@ class UI_Config_Horarios():
             mensaje_error: str = str(exc)
             self.alertar(mensaje_error)
     
-    def eliminar_horario(self, e):
+    def eliminar_horario(self, e):  # TODO modificar eliminar_horario para discriminar por carrera
         """
         Función "handler" para el click del botón "Eliminar horario".
         
@@ -123,22 +123,17 @@ class UI_Config_Horarios():
         None.
 
         """
-        # TODO
         # Actividad elegida por el usuario.
         nombre_carrera: str = str(self.lista_carreras.value or "")
         nombre_actividad: str = str(self.lista_nombre_actividad.value or "")
         
         # Horario seleccionado por el usuario.
         dia: str = str(self.lista_dias.value or "")
-        #hora_apertura: str = str(self.lista_hora_apertura.value or "")
-        #hora_cierre: str = str(self.lista_hora_cierre.value or "")
-        #minutos_apertura: str = str(self.lista_minutos_apertura.value or "")
-        #minutos_cierre: str = str(self.lista_minutos_cierre.value or "")
 
         try:
             # Se establece el horario del día elegido de la actividad en la
             # "base de datos".
-            self.ui_config.universidad.eliminar_horario(nombre_carrera,dia)
+            self.ui_config.universidad.eliminar_horario(nombre_actividad,dia)
         
             # Se limpia la selección del horario.
             self.limpiar_seleccion_horario()

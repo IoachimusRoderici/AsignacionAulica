@@ -9,7 +9,7 @@ También importación y exportación.
 import flet as ft
 
 from .alertas import VentanaAlerta
-#from universidad import Universidad TODO
+from asignacion_aulica.frontend.universidad import Universidad 
 
 
 def nuevo_archivo(page: ft.Page, file_picker: ft.FilePicker):
@@ -33,7 +33,7 @@ def nuevo_archivo(page: ft.Page, file_picker: ft.FilePicker):
 
     """
     # Se instancia la "ventana de archivo".
-    # file_picker = ft.FilePicker()
+    file_picker = ft.FilePicker()
     
     # Función que se llama cuando se selecciona una ruta.
     def resultado_nuevo(e):

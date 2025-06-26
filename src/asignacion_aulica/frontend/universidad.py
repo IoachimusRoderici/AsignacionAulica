@@ -5,6 +5,7 @@ import re
 from asignacion_aulica.frontend.excepciones_universidad import *
 from asignacion_aulica.get_asset_path import get_asset_path
 from asignacion_aulica.frontend import funciones_de_traduccion
+from asignacion_aulica.backend.lógica_de_asignación   import asignar
 
 
 class Universidad:
@@ -17,9 +18,8 @@ class Universidad:
         self.aulas = df_list['Aulas']
         self.carreras = df_list['Carreras']
         self.materias = df_list['Materias']
-        self.horarios = df_list['Clases']
-        self.aulas_backend = df_list['aulas_compatibles_backend']   # Tiene nombres de columna vistos en backend
-        self.clases_backend = df_list['clases_compatibles_backend'] # Tiene nombres de columna vistos en backend
+        self.horarios = df_list['Clases'].fillna("")
+
 
 
     # Sector de edificios:
@@ -319,34 +319,109 @@ class Universidad:
     def nombres_materias(self):
         return self.materias.iloc[:,0].tolist()
     
-    def nombres_materias_concatenados(self):    #TODO agregar parametro de validacion con carrera de la materia
-        print("PASE POR GENERAR NOMBRES CONCATENADOS")
+    #Usar cuando Materias este completamente implementado
+    #def nombres_materias_concatenados(self):    #TODO agregar parametro de validacion con carrera de la materia
+
         ret_df = pd.DataFrame()
-        ret_df['Combinado'] = f"({self.materias['Código'].astype(str)}) {self.materias['Nombre']} ({self.materias['Comision'].astype(str)})"
-        
+        ret_df['Combinado'] = (
+        "(" + self.materias['Código'].astype(str) + ") " +
+        self.materias['Nombre'] + " (" +
+        self.materias['Comisión'].astype(str) + ")"
+        )
         
         return ret_df.iloc[:,0].tolist() 
 
 #   clases
 
+    def columnas_horarios(self):
+        return self.horarios.columns.tolist()
+    def nombres_horarios(self):
+        return self.horarios.iloc[:,0].tolist()    
     def mostrar_horarios(self):
         return self.horarios
     
+    def agregar_horario(self, nombre:str, dia:str, hora1, minuto1, hora2, minuto2, cantidad, edificio=""):
+        """Metodo para agregar un horario al sistema.
+        Dado que siempre se trata de modificar una materia existente, este metodo solo sera usado
+        dentro de modificar_horario, cuando no se encuentra una combinacion de nombre y dia valida."""
+    
+        aux_dict = {col:"" for col in self.horarios.columns.tolist()}
+        aux_dict['Nombre'] = nombre
+        aux_dict['Día'] = dia
+        aux_dict['Horario de inicio'] = f"{hora1}:{minuto1}"
+        aux_dict['Horario de fin'] = f"{hora2}:{minuto2}"
+        aux_dict['Cantidad de alumnos'] = int(cantidad)
+        aux_dict['Edificio preferido'] = edificio
+
+        aux_row = pd.DataFrame([aux_dict])
+        self.horarios = pd.concat([self.horarios, aux_row], ignore_index=True)        
+
+    def modificar_horario(self, nombre_horario:str, dia, hora1, minuto1, hora2, minuto2, cantidad=50, edificio=""):
+        
+        try:
+            cantidad = int(cantidad)
+        except Exception:
+            raise(ValueError("La cantidad debe ser un numero positivo"))
+
+        if nombre_horario not in self.nombres_horarios():
+            raise(ElementoInvalidoException("Para modificar un horario, debe elegir un horario que este en el sistema."))
+        if dia not in ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']:
+            raise(ElementoInvalidoException(f"Se trato de agregar un horario a un dia no valido."))
+        if (
+            hora1 not in range(0,24) or
+            hora2 not in range(0,24) or
+            minuto1 not in range(0,60) or
+            minuto2 not in range(0,60)
+        ):
+            raise(HorarioInvalidoException("Error: Los datos de horario deben estar en un rango de 0-23 horas y 0-59 minutos."))
+
+        if time(hora1, minuto1) >= time(hora2, minuto2):
+            raise(HorarioInvalidoException("La hora de cierre no puede ser menor que la de apertura"))
+        
+        indice = self.indice_horario(nombre_horario, dia)
+
+        # Verificacion final para ver si modifica o agrega
+        if indice==-1:
+            self.agregar_horario(nombre_horario,dia,hora1,minuto1, hora2, minuto2, cantidad, edificio)
+        else:
+            self.horarios.at[indice, 'Día'] = dia
+            self.horarios.at[indice, 'Hora de inicio'] = f"{hora1}:{minuto1}"
+            self.horarios.at[indice, 'Hora de fin'] = f"{hora2}:{minuto2}"
+            self.horarios.at[indice, 'Cantidad de alumnos'] = int(cantidad)
+            self.horarios.at[indice, 'Edificio preferencial'] = edificio
+
+    def eliminar_horario(self, nombre_materia:str, dia:str):
+        """Metodo para eliminar una materia segun nombre y dia simultaneos."""
+        self.horarios = self.horarios[not (self.aulas['Nombre'] == nombre_materia 
+                                           and self.aulas['Día'==dia])].reset_index(drop=True)
+
+    def indice_horario(self, nombre_horario:str, dia:str):
+        """Metodo usado como filtro para encontrar un dato de horario segun nombre y dia.
+        Si no existe, retorna -1."""
+        filtro = self.horarios[self.horarios['Nombre'] == nombre_horario and self.horarios['Día']==dia]
+        ret = -1
+        try:
+            ret = filtro.index[0]
+        except IndexError as e:
+            return ret
 
 
+##### INTERFACE CON BACKEND
 
-def main():
-    uni = Universidad()
+    def asignacion_automatica(self):
+        aulas_backend = funciones_de_traduccion.traducir_aulas(self.aulas)
+        horarios_backend = funciones_de_traduccion.traducir_clases(self.horarios)        
+        asignar(horarios_backend, aulas_backend)
+        horarios_backend['aula_asignada'] = horarios_backend['aula_asignada'].astype(int)
 
+        horarios_updated = self.horarios.copy()
 
+        # Sintaxis para el mapeo
+        index_to_aula = self.aulas['Aula']
+        horarios_updated['Aula asignada'] = horarios_backend['aula_asignada'].map(index_to_aula)
 
-
-
-if __name__ == '__main__':
-    main()
-
-
-
-
+        # Por defecto, por ahora, los manda al archivo asignaciones, en assets
+        horarios_updated.to_excel(get_asset_path("edificios_default/asignaciones.xlsx"), index=False)
+        
 
 

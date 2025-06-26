@@ -79,7 +79,7 @@ class UI_Config_Horarios():
         """
         # TODO
         # Actividad elegida por el usuario.
-        nombre_carrera: str = str(self.lista_carreras.value or "")
+        #nombre_carrera: str = str(self.lista_carreras.value or "")
         nombre_actividad: str = str(self.lista_nombre_actividad.value or "")
         
         # Horario seleccionado por el usuario.
@@ -92,17 +92,14 @@ class UI_Config_Horarios():
         try:
             # Se establece el horario del día elegido de la actividad en la
             # "base de datos".
-            # self.ui_config.universidad.modificar_horario_actividad(
-            #     nombre_carrera,
-            #     identificador_actividad,
-            #     nombre_actividad,
-            #     comision_actividad,
-            #     dia,
-            #     int(hora_apertura),
-            #     int(hora_cierre),
-            #     int(minutos_apertura),
-            #     int(minutos_cierre)
-            # )
+            self.ui_config.universidad.modificar_horario(
+                nombre_actividad,
+                dia,
+                int(hora_apertura),
+                int(hora_cierre),
+                int(minutos_apertura),
+                int(minutos_cierre),
+            )
         
             # Se limpia la selección del horario.
             self.limpiar_seleccion_horario()
@@ -133,25 +130,15 @@ class UI_Config_Horarios():
         
         # Horario seleccionado por el usuario.
         dia: str = str(self.lista_dias.value or "")
-        hora_apertura: str = str(self.lista_hora_apertura.value or "")
-        hora_cierre: str = str(self.lista_hora_cierre.value or "")
-        minutos_apertura: str = str(self.lista_minutos_apertura.value or "")
-        minutos_cierre: str = str(self.lista_minutos_cierre.value or "")
-    
+        #hora_apertura: str = str(self.lista_hora_apertura.value or "")
+        #hora_cierre: str = str(self.lista_hora_cierre.value or "")
+        #minutos_apertura: str = str(self.lista_minutos_apertura.value or "")
+        #minutos_cierre: str = str(self.lista_minutos_cierre.value or "")
+
         try:
             # Se establece el horario del día elegido de la actividad en la
             # "base de datos".
-            # self.ui_config.universidad.eliminar_horario_actividad(
-            #     nombre_carrera,
-            #     identificador_actividad,
-            #     nombre_actividad,
-            #     comision_actividad,
-            #     dia,
-            #     int(hora_apertura),
-            #     int(hora_cierre),
-            #     int(minutos_apertura),
-            #     int(minutos_cierre)
-            # )
+            self.ui_config.universidad.eliminar_horario(nombre_carrera,dia)
         
             # Se limpia la selección del horario.
             self.limpiar_seleccion_horario()
@@ -305,17 +292,18 @@ class UI_Config_Horarios():
         print("Se realizará asignación automatica...")
         
         try:
-            # TODO
-            # Se realiza la asignación automática
-            # self.ui_config.universidad.asignacion_automatica()
+            print("Boton de asignacion de los chicos activado")
             
+            # Se realiza la asignación automática
+            self.ui_config.universidad.asignacion_automatica()
+            self.alertar("Asignacion realizada! Revisar assets/asignaciones.xlsx")
             # Se actualizan los elementos de la interfaz.
             self.actualizar_tabla()
         except Exception as exc:
             mensaje_error: str = str(exc)
             self.alertar(mensaje_error)
     
-    def agregar_equipamiento(self, e):
+    def agregar_equipamiento(self, e):  #TODO
         """
         Función "handler" para el click del botón "Agregar equipamiento".
         
@@ -359,7 +347,7 @@ class UI_Config_Horarios():
             mensaje_error: str = str(exc)
             self.alertar(mensaje_error)
     
-    def eliminar_equipamiento(self, e):
+    def eliminar_equipamiento(self, e): #TODO
         """
         Función "handler" para el click del botón "Eliminar equipamiento".
         
@@ -422,7 +410,7 @@ class UI_Config_Horarios():
         
         self.actualizar_tabla()
     
-    def mostrar_equipamiento(self, e):
+    def mostrar_equipamiento(self, e): #TODO
         """
         Función "handler" para el click del botón "Mostrar equipamiento".
         
@@ -437,7 +425,6 @@ class UI_Config_Horarios():
         None.
     
         """
-        # TODO
         carrera_seleccionada: str = str(self.lista_carreras.value or "")
         nombre_actividad: str = str(self.lista_nombre_actividad.value or "")
         
@@ -579,6 +566,7 @@ class UI_Config_Horarios():
         None.
 
         """
+        print("SELECCIONE UN EDIFICIO")
         self.cargar_datos_aulas()
     
         # Se actualizan los elementos de la interfaz.
@@ -742,7 +730,7 @@ class UI_Config_Horarios():
         self.lista_carreras = self.crear_lista_carreras()
         self.lista_carreras.options = opciones_carreras
     
-    def cargar_datos_identificador_actividades(self): #TODO
+    def cargar_datos_identificador_actividades(self): #TODO when we go back to segmented things, maybe. Por ahora no sirve
         """
         Carga los datos para la lista de selección de identificador de
         actividades.
@@ -781,7 +769,6 @@ class UI_Config_Horarios():
         None.
 
         """
-        # TODO
         carrera_seleccionada: str = str(self.lista_carreras.value or "")
         
         opciones_nombres_actividades: List[ft.dropdown.Option] = []
@@ -790,7 +777,7 @@ class UI_Config_Horarios():
         # identificador seleccionados.
         # En caso de no seleccionar una carrera, que se seleccionen aquellas
         # que no tienen una carrera asignada. (PENSAR)
-        for nombre_actividad in self.ui_config.universidad.nombres_materias_concatenados():
+        for nombre_actividad in self.ui_config.universidad.nombres_horarios():
             opciones_nombres_actividades.append(ft.dropdown.Option(str(nombre_actividad)))
         
         self.lista_nombre_actividad = self.crear_lista_nombre_actividad()
@@ -814,7 +801,7 @@ class UI_Config_Horarios():
         self.lista_edificios = self.crear_lista_edificios()
         self.lista_edificios.options = opciones_edificios
     
-    def cargar_datos_aulas(self):
+    def cargar_datos_aulas(self):  #TODO  # Ver porque el dropdown no agarra esto
         """
         Carga los datos para la lista de selección de aulas.
         
@@ -826,14 +813,13 @@ class UI_Config_Horarios():
         None.
 
         """
-        # TODO
         edificio_seleccionado: str = str(self.lista_edificios.value or "")
-        
         opciones_aulas: List[ft.dropdown.Option] = []
         
         # Carga los nombres de aulas disponibles para el edificio seleccionado.
-        # for aula in self.ui_config.universidad.obtener_aulas(edificio_seleccionado):
-        #     opciones_aulas.append(ft.dropdown.Option(str(aula)))
+        for aula in self.ui_config.universidad.aulas_de_edificio(edificio_seleccionado):
+            print("Trate de actualizar una cosa?")
+            opciones_aulas.append(ft.dropdown.Option(str(aula)))
         
         self.lista_aulas = self.crear_lista_aulas()
         self.lista_aulas.options = opciones_aulas

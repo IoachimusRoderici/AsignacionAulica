@@ -26,7 +26,7 @@ de python.
    pruebas unitarias. Se puede omitir si no vas a ejecutar las pruebas
    unitarias.
 
-4. Ejecutar el programa con `flet run`.
+4. Ejecutar el programa con `flet run` desde la carpeta `src`.
 
    Nota: No ejecutar los archivos `.py` directamente, porque flet agrega
    variables de entorno y otras magias que, si no se tienen en cuenta, pueden

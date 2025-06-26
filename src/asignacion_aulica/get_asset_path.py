@@ -1,6 +1,6 @@
-from os import environ, path
+from os import getcwd, path
 
-assets_path = environ['FLET_ASSETS_DIR']
+assets_path = path.join(getcwd(), "assets")
 
 def get_asset_path(path_relativo: str) -> str:
     '''

@@ -727,7 +727,7 @@ class UI_Config_Horarios():
         opciones_carreras: List[ft.dropdown.Option] = []
         for carrera in self.ui_config.universidad.nombres_carreras():
             opciones_carreras.append(ft.dropdown.Option(str(carrera)))
-        self.lista_carreras = self.crear_lista_carreras()
+        
         self.lista_carreras.options = opciones_carreras
     
     def cargar_datos_identificador_actividades(self): #TODO when we go back to segmented things, maybe. Por ahora no sirve
@@ -754,7 +754,7 @@ class UI_Config_Horarios():
         # for identificador in self.ui_config.universidad.obtener_identificadores_actividades(carrera_seleccionada):
         #     opciones_identificadores.append(ft.dropdown.Option(str(identificador)))
         
-        self.lista_identificador_actividad = self.crear_lista_identificador_actividad()
+        
         self.lista_identificador_actividad.options = opciones_identificadores
     
     def cargar_datos_nombre_actividades(self): #TODO discriminar por carrera
@@ -780,7 +780,7 @@ class UI_Config_Horarios():
         for nombre_actividad in self.ui_config.universidad.nombres_horarios():
             opciones_nombres_actividades.append(ft.dropdown.Option(str(nombre_actividad)))
         
-        self.lista_nombre_actividad = self.crear_lista_nombre_actividad()
+        
         self.lista_nombre_actividad.options = opciones_nombres_actividades
         
     def cargar_datos_edificios(self):
@@ -798,7 +798,7 @@ class UI_Config_Horarios():
         opciones_edificios: List[ft.dropdown.Option] = []
         for edificio in self.ui_config.universidad.nombres_edificios():
             opciones_edificios.append(ft.dropdown.Option(str(edificio)))
-        self.lista_edificios = self.crear_lista_edificios()
+        
         self.lista_edificios.options = opciones_edificios
     
     def cargar_datos_aulas(self):  #TODO  # Ver porque el dropdown no agarra esto
@@ -818,10 +818,8 @@ class UI_Config_Horarios():
         
         # Carga los nombres de aulas disponibles para el edificio seleccionado.
         for aula in self.ui_config.universidad.aulas_de_edificio(edificio_seleccionado):
-            print("Trate de actualizar una cosa?")
             opciones_aulas.append(ft.dropdown.Option(str(aula)))
         
-        self.lista_aulas = self.crear_lista_aulas()
         self.lista_aulas.options = opciones_aulas
     
     def cargar_datos_equipamiento(self):
@@ -846,6 +844,7 @@ class UI_Config_Horarios():
         opciones_equipamiento: List[ft.dropdown.Option] = []
         # for equipamiento in self.ui_config.universidad.funcion():
         #     opciones_equipamiento.append(ft.dropdown.Option(str(equipamiento)))
+        
         self.lista_equipamiento.options = opciones_equipamiento
     
     def cargar_datos_tabla(self):
@@ -861,7 +860,6 @@ class UI_Config_Horarios():
         """
         # TODO
         self.tabla = generar_tabla(self.ui_config.universidad.mostrar_horarios())
-        pass
     
     def cargar_datos_inicio(self):
         """
@@ -896,6 +894,8 @@ class UI_Config_Horarios():
             label="Nombre de la actividad",
             options=[],
             enable_filter=True,
+            editable=True,
+            menu_height=500
         )
         return dropdown
     
@@ -913,6 +913,8 @@ class UI_Config_Horarios():
             label="Carrera",
             options=[],
             enable_filter=True,
+            editable=True,
+            menu_height=500
         )
         return dropdown
     
@@ -930,6 +932,8 @@ class UI_Config_Horarios():
             label="Edificio",
             options=[],
             enable_filter=True,
+            editable=True,
+            menu_height=400
         )
         return dropdown
     
@@ -947,6 +951,8 @@ class UI_Config_Horarios():
             label="Aula",
             options=[],
             enable_filter=True,
+            editable=True,
+            menu_height=400
         )
         return dropdown
     
@@ -963,15 +969,16 @@ class UI_Config_Horarios():
         dropdown = ft.Dropdown(
             label="Día",
             options=[
-                ft.dropdown.Option("Lunes"),
-                ft.dropdown.Option("Martes"),
-                ft.dropdown.Option("Miércoles"),
-                ft.dropdown.Option("Jueves"),
-                ft.dropdown.Option("Viernes"),
-                ft.dropdown.Option("Sábado"),
-                ft.dropdown.Option("Domingo")
+                ft.dropdown.Option(text="Lunes"),
+                ft.dropdown.Option(text="Martes"),
+                ft.dropdown.Option(text="Miércoles"),
+                ft.dropdown.Option(text="Jueves"),
+                ft.dropdown.Option(text="Viernes"),
+                ft.dropdown.Option(text="Sábado"),
+                ft.dropdown.Option(text="Domingo")
             ],
             enable_filter=True,
+            editable=True
         )
         return dropdown
     
@@ -991,6 +998,8 @@ class UI_Config_Horarios():
                 ft.dropdown.Option(f"{i:02}") for i in range(24)
             ],
             enable_filter=True,
+            editable=True,
+            menu_height=300
         )
         return dropdown
     
@@ -1010,6 +1019,8 @@ class UI_Config_Horarios():
                 ft.dropdown.Option(f"{i:02}") for i in range(0, 60, 15)
             ],
             enable_filter=True,
+            editable=True,
+            menu_height=300
         )
         return dropdown
     
@@ -1027,6 +1038,8 @@ class UI_Config_Horarios():
             label="Equipamiento",
             options=[],
             enable_filter=True,
+            editable=True,
+            menu_height=400
         )
         return dropdown
     
@@ -1114,7 +1127,6 @@ class UI_Config_Horarios():
         None.
 
         """
-        # TODO (descomentar)
         # Define el comportamiento "on_click" de cada elemento.
         self.boton_establecer_horario.on_click = self.establecer_horario
         self.boton_eliminar_horario.on_click = self.eliminar_horario

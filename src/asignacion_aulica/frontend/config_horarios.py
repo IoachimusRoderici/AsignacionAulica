@@ -291,7 +291,7 @@ class UI_Config_Horarios():
             
             # Se realiza la asignación automática
             self.ui_config.universidad.asignacion_automatica()
-            self.alertar("Asignacion realizada! Revisar assets/asignaciones.xlsx")
+
             # Se actualizan los elementos de la interfaz.
             self.actualizar_tabla()
         except Exception as exc:

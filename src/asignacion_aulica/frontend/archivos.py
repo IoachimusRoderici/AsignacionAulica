@@ -199,12 +199,13 @@ def importar_archivo(page: ft.Page, file_picker: ft.FilePicker, universidad: Uni
 def resultado_exportacion(page: ft.Page, file_picker: ft.FilePicker, universidad: Universidad):
     if file_picker.result != None and file_picker.result.path != None:
         ruta = file_picker.result.path
+
+        if not ruta.endswith(".xlsx"):
+            ruta+=".xlsx"
         
-        # TODO
-        # IMPLEMENTAR EXPORTACION DE ARCHIVO
-        # Se crea un archivo vacío.
-        # with open(ruta, "w") as f:
-        #     f.write("")
+        universidad.exportar_horarios(ruta)
+    else:
+        VentanaAlerta("La ruta de exportación es inválida.")
 
 def exportar_archivo(page: ft.Page, file_picker: ft.FilePicker, universidad: Universidad):
     """

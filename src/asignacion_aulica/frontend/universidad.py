@@ -22,7 +22,7 @@ class Universidad:
         self.carreras = df_list['Carreras']
         self.materias = df_list['Materias']
         self.horarios = df_list['Clases'].fillna("")
-        self.horarios = self.horarios.head(2)  
+        #self.horarios = self.horarios.head(2)  
 
 
 
@@ -435,7 +435,9 @@ class Universidad:
 
     def exportar_horarios(self, path):
 
-        self.horarios.to_excel(path, index=False)
+        self.horarios.sort_values(['Nombre'], inplace=True)
+        self.horarios.to_excel(path, index=False, 
+                               columns=['Nombre', 'Día', 'Horario de inicio', 'Horario de fin','Edificio asignado', 'Aula asignada'])
 
         # Trabajar con el excel para que se termine viendo bonito:
         wb = load_workbook(path)

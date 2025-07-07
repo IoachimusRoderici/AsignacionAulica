@@ -36,3 +36,6 @@ product = "Asignacion Aulica"
 [tool.flet.app]
 path = "src"
 
+[tool.flet.app.boot_screen]
+show = true
+message = "Preparando app para su primer uso…"

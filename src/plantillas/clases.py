@@ -30,13 +30,16 @@ La tabla tiene una fila de la tabla por cada clase, con celdas unidas
 verticalmente (por ejemplo, la columna "Materia" está unida en las filas de las
 clases de cada materia).
 '''
-from openpyxl.utils.units import pixels_to_points
+from openpyxl.utils.units import pixels_to_points, points_to_pixels
 from openpyxl.drawing.image import Image
 from openpyxl import Workbook, worksheet
 from os import path
 import sys
 
-ESTE_DIRECTORIO = path.split(__file__)[0]
+este_directorio = path.split(__file__)[0]
+
+logo_path = path.join(este_directorio, 'unrn_logo.png')
+logo_height = 50 #pts
 
 FILAS_PREÁMBULO = (
     ('Universidad Nacional de Río Negro',),
@@ -62,10 +65,14 @@ COLUMNAS = (
 )
 
 def insertar_logo(hoja: worksheet):
-    logo_path = path.join(ESTE_DIRECTORIO, 'unrn_logo.png')
     imagen = Image(logo_path)
+    scale_ratio = points_to_pixels(logo_height) / imagen.height
+    imagen.height *= scale_ratio
+    imagen.width *= scale_ratio
+
     hoja.add_image(imagen, 'A1')
     hoja.row_dimensions[1].height = pixels_to_points(imagen.height) + 1
+
     hoja.merge_cells('A1:R1')
 
 def agregar_preámbulo(hoja: worksheet):

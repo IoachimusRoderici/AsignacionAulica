@@ -30,19 +30,32 @@ La tabla tiene una fila de la tabla por cada clase, con celdas unidas
 verticalmente (por ejemplo, la columna "Materia" está unida en las filas de las
 clases de cada materia).
 '''
+from openpyxl.styles import PatternFill, Border, Side, Alignment, Font, Fill
 from openpyxl.utils.units import pixels_to_points, points_to_pixels
+from openpyxl.worksheet.worksheet import Worksheet
+from openpyxl.worksheet.table import Table
 from openpyxl.drawing.image import Image
-from openpyxl import Workbook, worksheet
+from openpyxl import Workbook
 from os import path
 import sys
 
 este_directorio = path.split(__file__)[0]
+rojo_unrn = 'EB2242'
 
 logo_path = path.join(este_directorio, 'unrn_logo.png')
-logo_height = 50 #pts
+logo_height = 60 #pts
+
+font_preámbulo = Font(
+    name = 'arial',
+    size = 24,
+    bold = True
+)
+fill_preámbulo = PatternFill(
+    patternType='solid',
+    fgColor=rojo_unrn
+)
 
 FILAS_PREÁMBULO = (
-    ('Universidad Nacional de Río Negro',),
     ('Carrera:', None),
     ('Año:', None, 'Cuatrimestre:', None)
 )
@@ -64,7 +77,7 @@ COLUMNAS = (
     'Aula'
 )
 
-def insertar_logo(hoja: worksheet):
+def insertar_logo(hoja: Worksheet):
     imagen = Image(logo_path)
     scale_ratio = points_to_pixels(logo_height) / imagen.height
     imagen.height *= scale_ratio
@@ -73,16 +86,36 @@ def insertar_logo(hoja: worksheet):
     hoja.add_image(imagen, 'A1')
     hoja.row_dimensions[1].height = pixels_to_points(imagen.height) + 1
 
-    hoja.merge_cells('A1:R1')
+    hoja.merge_cells('A1:N1')
 
-def agregar_preámbulo(hoja: worksheet):
+def agregar_preámbulo(hoja: Worksheet):
     for fila in FILAS_PREÁMBULO:
         hoja.append(fila)
         hoja.append(())
+    
+    hoja['A2'].font = font_preámbulo
+    hoja['A2'].fill = fill_preámbulo
 
-def agregar_tabla(hoja: worksheet):
+def agregar_tabla(hoja: Worksheet):
     hoja.append(COLUMNAS)
-    hoja.append(())
+    hoja.append((
+        '2025',
+        'programación',
+        'Cuatrimestral',
+        'com1',
+        'Teórica',
+        25,
+        'Lunes',
+        '17:00',
+        '20:00',
+        'M. Vilugron',
+        'D. Teira',
+        'Si (8)',
+        'Anasagasti 2',
+        'B103'
+    ))
+    tabla = Table(displayName='Datos', ref='A6:N15')
+    hoja.add_table(tabla)
 
 def crear_plantilla() -> Workbook:
     plantilla = Workbook()

@@ -69,19 +69,18 @@ COLUMNAS = (
 n_columns = len(COLUMNAS)
 max_column = get_column_letter(n_columns)
 
-def preámbulo(hoja: Worksheet):
+def insertar_preámbulo(hoja: Worksheet):
     # Logo
     insertar_logo(hoja)
     hoja.merge_cells(start_row=1, end_row=1, start_column=1, end_column=n_columns)
 
     # Carrera
     fila = 2
-    hoja.cell(fila, 1).fill = fill_rojo_unrn
-    
-    cell = hoja.cell(fila, 2, value='Carrera:')
+    cell = hoja.cell(fila, 1, value='Carrera: ')
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_grande
     cell.alignment = a_la_derecha
+    hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
 
     cell = hoja.cell(fila, 3, value='')
     cell.fill = fill_rojo_unrn
@@ -92,12 +91,11 @@ def preámbulo(hoja: Worksheet):
 
     # Año y cuatrimestre
     fila += 2
-    hoja.cell(fila, 1).fill = fill_rojo_unrn
-    
-    cell = hoja.cell(fila, 2, value='Año:')
+    cell = hoja.cell(fila, 1, value='Año: ')
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_chica
     cell.alignment = a_la_derecha
+    hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
 
     cell = hoja.cell(fila, 3, value='')
     cell.fill = fill_rojo_unrn
@@ -105,7 +103,7 @@ def preámbulo(hoja: Worksheet):
     cell.alignment = a_la_izquierda
 
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=4, end_column=5)
-    cell = hoja.cell(fila, 4, value='Cuatrimestre:')
+    cell = hoja.cell(fila, 4, value='Cuatrimestre: ')
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_chica
     cell.alignment = a_la_derecha
@@ -117,7 +115,7 @@ def preámbulo(hoja: Worksheet):
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=6, end_column=n_columns)
     hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
 
-def tabla(hoja: Worksheet):
+def insertar_tabla(hoja: Worksheet):
     # Intertar fila con los nombres de las columnas
     hoja.append(COLUMNAS)
     fila_header = hoja.max_row
@@ -130,20 +128,25 @@ def tabla(hoja: Worksheet):
     
     # Ajustar tamaños de las columnas
     font_size_ratio = font_table_header.size / 11
-    hoja.column_dimensions['A'].width =  4 * font_size_ratio # Año
+    hoja.column_dimensions['A'].width =  6 * font_size_ratio # Año
     hoja.column_dimensions['B'].width = 25 * font_size_ratio # Materia
     hoja.column_dimensions['C'].width = 14 * font_size_ratio # Cuatrimestral o anual
-    hoja.column_dimensions['D'].width =  9 * font_size_ratio # Comisión
+    hoja.column_dimensions['D'].width = 10 * font_size_ratio # Comisión
     hoja.column_dimensions['E'].width = 13 * font_size_ratio # Teórica o práctica
-    hoja.column_dimensions['F'].width =  6 * font_size_ratio # Cupo
+    hoja.column_dimensions['F'].width =  7 * font_size_ratio # Cupo
     hoja.column_dimensions['G'].width =  6 * font_size_ratio # Día
     hoja.column_dimensions['H'].width = 10 * font_size_ratio # Horario de inicio
     hoja.column_dimensions['I'].width = 10 * font_size_ratio # Horario de fin
     hoja.column_dimensions['J'].width = 17 * font_size_ratio # Docente
     hoja.column_dimensions['K'].width = 17 * font_size_ratio # Auxiliar
-    hoja.column_dimensions['L'].width = 14 * font_size_ratio # Promocionable
+    hoja.column_dimensions['L'].width = 15 * font_size_ratio # Promocionable
     hoja.column_dimensions['M'].width = 10 * font_size_ratio # Lugar
     hoja.column_dimensions['N'].width =  6 * font_size_ratio # Aula
+
+    # Crear la tabla
+    rango = f'A{fila_header}:{max_column}{fila_header+1}'
+    tabla = Table(displayName='DatosDeClases', ref=rango)
+    hoja.add_table(tabla)
 
 def crear_plantilla() -> Workbook:
     plantilla = Workbook()
@@ -153,8 +156,8 @@ def crear_plantilla() -> Workbook:
     hoja = plantilla.active
     hoja.title = 'Plantilla'
     
-    preámbulo(hoja)
-    tabla(hoja)
+    insertar_preámbulo(hoja)
+    insertar_tabla(hoja)
 
     return plantilla
 

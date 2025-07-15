@@ -24,7 +24,7 @@ font_preámbulo_chica.size = 18
 
 font_table_header = copy(font_default)
 font_table_header.bold = True
-font_table_header.size = 15
+font_table_header.size = 14
 
 
 fill_rojo_unrn = PatternFill(

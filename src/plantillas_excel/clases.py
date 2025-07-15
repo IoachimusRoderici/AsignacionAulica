@@ -30,34 +30,23 @@ La tabla tiene una fila de la tabla por cada clase, con celdas unidas
 verticalmente (por ejemplo, la columna "Materia" está unida en las filas de las
 clases de cada materia).
 '''
-from openpyxl.styles import PatternFill, Border, Side, Alignment, Font, Fill
-from openpyxl.utils.units import pixels_to_points, points_to_pixels
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.worksheet.table import Table
 from openpyxl.drawing.image import Image
 from openpyxl import Workbook
-from os import path
+
 import sys
 
-este_directorio = path.split(__file__)[0]
-rojo_unrn = 'EB2242'
-
-logo_path = path.join(este_directorio, 'unrn_logo.png')
-logo_height = 60 #pts
-
-font_preámbulo = Font(
-    name = 'arial',
-    size = 24,
-    bold = True
-)
-fill_preámbulo = PatternFill(
-    patternType='solid',
-    fgColor=rojo_unrn
-)
-
-FILAS_PREÁMBULO = (
-    ('Carrera:', None),
-    ('Año:', None, 'Cuatrimestre:', None)
+from estilos import (
+    insertar_logo,
+    fill_rojo_unrn,
+    font_default,
+    font_preámbulo_grande,
+    font_preámbulo_chica,
+    font_table_header,
+    centrado,
+    a_la_derecha,
+    a_la_izquierda
 )
 
 COLUMNAS = (

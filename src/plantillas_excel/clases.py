@@ -31,8 +31,8 @@ verticalmente (por ejemplo, la columna "Materia" está unida en las filas de las
 clases de cada materia).
 '''
 from openpyxl.worksheet.worksheet import Worksheet
+from openpyxl.utils.cell import get_column_letter
 from openpyxl.worksheet.table import Table
-from openpyxl.drawing.image import Image
 from openpyxl import Workbook
 
 import sys
@@ -52,68 +52,109 @@ from estilos import (
 COLUMNAS = (
     'Año',
     'Materia',
-    'Cuatrimestral / Anual',
+    'Cuatrimestral\no Anual',
     'Comisión',
-    'Teórica / Práctica',
+    'Teórica o\n Práctica',
     'Cupo',
-    'Dia',
-    'Horario de inicio',
-    'Horario de fin',
+    'Día',
+    'Horario\nde inicio',
+    'Horario\nde fin',
     'Docente',
     'Auxiliar',
-    'Promocionable',
+    'Promocionable\nNo / Si (Nota)',
     'Lugar',
     'Aula'
 )
 
-def insertar_logo(hoja: Worksheet):
-    imagen = Image(logo_path)
-    scale_ratio = points_to_pixels(logo_height) / imagen.height
-    imagen.height *= scale_ratio
-    imagen.width *= scale_ratio
+n_columns = len(COLUMNAS)
+max_column = get_column_letter(n_columns)
 
-    hoja.add_image(imagen, 'A1')
-    hoja.row_dimensions[1].height = pixels_to_points(imagen.height) + 1
+def preámbulo(hoja: Worksheet):
+    # Logo
+    insertar_logo(hoja)
+    hoja.merge_cells(start_row=1, end_row=1, start_column=1, end_column=n_columns)
 
-    hoja.merge_cells('A1:N1')
-
-def agregar_preámbulo(hoja: Worksheet):
-    for fila in FILAS_PREÁMBULO:
-        hoja.append(fila)
-        hoja.append(())
+    # Carrera
+    fila = 2
+    hoja.cell(fila, 1).fill = fill_rojo_unrn
     
-    hoja['A2'].font = font_preámbulo
-    hoja['A2'].fill = fill_preámbulo
+    cell = hoja.cell(fila, 2, value='Carrera:')
+    cell.fill = fill_rojo_unrn
+    cell.font = font_preámbulo_grande
+    cell.alignment = a_la_derecha
 
-def agregar_tabla(hoja: Worksheet):
+    cell = hoja.cell(fila, 3, value='')
+    cell.fill = fill_rojo_unrn
+    cell.font = font_preámbulo_grande
+    cell.alignment = a_la_izquierda
+    hoja.merge_cells(start_row=fila, end_row=fila, start_column=3, end_column=n_columns)
+    hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
+
+    # Año y cuatrimestre
+    fila += 2
+    hoja.cell(fila, 1).fill = fill_rojo_unrn
+    
+    cell = hoja.cell(fila, 2, value='Año:')
+    cell.fill = fill_rojo_unrn
+    cell.font = font_preámbulo_chica
+    cell.alignment = a_la_derecha
+
+    cell = hoja.cell(fila, 3, value='')
+    cell.fill = fill_rojo_unrn
+    cell.font = font_preámbulo_chica
+    cell.alignment = a_la_izquierda
+
+    hoja.merge_cells(start_row=fila, end_row=fila, start_column=4, end_column=5)
+    cell = hoja.cell(fila, 4, value='Cuatrimestre:')
+    cell.fill = fill_rojo_unrn
+    cell.font = font_preámbulo_chica
+    cell.alignment = a_la_derecha
+
+    cell = hoja.cell(fila, 6, value='')
+    cell.fill = fill_rojo_unrn
+    cell.font = font_preámbulo_chica
+    cell.alignment = a_la_izquierda
+    hoja.merge_cells(start_row=fila, end_row=fila, start_column=6, end_column=n_columns)
+    hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
+
+def tabla(hoja: Worksheet):
+    # Intertar fila con los nombres de las columnas
     hoja.append(COLUMNAS)
-    hoja.append((
-        '2025',
-        'programación',
-        'Cuatrimestral',
-        'com1',
-        'Teórica',
-        25,
-        'Lunes',
-        '17:00',
-        '20:00',
-        'M. Vilugron',
-        'D. Teira',
-        'Si (8)',
-        'Anasagasti 2',
-        'B103'
-    ))
-    tabla = Table(displayName='Datos', ref='A6:N15')
-    hoja.add_table(tabla)
+    fila_header = hoja.max_row
+
+    # Configurar estilo de los nombres
+    for i in range(1, n_columns+1):
+        cell = hoja.cell(fila_header, i)
+        cell.font = font_table_header
+        cell.alignment = centrado
+    
+    # Ajustar tamaños de las columnas
+    font_size_ratio = font_table_header.size / 11
+    hoja.column_dimensions['A'].width =  4 * font_size_ratio # Año
+    hoja.column_dimensions['B'].width = 25 * font_size_ratio # Materia
+    hoja.column_dimensions['C'].width = 14 * font_size_ratio # Cuatrimestral o anual
+    hoja.column_dimensions['D'].width =  9 * font_size_ratio # Comisión
+    hoja.column_dimensions['E'].width = 13 * font_size_ratio # Teórica o práctica
+    hoja.column_dimensions['F'].width =  6 * font_size_ratio # Cupo
+    hoja.column_dimensions['G'].width =  6 * font_size_ratio # Día
+    hoja.column_dimensions['H'].width = 10 * font_size_ratio # Horario de inicio
+    hoja.column_dimensions['I'].width = 10 * font_size_ratio # Horario de fin
+    hoja.column_dimensions['J'].width = 17 * font_size_ratio # Docente
+    hoja.column_dimensions['K'].width = 17 * font_size_ratio # Auxiliar
+    hoja.column_dimensions['L'].width = 14 * font_size_ratio # Promocionable
+    hoja.column_dimensions['M'].width = 10 * font_size_ratio # Lugar
+    hoja.column_dimensions['N'].width =  6 * font_size_ratio # Aula
 
 def crear_plantilla() -> Workbook:
     plantilla = Workbook()
+    plantilla._fonts[0] = font_default
+    plantilla._alignments[0] = centrado
+
     hoja = plantilla.active
     hoja.title = 'Plantilla'
     
-    insertar_logo(hoja)
-    agregar_preámbulo(hoja)
-    agregar_tabla(hoja)
+    preámbulo(hoja)
+    tabla(hoja)
 
     return plantilla
 

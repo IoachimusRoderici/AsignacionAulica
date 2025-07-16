@@ -14,9 +14,8 @@ def opciones_válidas(*valores: str) -> DataValidation:
     validador = DataValidation(
         type='list',
         formula1=','.join(valores),
-        errorTitle = 'El dato ingresado no es válido.',
-        error = f'Las opciones válidas son: {', '.join(valores)}.',
-        errorStyle = 'stop',
+        error = f'Por favor ingresar uno de los siguientes valores: {', '.join(valores)}.',
+        errorStyle = 'warning',
         showErrorMessage = True,
         showDropDown = False # False significa True
     )
@@ -46,9 +45,9 @@ año_del_plan_de_estudios = DataValidation(
     operator='between',
     formula1=1,
     formula2=9,
-    error = 'El valor debe ser un año del plan de estudios.\n1, 2, 3, etc.',
     errorTitle = 'El dato ingresado no es válido.',
-    errorStyle = 'stop',
+    error = 'El valor debe ser un año del plan de estudios.\n1, 2, 3, etc.',
+    errorStyle = 'warning',
     showErrorMessage = True
 )
 '''
@@ -63,7 +62,7 @@ número_natural = DataValidation(
     formula1=0,
     errorTitle = 'El dato ingresado no es válido.',
     error = 'El valor debe ser un número entero no negativo.',
-    errorStyle = 'stop',
+    errorStyle = 'warning',
     showErrorMessage = True
 )
 '''
@@ -72,9 +71,11 @@ Un validador que solamente acepta números naturales (incluyendo el 0).
 
 horario = DataValidation(
     type='time',
-    errorTitle = 'El dato ingresado no es válido.',
-    error = 'Por favor ingrese un horario.',
-    errorStyle = 'stop',
+    operator = 'between',
+    formula1 = 0,
+    formula2 = 1,
+    error = 'Excel no reconoce el valor ingresado como un horario.',
+    errorStyle = 'warning',
     showErrorMessage = True
 )
 '''

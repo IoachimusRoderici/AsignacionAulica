@@ -49,6 +49,13 @@ from estilos import (
     a_la_izquierda
 )
 
+from validadores import (
+    no_cambiar_este_valor,
+    año_del_plan_de_estudios,
+    opciones_válidas,
+    número_natural
+)
+
 COLUMNAS = (
     'Año',
     'Materia',
@@ -73,6 +80,7 @@ def insertar_preámbulo(hoja: Worksheet):
     # Logo
     insertar_logo(hoja)
     hoja.merge_cells(start_row=1, end_row=1, start_column=1, end_column=n_columns)
+    no_cambiar_este_valor.add(f'A1:{max_column}1')
 
     # Carrera
     fila = 2
@@ -81,6 +89,7 @@ def insertar_preámbulo(hoja: Worksheet):
     cell.font = font_preámbulo_grande
     cell.alignment = a_la_derecha
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
+    no_cambiar_este_valor.add(f'A{fila}:B{fila}')
 
     cell = hoja.cell(fila, 3, value='')
     cell.fill = fill_rojo_unrn
@@ -88,6 +97,7 @@ def insertar_preámbulo(hoja: Worksheet):
     cell.alignment = a_la_izquierda
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=3, end_column=n_columns)
     hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
+    no_cambiar_este_valor.add(f'A{fila+1}:{max_column}{fila+1}')
 
     # Año y cuatrimestre
     fila += 2
@@ -96,6 +106,7 @@ def insertar_preámbulo(hoja: Worksheet):
     cell.font = font_preámbulo_chica
     cell.alignment = a_la_derecha
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
+    no_cambiar_este_valor.add(f'A{fila}:B{fila}')
 
     cell = hoja.cell(fila, 3, value='')
     cell.fill = fill_rojo_unrn
@@ -107,6 +118,7 @@ def insertar_preámbulo(hoja: Worksheet):
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_chica
     cell.alignment = a_la_derecha
+    no_cambiar_este_valor.add(f'D{fila}:E{fila}')
 
     cell = hoja.cell(fila, 6, value='')
     cell.fill = fill_rojo_unrn
@@ -114,11 +126,13 @@ def insertar_preámbulo(hoja: Worksheet):
     cell.alignment = a_la_izquierda
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=6, end_column=n_columns)
     hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
+    no_cambiar_este_valor.add(f'A{fila+1}:{max_column}{fila+1}')
 
 def insertar_tabla(hoja: Worksheet):
     # Intertar fila con los nombres de las columnas
     hoja.append(COLUMNAS)
     fila_header = hoja.max_row
+    no_cambiar_este_valor.add(f'A{fila_header}:{max_column}{fila_header}')
 
     # Configurar estilo de los nombres
     for i in range(1, n_columns+1):
@@ -148,6 +162,18 @@ def insertar_tabla(hoja: Worksheet):
     tabla = Table(displayName='DatosDeClases', ref=rango)
     hoja.add_table(tabla)
 
+    # Agregar validadores
+    año_del_plan_de_estudios.add(f'A{fila_header+1}:A1048576') # 1048576 significa hasta el final de la columna.
+    número_natural.add(f'F{fila_header+1}:F1048576')    
+
+    cuatrimestral_o_anual = opciones_válidas('Cuatrimestral', 'Anual')
+    hoja.add_data_validation(cuatrimestral_o_anual)
+    cuatrimestral_o_anual.add(f'C{fila_header+1}:C1048576')
+
+    teórica_o_práctica = opciones_válidas('Teórica', 'Práctica')
+    hoja.add_data_validation(teórica_o_práctica)
+    teórica_o_práctica.add(f'E{fila_header+1}:E1048576')
+
 def crear_plantilla() -> Workbook:
     plantilla = Workbook()
     plantilla._fonts[0] = font_default
@@ -155,6 +181,9 @@ def crear_plantilla() -> Workbook:
 
     hoja = plantilla.active
     hoja.title = 'Plantilla'
+    hoja.add_data_validation(no_cambiar_este_valor)
+    hoja.add_data_validation(año_del_plan_de_estudios)
+    hoja.add_data_validation(número_natural)
     
     insertar_preámbulo(hoja)
     insertar_tabla(hoja)

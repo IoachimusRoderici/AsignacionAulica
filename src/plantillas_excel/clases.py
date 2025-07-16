@@ -52,8 +52,9 @@ from estilos import (
 from validadores import (
     no_cambiar_este_valor,
     año_del_plan_de_estudios,
-    opciones_válidas,
-    número_natural
+    número_natural,
+    día_de_la_semana,
+    horario
 )
 
 COLUMNAS = (
@@ -108,7 +109,7 @@ def insertar_preámbulo(hoja: Worksheet):
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
     no_cambiar_este_valor.add(f'A{fila}:B{fila}')
 
-    cell = hoja.cell(fila, 3, value='')
+    cell = hoja.cell(fila, 3, value='') # Celda para completar el año
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_chica
     cell.alignment = a_la_izquierda
@@ -120,11 +121,12 @@ def insertar_preámbulo(hoja: Worksheet):
     cell.alignment = a_la_derecha
     no_cambiar_este_valor.add(f'D{fila}:E{fila}')
 
-    cell = hoja.cell(fila, 6, value='')
+    cell = hoja.cell(fila, 6, value='') # Celda para completar el cuatrimestre
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_chica
     cell.alignment = a_la_izquierda
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=6, end_column=n_columns)
+
     hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
     no_cambiar_este_valor.add(f'A{fila+1}:{max_column}{fila+1}')
 
@@ -164,15 +166,10 @@ def insertar_tabla(hoja: Worksheet):
 
     # Agregar validadores
     año_del_plan_de_estudios.add(f'A{fila_header+1}:A1048576') # 1048576 significa hasta el final de la columna.
-    número_natural.add(f'F{fila_header+1}:F1048576')    
-
-    cuatrimestral_o_anual = opciones_válidas('Cuatrimestral', 'Anual')
-    hoja.add_data_validation(cuatrimestral_o_anual)
-    cuatrimestral_o_anual.add(f'C{fila_header+1}:C1048576')
-
-    teórica_o_práctica = opciones_válidas('Teórica', 'Práctica')
-    hoja.add_data_validation(teórica_o_práctica)
-    teórica_o_práctica.add(f'E{fila_header+1}:E1048576')
+    número_natural.add(f'F{fila_header+1}:F1048576') # Cupo 
+    día_de_la_semana.add(f'G{fila_header+1}:G1048576') # Día
+    horario.add(f'H{fila_header+1}:H1048576') # Horario de inicio
+    horario.add(f'I{fila_header+1}:I1048576') # Horario de fin
 
 def crear_plantilla() -> Workbook:
     plantilla = Workbook()
@@ -184,6 +181,8 @@ def crear_plantilla() -> Workbook:
     hoja.add_data_validation(no_cambiar_este_valor)
     hoja.add_data_validation(año_del_plan_de_estudios)
     hoja.add_data_validation(número_natural)
+    hoja.add_data_validation(día_de_la_semana)
+    hoja.add_data_validation(horario)
     
     insertar_preámbulo(hoja)
     insertar_tabla(hoja)

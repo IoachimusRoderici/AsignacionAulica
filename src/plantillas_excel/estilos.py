@@ -32,23 +32,9 @@ fill_rojo_unrn = PatternFill(
     fgColor=rojo_unrn
 )
 
-centrado = Alignment(
-    horizontal = 'center',
-    vertical = 'center',
-    wrap_text = True
-)
-
-a_la_derecha = Alignment(
-    horizontal = 'right',
-    vertical = 'center',
-    wrap_text = True
-)
-
-a_la_izquierda = Alignment(
-    horizontal = 'left',
-    vertical = 'center',
-    wrap_text = True
-)
+centrado = Alignment(horizontal = 'center', wrap_text = True)
+a_la_derecha = Alignment(horizontal = 'right')
+a_la_izquierda = Alignment(horizontal = 'left')
 
 def get_logo(height_points):
     imagen = Image(logo_path)

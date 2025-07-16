@@ -87,30 +87,30 @@ def insertar_preámbulo(hoja: Worksheet):
     fila = 2
     hoja.row_dimensions[fila].height = font_preámbulo_grande.size + 4
 
+    hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
     cell = hoja.cell(fila, 1, value='Carrera: ')
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_grande
     cell.alignment = a_la_derecha
-    hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
     no_cambiar_este_valor.add(f'A{fila}:B{fila}')
 
+    hoja.merge_cells(start_row=fila, end_row=fila, start_column=3, end_column=n_columns)
     cell = hoja.cell(fila, 3, value='')
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_grande
     cell.alignment = a_la_izquierda
-    hoja.merge_cells(start_row=fila, end_row=fila, start_column=3, end_column=n_columns)
-    hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
     no_cambiar_este_valor.add(f'A{fila+1}:{max_column}{fila+1}')
+    hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
 
     # Año y cuatrimestre
     fila += 2
     hoja.row_dimensions[fila].height = font_preámbulo_chica.size + 4
 
+    hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
     cell = hoja.cell(fila, 1, value='Año: ')
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_chica
     cell.alignment = a_la_derecha
-    hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
     no_cambiar_este_valor.add(f'A{fila}:B{fila}')
 
     cell = hoja.cell(fila, 3, value='') # Celda para completar el año
@@ -125,12 +125,11 @@ def insertar_preámbulo(hoja: Worksheet):
     cell.alignment = a_la_derecha
     no_cambiar_este_valor.add(f'D{fila}:E{fila}')
 
+    hoja.merge_cells(start_row=fila, end_row=fila, start_column=6, end_column=n_columns)
     cell = hoja.cell(fila, 6, value='') # Celda para completar el cuatrimestre
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_chica
     cell.alignment = a_la_izquierda
-    hoja.merge_cells(start_row=fila, end_row=fila, start_column=6, end_column=n_columns)
-
     hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
     no_cambiar_este_valor.add(f'A{fila+1}:{max_column}{fila+1}')
 
@@ -178,7 +177,6 @@ def insertar_tabla(hoja: Worksheet):
 def crear_plantilla() -> Workbook:
     plantilla = Workbook()
     plantilla._fonts[0] = font_default
-    plantilla._alignments[0] = centrado
 
     hoja = plantilla.active
     hoja.title = 'Plantilla'

@@ -85,6 +85,8 @@ def insertar_preámbulo(hoja: Worksheet):
 
     # Carrera
     fila = 2
+    hoja.row_dimensions[fila].height = font_preámbulo_grande.size + 4
+
     cell = hoja.cell(fila, 1, value='Carrera: ')
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_grande
@@ -102,6 +104,8 @@ def insertar_preámbulo(hoja: Worksheet):
 
     # Año y cuatrimestre
     fila += 2
+    hoja.row_dimensions[fila].height = font_preámbulo_chica.size + 4
+
     cell = hoja.cell(fila, 1, value='Año: ')
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_chica

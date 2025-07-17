@@ -1,6 +1,8 @@
 '''
 Este script crea la plantilla para el archivo excel de clases/horarios/aulas.
 
+El path en donde guardar el archivo se recibe como argumento.
+
 La plantilla está basada en el archivo excel que les directores de carreras le
 pasan al encargado de la asignación. Se modificaron algunas cosas para que sea
 más usable.

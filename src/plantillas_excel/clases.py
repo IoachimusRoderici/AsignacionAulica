@@ -147,25 +147,20 @@ def insertar_tabla(hoja: Worksheet):
     
     # Ajustar tamaños de las columnas
     font_size_ratio = font_table_header.size / 11
-    hoja.column_dimensions['A'].width =  6 * font_size_ratio # Año
+    hoja.column_dimensions['A'].width =  5 * font_size_ratio # Año
     hoja.column_dimensions['B'].width = 25 * font_size_ratio # Materia
-    hoja.column_dimensions['C'].width = 14 * font_size_ratio # Cuatrimestral o anual
-    hoja.column_dimensions['D'].width = 10 * font_size_ratio # Comisión
-    hoja.column_dimensions['E'].width = 13 * font_size_ratio # Teórica o práctica
-    hoja.column_dimensions['F'].width =  7 * font_size_ratio # Cupo
-    hoja.column_dimensions['G'].width =  6 * font_size_ratio # Día
-    hoja.column_dimensions['H'].width = 10 * font_size_ratio # Horario de inicio
-    hoja.column_dimensions['I'].width = 10 * font_size_ratio # Horario de fin
-    hoja.column_dimensions['J'].width = 17 * font_size_ratio # Docente
-    hoja.column_dimensions['K'].width = 17 * font_size_ratio # Auxiliar
-    hoja.column_dimensions['L'].width = 15 * font_size_ratio # Promocionable
-    hoja.column_dimensions['M'].width = 10 * font_size_ratio # Lugar
-    hoja.column_dimensions['N'].width =  6 * font_size_ratio # Aula
-
-    # Crear la tabla
-    rango = f'A{fila_header}:{max_column}{fila_header+1}'
-    tabla = Table(displayName='DatosDeClases', ref=rango)
-    hoja.add_table(tabla)
+    hoja.column_dimensions['C'].width = 12 * font_size_ratio # Cuatrimestral o anual
+    hoja.column_dimensions['D'].width =  9 * font_size_ratio # Comisión
+    hoja.column_dimensions['E'].width = 10 * font_size_ratio # Teórica o práctica
+    hoja.column_dimensions['F'].width =  5 * font_size_ratio # Cupo
+    hoja.column_dimensions['G'].width =  8 * font_size_ratio # Día
+    hoja.column_dimensions['H'].width =  7 * font_size_ratio # Horario de inicio
+    hoja.column_dimensions['I'].width =  7 * font_size_ratio # Horario de fin
+    hoja.column_dimensions['J'].width = 12 * font_size_ratio # Docente
+    hoja.column_dimensions['K'].width = 12 * font_size_ratio # Auxiliar
+    hoja.column_dimensions['L'].width = 14 * font_size_ratio # Promocionable
+    hoja.column_dimensions['M'].width = 12 * font_size_ratio # Lugar
+    hoja.column_dimensions['N'].width =  8 * font_size_ratio # Aula
 
     # Agregar validadores
     año_del_plan_de_estudios.add(f'A{fila_header+1}:A1048576') # 1048576 significa hasta el final de la columna.

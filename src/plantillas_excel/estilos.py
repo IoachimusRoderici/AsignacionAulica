@@ -28,8 +28,8 @@ font_table_header.bold = True
 fill_rojo_unrn = PatternFill(patternType='solid', fgColor=rojo_unrn)
 
 centrado = Alignment(horizontal='center', vertical='center', wrap_text=True)
-a_la_derecha = Alignment(horizontal = 'right')
-a_la_izquierda = Alignment(horizontal = 'left')
+a_la_derecha = Alignment(horizontal = 'right', vertical='center')
+a_la_izquierda = Alignment(horizontal = 'left', vertical='center')
 
 def get_logo(height_points):
     imagen = Image(logo_path)

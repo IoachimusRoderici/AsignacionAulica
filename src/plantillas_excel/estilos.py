@@ -2,6 +2,7 @@ from openpyxl.styles import PatternFill, Border, Side, Alignment, Font, Fill
 from openpyxl.utils.units import points_to_pixels, pixels_to_points
 from openpyxl.utils.cell import coordinate_to_tuple
 from openpyxl.worksheet.worksheet import Worksheet
+from openpyxl.styles.borders import Side, Border
 from openpyxl.drawing.image import Image
 from copy import copy
 from os import path
@@ -26,6 +27,11 @@ centrado = Alignment(horizontal='center', vertical='center', wrap_text=True)
 a_la_derecha = Alignment(horizontal = 'right', vertical='center')
 a_la_izquierda = Alignment(horizontal = 'left', vertical='center')
 
+borde_negro = Side(border_style='thin', color='000000')
+borde_negro_grueso = Side(border_style='medium', color='000000')
+borde_blanco = Side(border_style='thin', color='FFFFFF')
+todos_los_bordes_negros = Border(top=borde_negro, bottom=borde_negro, left=borde_negro, right=borde_negro)
+
 def get_logo(height_points):
     imagen = Image(logo_path)
     scale_ratio = points_to_pixels(height_points) / imagen.height
@@ -33,10 +39,3 @@ def get_logo(height_points):
     imagen.width *= scale_ratio
 
     return imagen
-
-def insertar_logo(hoja: Worksheet, celda = 'A1', height_points = 70):
-    row, col = coordinate_to_tuple(celda)
-    imagen = get_logo(height_points)
-    hoja.add_image(imagen, celda)
-    hoja.row_dimensions[row].height = height_points + 2
-

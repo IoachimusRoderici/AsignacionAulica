@@ -33,19 +33,23 @@ clases de cada materia).
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.utils.cell import get_column_letter
 from openpyxl.worksheet.table import Table
+from openpyxl.styles.borders import Border
 from openpyxl import Workbook
 
 import sys
 
 from estilos import (
-    insertar_logo,
+    get_logo,
     fill_rojo_unrn,
     font_default,
     font_bold,
     font_preámbulo,
     centrado,
     a_la_derecha,
-    a_la_izquierda
+    a_la_izquierda,
+    borde_blanco,
+    borde_negro,
+    todos_los_bordes_negros
 )
 
 from validadores import (
@@ -77,72 +81,79 @@ n_columns = len(COLUMNAS)
 max_column = get_column_letter(n_columns)
 
 def insertar_preámbulo(hoja: Worksheet):
-    # Fila con el logo
-    insertar_logo(hoja)
-    hoja.merge_cells(start_row=1, end_row=1, start_column=1, end_column=n_columns)
-    no_cambiar_este_valor.add(f'A1:{max_column}1')
+    # Configurar tamaño de las filas
+    altura_filas = font_preámbulo.size + 7
+    hoja.row_dimensions[1].height = altura_filas
+    hoja.row_dimensions[2].height = altura_filas
 
-    # Fila con la carrera
-    fila = 2
-    hoja.row_dimensions[fila].height = font_preámbulo.size + 7
+    # Marcar bordes externos
+    hoja.column_dimensions['A'].border = Border(left=borde_negro)
+    hoja.column_dimensions[max_column].border = Border(right=borde_negro)
 
-    hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
-    no_cambiar_este_valor.add(f'A{fila}:B{fila}')
-    cell = hoja.cell(fila, 1, value='Carrera: ')
+    # Insertar el logo
+    altura_logo = 2 * altura_filas - 2
+    logo = get_logo(altura_logo)
+    hoja.add_image(logo, 'A1')
+    hoja.merge_cells(start_row=1, end_row=2, start_column=1, end_column=2)
+    no_cambiar_este_valor.add(f'A1:B2')
+    hoja.cell(1, 1).border = Border(left=borde_negro, top=borde_negro)
+    hoja.cell(1, 2).border = Border(right=borde_negro, top=borde_negro)
+    hoja.cell(2, 1).border = Border(left=borde_negro, bottom=borde_negro)
+    hoja.cell(2, 2).border = Border(right=borde_negro, bottom=borde_negro)
+
+    # Fila con el nombre de la carrera
+    cell = hoja.cell(1, 3, value='Carrera: ')
+    no_cambiar_este_valor.add(cell)
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo
     cell.alignment = a_la_derecha
+    cell.border = Border(top=borde_negro, bottom=borde_blanco, left=borde_negro)
 
-    hoja.merge_cells(start_row=fila, end_row=fila, start_column=3, end_column=10)
-    cell = hoja.cell(fila, 3, value='') # Celda para completar el nombre de la carrera
+    hoja.merge_cells(start_row=1, end_row=1, start_column=4, end_column=11)
+    cell = hoja.cell(1, 4, value='') # Celda para completar el nombre de la carrera
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo
     cell.alignment = a_la_izquierda
     
-    # Celdas de relleno
-    hoja.merge_cells(start_row=fila, end_row=fila, start_column=11, end_column=n_columns)
-    no_cambiar_este_valor.add(f'{get_column_letter(11)}{fila}:{max_column}{fila}')
-    cell = hoja.cell(fila, 11)
+    hoja.merge_cells(start_row=1, end_row=1, start_column=12, end_column=n_columns)
+    no_cambiar_este_valor.add(f'{get_column_letter(12)}1:{max_column}1')
+    cell = hoja.cell(1, 12)
     cell.fill = fill_rojo_unrn
-    hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
-    no_cambiar_este_valor.add(f'A{fila+1}:{max_column}{fila+1}')
+
+    for i in range(4, n_columns):
+        hoja.cell(1, i).border = Border(top=borde_negro, bottom=borde_blanco)
+    hoja.cell(1, n_columns).border = Border(top=borde_negro, bottom=borde_blanco, right=borde_negro)
 
     # Fila con el año y cuatrimestre
-    fila += 2
-    hoja.row_dimensions[fila].height = font_preámbulo.size + 7
-
-    hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
-    cell = hoja.cell(fila, 1, value='Año: ')
+    cell = hoja.cell(2, 3, value='Año: ')
+    no_cambiar_este_valor.add(cell)
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo
     cell.alignment = a_la_derecha
-    no_cambiar_este_valor.add(f'A{fila}:B{fila}')
+    cell.border = Border(left=borde_negro)
 
-    cell = hoja.cell(fila, 3, value='') # Celda para completar el año
+    cell = hoja.cell(2, 4, value='') # Celda para completar el año
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo
     cell.alignment = a_la_izquierda
 
-    hoja.merge_cells(start_row=fila, end_row=fila, start_column=4, end_column=5)
-    cell = hoja.cell(fila, 4, value='Cuatrimestre: ')
+    hoja.merge_cells(start_row=2, end_row=2, start_column=5, end_column=6)
+    no_cambiar_este_valor.add(f'{get_column_letter(5)}2:{get_column_letter(6)}2')
+    cell = hoja.cell(2, 5, value='Cuatrimestre: ')
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo
     cell.alignment = a_la_derecha
-    no_cambiar_este_valor.add(f'D{fila}:E{fila}')
 
-    hoja.merge_cells(start_row=fila, end_row=fila, start_column=6, end_column=9)
-    cell = hoja.cell(fila, 6, value='') # Celda para completar el cuatrimestre
+    hoja.merge_cells(start_row=2, end_row=2, start_column=7, end_column=11)
+    cell = hoja.cell(2, 7, value='') # Celda para completar el cuatrimestre
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo
     cell.alignment = a_la_izquierda
 
-    # Celdas de relleno
-    hoja.merge_cells(start_row=fila, end_row=fila, start_column=10, end_column=n_columns)
-    no_cambiar_este_valor.add(f'{get_column_letter(10)}{fila}:{max_column}{fila}')
-    cell = hoja.cell(fila, 10)
-    cell.fill = fill_rojo_unrn
-    hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
-    no_cambiar_este_valor.add(f'A{fila+1}:{max_column}{fila+1}')
+    hoja.merge_cells(start_row=2, end_row=2, start_column=12, end_column=n_columns)
+    no_cambiar_este_valor.add(f'{get_column_letter(12)}2:{max_column}2')
+    hoja.cell(2, 12).fill = fill_rojo_unrn
+    hoja.cell(2, n_columns).border = Border(right=borde_negro)
 
 def insertar_tabla(hoja: Worksheet):
     # Intertar fila con los nombres de las columnas
@@ -150,11 +161,15 @@ def insertar_tabla(hoja: Worksheet):
     fila_header = hoja.max_row
     no_cambiar_este_valor.add(f'A{fila_header}:{max_column}{fila_header}')
 
+    # Bloquear movimiento de los nombres para que se mantangas visibles al escrolear
+    hoja.freeze_panes = hoja.cell(fila_header+1, 1)
+
     # Configurar estilo de los nombres
     for i in range(1, n_columns+1):
         cell = hoja.cell(fila_header, i)
         cell.font = font_bold
         cell.alignment = centrado
+        cell.border = todos_los_bordes_negros
     
     # Ajustar tamaños de las columnas
     font_size_ratio = font_bold.size / 11

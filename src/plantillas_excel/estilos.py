@@ -11,21 +11,16 @@ este_directorio = path.split(__file__)[0]
 logo_path = path.join(este_directorio, 'unrn_logo.png')
 
 rojo_unrn = 'EB2242'
+fill_rojo_unrn = PatternFill(patternType='solid', fgColor=rojo_unrn)
 
 font_default = Font(name = 'arial', size = 12)
 
-font_preámbulo_grande = copy(font_default)
-font_preámbulo_grande.size = 24
-font_preámbulo_grande.color = 'FFFFFF'
-font_preámbulo_grande.bold = True
+font_bold = copy(font_default)
+font_bold.bold = True
 
-font_preámbulo_chica = copy(font_preámbulo_grande)
-font_preámbulo_chica.size = 18
-
-font_table_header = copy(font_default)
-font_table_header.bold = True
-
-fill_rojo_unrn = PatternFill(patternType='solid', fgColor=rojo_unrn)
+font_preámbulo = copy(font_bold)
+font_preámbulo.size = 18
+font_preámbulo.color = 'FFFFFF'
 
 centrado = Alignment(horizontal='center', vertical='center', wrap_text=True)
 a_la_derecha = Alignment(horizontal = 'right', vertical='center')

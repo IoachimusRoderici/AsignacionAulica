@@ -148,7 +148,7 @@ def insertar_tabla(hoja: Worksheet):
     fila_header = hoja.max_row
     no_cambiar_este_valor.add(f'A{fila_header}:{max_column}{fila_header}')
 
-    # Bloquear movimiento de los nombres para que se mantangas visibles al escrolear
+    # Bloquear movimiento de los nombres para que se mantangan visibles al escrolear
     hoja.freeze_panes = hoja.cell(fila_header+1, 1)
 
     # Configurar estilo de los nombres
@@ -158,7 +158,7 @@ def insertar_tabla(hoja: Worksheet):
         cell.alignment = centrado
         cell.border = todos_los_bordes_negros
     
-    # Ajustar tamaños de las columnas
+    # Ajustar tamaños de las columnas (los números fueron calibrados por prueba y error)
     font_size_ratio = font_bold.size / 11
     hoja.column_dimensions['A'].width =  5 * font_size_ratio # Año
     hoja.column_dimensions['B'].width = 25 * font_size_ratio # Materia

@@ -16,7 +16,8 @@ día_de_la_semana = DataValidation(
     showDropDown = True # True significa False
 )
 '''
-Un validador que acepta los días de la semana (escritos de cualquier forma razonable).
+Un validador que acepta los días de la semana (escritos de cualquier forma
+medianamente razonable).
 '''
 
 no_cambiar_este_valor = DataValidation(
@@ -65,7 +66,7 @@ Un validador que solamente acepta números naturales (incluyendo el 0).
 horario = DataValidation(
     type='time',
     operator = 'between',
-    formula1 = 0,
+    formula1 = 0, # Entre 0 y 1 significa cualquier hora del día
     formula2 = 1,
     error = 'Excel no reconoce el valor ingresado como un horario.',
     errorStyle = 'warning',

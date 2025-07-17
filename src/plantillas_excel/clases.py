@@ -78,31 +78,33 @@ n_columns = len(COLUMNAS)
 max_column = get_column_letter(n_columns)
 
 def insertar_preámbulo(hoja: Worksheet):
-    # Logo
+    # Fila con el logo
     insertar_logo(hoja)
     hoja.merge_cells(start_row=1, end_row=1, start_column=1, end_column=n_columns)
     no_cambiar_este_valor.add(f'A1:{max_column}1')
 
-    # Carrera
+    # Fila con la carrera
     fila = 2
     hoja.row_dimensions[fila].height = font_preámbulo_grande.size + 7
 
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
+    no_cambiar_este_valor.add(f'A{fila}:B{fila}')
     cell = hoja.cell(fila, 1, value='Carrera: ')
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_grande
     cell.alignment = a_la_derecha
-    no_cambiar_este_valor.add(f'A{fila}:B{fila}')
 
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=3, end_column=n_columns)
-    cell = hoja.cell(fila, 3, value='')
+    cell = hoja.cell(fila, 3, value='') # Celda para completar el nombre de la carrera
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_grande
     cell.alignment = a_la_izquierda
-    no_cambiar_este_valor.add(f'A{fila+1}:{max_column}{fila+1}')
+    
+    # Fila de relleno
     hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
+    no_cambiar_este_valor.add(f'A{fila+1}:{max_column}{fila+1}')
 
-    # Año y cuatrimestre
+    # Fila con el año y cuatrimestre
     fila += 2
     hoja.row_dimensions[fila].height = font_preámbulo_chica.size + 7
 
@@ -125,11 +127,17 @@ def insertar_preámbulo(hoja: Worksheet):
     cell.alignment = a_la_derecha
     no_cambiar_este_valor.add(f'D{fila}:E{fila}')
 
-    hoja.merge_cells(start_row=fila, end_row=fila, start_column=6, end_column=n_columns)
+    hoja.merge_cells(start_row=fila, end_row=fila, start_column=6, end_column=9)
     cell = hoja.cell(fila, 6, value='') # Celda para completar el cuatrimestre
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo_chica
     cell.alignment = a_la_izquierda
+
+    # Celdas de relleno
+    hoja.merge_cells(start_row=fila, end_row=fila, start_column=10, end_column=n_columns)
+    no_cambiar_este_valor.add(f'{get_column_letter(10)}{fila}:{max_column}{fila}')
+    cell = hoja.cell(fila, 10)
+    cell.fill = fill_rojo_unrn
     hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
     no_cambiar_este_valor.add(f'A{fila+1}:{max_column}{fila+1}')
 

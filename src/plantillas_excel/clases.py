@@ -41,9 +41,8 @@ from estilos import (
     insertar_logo,
     fill_rojo_unrn,
     font_default,
-    font_preámbulo_grande,
-    font_preámbulo_chica,
-    font_table_header,
+    font_bold,
+    font_preámbulo,
     centrado,
     a_la_derecha,
     a_la_izquierda
@@ -63,10 +62,10 @@ COLUMNAS = (
     'Cuatrimestral / Anual',
     'Comisión',
     'Teórica / Práctica',
-    'Cupo',
     'Día',
     'Horario inicio',
     'Horario fin',
+    'Cupo',
     'Docente',
     'Auxiliar',
     'Promocionable\nSi (Nota) / No',
@@ -85,52 +84,56 @@ def insertar_preámbulo(hoja: Worksheet):
 
     # Fila con la carrera
     fila = 2
-    hoja.row_dimensions[fila].height = font_preámbulo_grande.size + 7
+    hoja.row_dimensions[fila].height = font_preámbulo.size + 7
 
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
     no_cambiar_este_valor.add(f'A{fila}:B{fila}')
     cell = hoja.cell(fila, 1, value='Carrera: ')
     cell.fill = fill_rojo_unrn
-    cell.font = font_preámbulo_grande
+    cell.font = font_preámbulo
     cell.alignment = a_la_derecha
 
-    hoja.merge_cells(start_row=fila, end_row=fila, start_column=3, end_column=n_columns)
+    hoja.merge_cells(start_row=fila, end_row=fila, start_column=3, end_column=10)
     cell = hoja.cell(fila, 3, value='') # Celda para completar el nombre de la carrera
     cell.fill = fill_rojo_unrn
-    cell.font = font_preámbulo_grande
+    cell.font = font_preámbulo
     cell.alignment = a_la_izquierda
     
-    # Fila de relleno
+    # Celdas de relleno
+    hoja.merge_cells(start_row=fila, end_row=fila, start_column=11, end_column=n_columns)
+    no_cambiar_este_valor.add(f'{get_column_letter(11)}{fila}:{max_column}{fila}')
+    cell = hoja.cell(fila, 11)
+    cell.fill = fill_rojo_unrn
     hoja.merge_cells(start_row=fila+1, end_row=fila+1, start_column=1, end_column=n_columns)
     no_cambiar_este_valor.add(f'A{fila+1}:{max_column}{fila+1}')
 
     # Fila con el año y cuatrimestre
     fila += 2
-    hoja.row_dimensions[fila].height = font_preámbulo_chica.size + 7
+    hoja.row_dimensions[fila].height = font_preámbulo.size + 7
 
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
     cell = hoja.cell(fila, 1, value='Año: ')
     cell.fill = fill_rojo_unrn
-    cell.font = font_preámbulo_chica
+    cell.font = font_preámbulo
     cell.alignment = a_la_derecha
     no_cambiar_este_valor.add(f'A{fila}:B{fila}')
 
     cell = hoja.cell(fila, 3, value='') # Celda para completar el año
     cell.fill = fill_rojo_unrn
-    cell.font = font_preámbulo_chica
+    cell.font = font_preámbulo
     cell.alignment = a_la_izquierda
 
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=4, end_column=5)
     cell = hoja.cell(fila, 4, value='Cuatrimestre: ')
     cell.fill = fill_rojo_unrn
-    cell.font = font_preámbulo_chica
+    cell.font = font_preámbulo
     cell.alignment = a_la_derecha
     no_cambiar_este_valor.add(f'D{fila}:E{fila}')
 
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=6, end_column=9)
     cell = hoja.cell(fila, 6, value='') # Celda para completar el cuatrimestre
     cell.fill = fill_rojo_unrn
-    cell.font = font_preámbulo_chica
+    cell.font = font_preámbulo
     cell.alignment = a_la_izquierda
 
     # Celdas de relleno
@@ -150,20 +153,20 @@ def insertar_tabla(hoja: Worksheet):
     # Configurar estilo de los nombres
     for i in range(1, n_columns+1):
         cell = hoja.cell(fila_header, i)
-        cell.font = font_table_header
+        cell.font = font_bold
         cell.alignment = centrado
     
     # Ajustar tamaños de las columnas
-    font_size_ratio = font_table_header.size / 11
+    font_size_ratio = font_bold.size / 11
     hoja.column_dimensions['A'].width =  5 * font_size_ratio # Año
     hoja.column_dimensions['B'].width = 25 * font_size_ratio # Materia
     hoja.column_dimensions['C'].width = 12 * font_size_ratio # Cuatrimestral o anual
     hoja.column_dimensions['D'].width = 10 * font_size_ratio # Comisión
     hoja.column_dimensions['E'].width = 10 * font_size_ratio # Teórica o práctica
-    hoja.column_dimensions['F'].width =  5 * font_size_ratio # Cupo
-    hoja.column_dimensions['G'].width = 11 * font_size_ratio # Día
-    hoja.column_dimensions['H'].width =  7 * font_size_ratio # Horario de inicio
-    hoja.column_dimensions['I'].width =  7 * font_size_ratio # Horario de fin
+    hoja.column_dimensions['F'].width = 11 * font_size_ratio # Día
+    hoja.column_dimensions['G'].width =  7 * font_size_ratio # Horario de inicio
+    hoja.column_dimensions['H'].width =  7 * font_size_ratio # Horario de fin
+    hoja.column_dimensions['I'].width =  5 * font_size_ratio # Cupo
     hoja.column_dimensions['J'].width = 12 * font_size_ratio # Docente
     hoja.column_dimensions['K'].width = 12 * font_size_ratio # Auxiliar
     hoja.column_dimensions['L'].width = 14 * font_size_ratio # Promocionable
@@ -172,10 +175,10 @@ def insertar_tabla(hoja: Worksheet):
 
     # Agregar validadores
     año_del_plan_de_estudios.add(f'A{fila_header+1}:A1048576') # 1048576 significa hasta el final de la columna.
-    número_natural.add(f'F{fila_header+1}:F1048576') # Cupo 
-    día_de_la_semana.add(f'G{fila_header+1}:G1048576') # Día
-    horario.add(f'H{fila_header+1}:H1048576') # Horario de inicio
-    horario.add(f'I{fila_header+1}:I1048576') # Horario de fin
+    día_de_la_semana.add(f'F{fila_header+1}:F1048576') # Día
+    horario.add(f'G{fila_header+1}:G1048576') # Horario de inicio
+    horario.add(f'H{fila_header+1}:H1048576') # Horario de fin
+    número_natural.add(f'I{fila_header+1}:I1048576') # Cupo 
 
 def crear_plantilla() -> Workbook:
     plantilla = Workbook()

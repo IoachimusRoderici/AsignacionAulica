@@ -10,25 +10,10 @@ La plantilla tiene un preámbulo que consiste de:
 - El nombre de la carrera
 - El año y número de cuatrimestre
 
-Abajo del preámbulo hay una tabla con las siguientes columnas:
-- Año
-- Materia
-- Cuatrimestral / Anual
-- Comisión
-- Teórica / Práctica
-- Cupo
-- Día de la semana
-- Horario de inicio
-- Horario de fin
-- Docente
-- Auxiliar
-- Promocionable (Si (nota) / No)
-- Lugar
-- Aula
-
-La tabla tiene una fila de la tabla por cada clase, con celdas unidas
-verticalmente (por ejemplo, la columna "Materia" está unida en las filas de las
-clases de cada materia).
+Abajo del preámbulo hay una tabla con varias columnas de datos. La tabla tiene
+una fila por cada clase, posiblemente con celdas unidas verticalmente (por
+ejemplo, la columna "Materia" puede estar unida en las filas de las clases de
+cada materia).
 '''
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.utils.cell import get_column_letter

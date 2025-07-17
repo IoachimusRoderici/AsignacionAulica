@@ -7,28 +7,21 @@ programa sino que son parte de excel.
 '''
 from openpyxl.worksheet.datavalidation import DataValidation
 
-def opciones_válidas(*valores: str) -> DataValidation:
-    '''
-    Devuelve un validador que solamente acepta los valores pasados como argumentos.
-    '''
-    validador = DataValidation(
-        type='list',
-        formula1=','.join(valores),
-        error = f'Por favor ingresar uno de los siguientes valores: {', '.join(valores)}.',
-        errorStyle = 'warning',
-        showErrorMessage = True,
-        showDropDown = False # False significa True
-    )
-    return validador
-
-día_de_la_semana = opciones_válidas('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo')
+día_de_la_semana = DataValidation(
+    type = 'list',
+    formula1 = '"Lunes,LUNES,lunes,Martes,MARTES,martes,Miércoles,MIÉRCOLES,miércoles,Miercoles,MIERCOLES,miercoles,Jueves,JUEVES,jueves,Viernes,VIERNES,viernes,Sábado,SÁBADO,sábado,Sabado,SABADO,sabado,Domingo,DOMINGO,domingo"',
+    error = 'Por favor ingresar un día de la semana.',
+    errorStyle = 'warning',
+    showErrorMessage = True,
+    showDropDown = True # True significa False
+)
 '''
-Un validador que solamente acepta los días de la semana.
+Un validador que acepta los días de la semana (escritos de cualquier forma razonable).
 '''
 
 no_cambiar_este_valor = DataValidation(
     type='list',
-    formula1='',
+    formula1='""', #Las dobles comillas son necesarias para que excel no se confunda.
     error = 'Por favor no modificar el valor de esta celda.',
     errorStyle = 'stop',
     showErrorMessage = True,

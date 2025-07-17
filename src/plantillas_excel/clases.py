@@ -60,16 +60,16 @@ from validadores import (
 COLUMNAS = (
     'Año',
     'Materia',
-    'Cuatrimestral\no Anual',
+    'Cuatrimestral / Anual',
     'Comisión',
-    'Teórica o\n Práctica',
+    'Teórica / Práctica',
     'Cupo',
     'Día',
-    'Horario\nde inicio',
-    'Horario\nde fin',
+    'Horario inicio',
+    'Horario fin',
     'Docente',
     'Auxiliar',
-    'Promocionable\nNo / Si (Nota)',
+    'Promociona\nSi (Nota) / No',
     'Lugar',
     'Aula'
 )
@@ -85,7 +85,7 @@ def insertar_preámbulo(hoja: Worksheet):
 
     # Carrera
     fila = 2
-    hoja.row_dimensions[fila].height = font_preámbulo_grande.size + 4
+    hoja.row_dimensions[fila].height = font_preámbulo_grande.size + 7
 
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
     cell = hoja.cell(fila, 1, value='Carrera: ')
@@ -104,7 +104,7 @@ def insertar_preámbulo(hoja: Worksheet):
 
     # Año y cuatrimestre
     fila += 2
-    hoja.row_dimensions[fila].height = font_preámbulo_chica.size + 4
+    hoja.row_dimensions[fila].height = font_preámbulo_chica.size + 7
 
     hoja.merge_cells(start_row=fila, end_row=fila, start_column=1, end_column=2)
     cell = hoja.cell(fila, 1, value='Año: ')

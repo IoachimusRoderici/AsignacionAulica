@@ -24,15 +24,10 @@ font_preámbulo_chica.size = 18
 
 font_table_header = copy(font_default)
 font_table_header.bold = True
-font_table_header.size = 14
 
+fill_rojo_unrn = PatternFill(patternType='solid', fgColor=rojo_unrn)
 
-fill_rojo_unrn = PatternFill(
-    patternType='solid',
-    fgColor=rojo_unrn
-)
-
-centrado = Alignment(horizontal = 'center', wrap_text = True)
+centrado = Alignment(horizontal='center', vertical='center', wrap_text=True)
 a_la_derecha = Alignment(horizontal = 'right')
 a_la_izquierda = Alignment(horizontal = 'left')
 

@@ -69,7 +69,7 @@ COLUMNAS = (
     'Horario fin',
     'Docente',
     'Auxiliar',
-    'Promociona\nSi (Nota) / No',
+    'Promocionable\nSi (Nota) / No',
     'Lugar',
     'Aula'
 )
@@ -158,10 +158,10 @@ def insertar_tabla(hoja: Worksheet):
     hoja.column_dimensions['A'].width =  5 * font_size_ratio # Año
     hoja.column_dimensions['B'].width = 25 * font_size_ratio # Materia
     hoja.column_dimensions['C'].width = 12 * font_size_ratio # Cuatrimestral o anual
-    hoja.column_dimensions['D'].width =  9 * font_size_ratio # Comisión
+    hoja.column_dimensions['D'].width = 10 * font_size_ratio # Comisión
     hoja.column_dimensions['E'].width = 10 * font_size_ratio # Teórica o práctica
     hoja.column_dimensions['F'].width =  5 * font_size_ratio # Cupo
-    hoja.column_dimensions['G'].width =  8 * font_size_ratio # Día
+    hoja.column_dimensions['G'].width = 11 * font_size_ratio # Día
     hoja.column_dimensions['H'].width =  7 * font_size_ratio # Horario de inicio
     hoja.column_dimensions['I'].width =  7 * font_size_ratio # Horario de fin
     hoja.column_dimensions['J'].width = 12 * font_size_ratio # Docente

@@ -9,7 +9,12 @@ from openpyxl.worksheet.datavalidation import DataValidation
 
 día_de_la_semana = DataValidation(
     type = 'list',
-    formula1 = '"Lunes,LUNES,lunes,Martes,MARTES,martes,Miércoles,MIÉRCOLES,miércoles,Miercoles,MIERCOLES,miercoles,Jueves,JUEVES,jueves,Viernes,VIERNES,viernes,Sábado,SÁBADO,sábado,Sabado,SABADO,sabado,Domingo,DOMINGO,domingo"',
+    formula1 = (
+        '"Lunes,LUNES,lunes,Martes,MARTES,martes,'
+        'Miércoles,MIÉRCOLES,miércoles,Miercoles,MIERCOLES,miercoles,'
+        'Jueves,JUEVES,jueves,Viernes,VIERNES,viernes,'
+        'Sábado,SÁBADO,sábado,Sabado,SABADO,sabado,Domingo,DOMINGO,domingo"'
+    ), # Las dobles comillas son necesarias para que excel no se confunda.
     error = 'Por favor ingresar un día de la semana.',
     errorStyle = 'warning',
     showErrorMessage = True,
@@ -32,6 +37,20 @@ no_cambiar_este_valor = DataValidation(
 Un validador que no acepta ningún valor.
 
 Sirve para evitar que los usuarios modifiquen el contenido de una celda.
+'''
+
+año_del_calendario = DataValidation(
+    type='whole',
+    operator='greaterThanOrEqual',
+    formula1=2000,
+    error = 'El valor de esta celda debe ser un año.',
+    errorStyle = 'stop',
+    showErrorMessage = True
+)
+'''
+Un validador para números de año.
+
+Solamente acepta números enteros mayores a 1999.
 '''
 
 año_del_plan_de_estudios = DataValidation(

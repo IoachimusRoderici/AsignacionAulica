@@ -40,6 +40,7 @@ from estilos import (
 
 from validadores import (
     no_cambiar_este_valor,
+    año_del_calendario,
     año_del_plan_de_estudios,
     número_natural,
     día_de_la_semana,
@@ -63,8 +64,8 @@ COLUMNAS = (
     'Aula'
 )
 
-n_columns = len(COLUMNAS)
-max_column = get_column_letter(n_columns)
+n_columnas = len(COLUMNAS)
+última_columna = get_column_letter(n_columnas)
 
 def insertar_preámbulo(hoja: Worksheet):
     # Configurar tamaño de las filas
@@ -74,14 +75,14 @@ def insertar_preámbulo(hoja: Worksheet):
 
     # Marcar bordes externos
     hoja.column_dimensions['A'].border = Border(left=borde_negro)
-    hoja.column_dimensions[max_column].border = Border(right=borde_negro)
+    hoja.column_dimensions[última_columna].border = Border(right=borde_negro)
 
     # Insertar el logo
     altura_logo = 2 * altura_filas - 2
     logo = get_logo(altura_logo)
     hoja.add_image(logo, 'A1')
     hoja.merge_cells(start_row=1, end_row=2, start_column=1, end_column=2)
-    no_cambiar_este_valor.add(f'A1:B2')
+    no_cambiar_este_valor.add('A1:B2')
     hoja.cell(1, 1).border = Border(left=borde_negro, top=borde_negro)
     hoja.cell(1, 2).border = Border(right=borde_negro, top=borde_negro)
     hoja.cell(2, 1).border = Border(left=borde_negro, bottom=borde_negro)
@@ -101,14 +102,14 @@ def insertar_preámbulo(hoja: Worksheet):
     cell.font = font_preámbulo
     cell.alignment = a_la_izquierda
     
-    hoja.merge_cells(start_row=1, end_row=1, start_column=12, end_column=n_columns)
-    no_cambiar_este_valor.add(f'{get_column_letter(12)}1:{max_column}1')
+    hoja.merge_cells(start_row=1, end_row=1, start_column=12, end_column=n_columnas)
+    no_cambiar_este_valor.add(f'{get_column_letter(12)}1:{última_columna}1')
     cell = hoja.cell(1, 12)
     cell.fill = fill_rojo_unrn
 
-    for i in range(4, n_columns):
+    for i in range(4, n_columnas):
         hoja.cell(1, i).border = Border(top=borde_negro, bottom=borde_blanco)
-    hoja.cell(1, n_columns).border = Border(top=borde_negro, bottom=borde_blanco, right=borde_negro)
+    hoja.cell(1, n_columnas).border = Border(top=borde_negro, bottom=borde_blanco, right=borde_negro)
 
     # Fila con el año y cuatrimestre
     cell = hoja.cell(2, 3, value='Año: ')
@@ -119,6 +120,7 @@ def insertar_preámbulo(hoja: Worksheet):
     cell.border = Border(left=borde_negro)
 
     cell = hoja.cell(2, 4, value='') # Celda para completar el año
+    año_del_calendario.add(cell)
     cell.fill = fill_rojo_unrn
     cell.font = font_preámbulo
     cell.alignment = a_la_izquierda
@@ -136,22 +138,22 @@ def insertar_preámbulo(hoja: Worksheet):
     cell.font = font_preámbulo
     cell.alignment = a_la_izquierda
 
-    hoja.merge_cells(start_row=2, end_row=2, start_column=12, end_column=n_columns)
-    no_cambiar_este_valor.add(f'{get_column_letter(12)}2:{max_column}2')
+    hoja.merge_cells(start_row=2, end_row=2, start_column=12, end_column=n_columnas)
+    no_cambiar_este_valor.add(f'{get_column_letter(12)}2:{última_columna}2')
     hoja.cell(2, 12).fill = fill_rojo_unrn
-    hoja.cell(2, n_columns).border = Border(right=borde_negro)
+    hoja.cell(2, n_columnas).border = Border(right=borde_negro)
 
 def insertar_tabla(hoja: Worksheet):
     # Insertar fila con los nombres de las columnas
     hoja.append(COLUMNAS)
     fila_header = hoja.max_row
-    no_cambiar_este_valor.add(f'A{fila_header}:{max_column}{fila_header}')
+    no_cambiar_este_valor.add(f'A{fila_header}:{última_columna}{fila_header}')
 
     # Bloquear movimiento de los nombres para que se mantangan visibles al escrolear
     hoja.freeze_panes = hoja.cell(fila_header+1, 1)
 
     # Configurar estilo de los nombres
-    for i in range(1, n_columns+1):
+    for i in range(1, n_columnas+1):
         cell = hoja.cell(fila_header, i)
         cell.font = font_bold
         cell.alignment = centrado
@@ -189,6 +191,7 @@ def crear_plantilla() -> Workbook:
     hoja.title = 'Plantilla'
     hoja.add_data_validation(no_cambiar_este_valor)
     hoja.add_data_validation(año_del_plan_de_estudios)
+    hoja.add_data_validation(año_del_calendario)
     hoja.add_data_validation(número_natural)
     hoja.add_data_validation(día_de_la_semana)
     hoja.add_data_validation(horario)

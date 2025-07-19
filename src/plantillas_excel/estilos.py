@@ -1,8 +1,5 @@
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Font, Fill
-from openpyxl.utils.units import points_to_pixels, pixels_to_points
-from openpyxl.utils.cell import coordinate_to_tuple
-from openpyxl.worksheet.worksheet import Worksheet
-from openpyxl.styles.borders import Side, Border
+from openpyxl.utils.units import points_to_pixels
 from openpyxl.drawing.image import Image
 from copy import copy
 from os import path

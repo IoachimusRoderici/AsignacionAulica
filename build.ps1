@@ -12,7 +12,7 @@ echo "FLET_VERSION=$FLET_VERSION"
 echo "Install pip packages needed for building"
 python -m pip install --upgrade pip
 pip install flet-cli==$FLET_VERSION
-pip install -r src/plantillas_excel/pip-requirements.txt
+pip install --requirement src/plantillas_excel/pip-requirements.txt
 
 echo "Export Excel template assets"
 python src\plantillas_excel\clases.py src\assets\plantillas_excel\clases.xlsx

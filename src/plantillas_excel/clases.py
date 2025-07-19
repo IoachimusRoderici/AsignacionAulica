@@ -19,7 +19,6 @@ cada materia).
 '''
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.utils.cell import get_column_letter
-from openpyxl.worksheet.table import Table
 from openpyxl.styles.borders import Border
 from openpyxl import Workbook
 

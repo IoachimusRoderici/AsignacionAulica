@@ -143,7 +143,7 @@ def insertar_preámbulo(hoja: Worksheet):
     hoja.cell(2, n_columns).border = Border(right=borde_negro)
 
 def insertar_tabla(hoja: Worksheet):
-    # Intertar fila con los nombres de las columnas
+    # Insertar fila con los nombres de las columnas
     hoja.append(COLUMNAS)
     fila_header = hoja.max_row
     no_cambiar_este_valor.add(f'A{fila_header}:{max_column}{fila_header}')

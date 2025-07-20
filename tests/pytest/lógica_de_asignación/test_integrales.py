@@ -85,3 +85,28 @@ def test_asignación_imposible_por_aula_cerrada(aulas, clases):
 def test_asignación_imposible_por_equipamiento(aulas, clases):
     with pytest.raises(lógica_de_asignación.ImposibleAssignmentException):
         lógica_de_asignación.asignar(clases, aulas)
+
+def clases_params_generator(amount_per_hour: int):
+    clases_params = []
+
+    for día in Día:
+        for hora in range(0, 24):
+            horario_inicio = hora
+            horario_fin = hora + 1
+            for i in range(amount_per_hour):
+                clases_params.append({
+                    'día': día,
+                    'horario_inicio': horario_inicio,
+                    'horario_fin': horario_fin
+                })
+
+    return clases_params
+
+@pytest.mark.aulas(*[{}]*30) # Re críptico pero esto significa 100 aulas con valores default
+@pytest.mark.clases(
+    *clases_params_generator(30)
+)
+def test_stress(aulas, clases):
+    print(len(clases))
+    lógica_de_asignación.asignar(clases, aulas)
+

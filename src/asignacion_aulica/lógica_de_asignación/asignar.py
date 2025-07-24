@@ -140,6 +140,7 @@ def resolver_problema_de_asignación(
 
     # Resolver
     solver = cp_model.CpSolver()
+    solver.parameters.log_search_progress = True
     status = solver.solve(modelo)
     # TODO: ¿qué hacer si da FEASIBLE?¿en qué condiciones ocurre?¿aceptamos la solución suboptima o tiramos excepción?
     if status != cp_model.OPTIMAL:
@@ -148,9 +149,9 @@ def resolver_problema_de_asignación(
     # Armar lista con las asignaciones
     asignaciones_finales = np.vectorize(solver.value)(asignaciones)
     aulas_asignadas = list(asignaciones_finales.argmax(axis=1))
-        
+
     return aulas_asignadas
-  
+
 def crear_matriz_de_asignaciones(
     clases: DataFrame,
     aulas: DataFrame,

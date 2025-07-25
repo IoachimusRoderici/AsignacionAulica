@@ -19,7 +19,7 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "aulas: marca para pasar parametros al fixture aulas")
     config.addinivalue_line("markers", "clases: marca para pasar parametros al fixture clases")
     config.addinivalue_line("markers", "asignaciones_forzadas: marca para pasar parametros al fixture asignaciones")
-    config.addinivalue_line("markers", "stress_test: indica que es un stress test, solo se ejecuta si al usar el argumento --stress-tests")
+    config.addinivalue_line("markers", "stress_test: indica que es un stress test, solo se ejecuta al usar el argumento --stress-tests")
 
 def pytest_addoption(parser):
     # Añadir opción de línea de comandos personalizada a pytest

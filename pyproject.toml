@@ -26,7 +26,7 @@ test = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["tests/pytest"]
+testpaths = ["tests/pytest", "tests/pytest/lógica_de_asignación"]
 minversion = "8.3"
 
 [tool.flet]

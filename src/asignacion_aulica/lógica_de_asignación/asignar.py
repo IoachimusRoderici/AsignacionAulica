@@ -26,6 +26,7 @@ con todas las restricciones y que tenga la menor penalización posible.
 from ortools.sat.python import cp_model
 from pandas import DataFrame
 import numpy as np
+import logging
 
 from .impossible_assignment_exception import ImposibleAssignmentException
 from asignacion_aulica.lógica_de_asignación import restricciones
@@ -140,7 +141,12 @@ def resolver_problema_de_asignación(
 
     # Resolver
     solver = cp_model.CpSolver()
+
+    # Loguear progreso de forma limpia
     solver.parameters.log_search_progress = True
+    solver.parameters.log_to_stdout = False
+    solver.log_callback = logging.info
+
     status = solver.solve(modelo)
     # TODO: ¿qué hacer si da FEASIBLE?¿en qué condiciones ocurre?¿aceptamos la solución suboptima o tiramos excepción?
     if status != cp_model.OPTIMAL:

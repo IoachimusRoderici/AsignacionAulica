@@ -1,4 +1,4 @@
-import pytest, random
+import pytest, random, logging
 
 from asignacion_aulica.lógica_de_asignación.dia import Día
 from asignacion_aulica import lógica_de_asignación
@@ -24,6 +24,8 @@ def aulas_params_generator(aulas_count: int, capacidad_max: int, edificios_count
             # Garantiza que haya al menos un aula por edificio (si aulas_count >= edificios_count)
             'edificio': i % edificios_count,
         })
+
+    logging.info(f'Cantidad de aulas: {len(aulas_params)}.')
 
     return aulas_params
 
@@ -58,8 +60,11 @@ def clases_params_generator(amount_per_hour: int, cantidad_de_alumnos_max: int, 
                     'edificio_preferido': random.randrange(edificios_count),
                 })
 
+    logging.info(f'Cantidad de clases: {len(clases_params)}.')
+
     return clases_params
 
+@pytest.mark.stress_test
 @pytest.mark.aulas(
     *aulas_params_generator(
         aulas_count=10,
@@ -74,10 +79,10 @@ def clases_params_generator(amount_per_hour: int, cantidad_de_alumnos_max: int, 
         edificios_count=10
     )
 )
-def test_small_stress(aulas, clases):
-    print(len(clases))
+def test_small_stress(caplog, aulas, clases):
     lógica_de_asignación.asignar(clases, aulas)
 
+@pytest.mark.stress_test
 @pytest.mark.aulas(
     *aulas_params_generator(
         aulas_count=20,
@@ -93,9 +98,9 @@ def test_small_stress(aulas, clases):
     )
 )
 def test_medium_stress(aulas, clases):
-    print(len(clases))
     lógica_de_asignación.asignar(clases, aulas)
 
+@pytest.mark.stress_test
 @pytest.mark.aulas(
     *aulas_params_generator(
         aulas_count=30,
@@ -111,6 +116,24 @@ def test_medium_stress(aulas, clases):
     )
 )
 def test_large_stress(aulas, clases):
-    print(len(clases))
     lógica_de_asignación.asignar(clases, aulas)
+
+@pytest.mark.stress_test
+@pytest.mark.aulas(
+    *aulas_params_generator(
+        aulas_count=30,
+        capacidad_max=100,
+        edificios_count=10
+    )
+)
+@pytest.mark.clases(
+    *clases_params_generator(
+        amount_per_hour=31,
+        cantidad_de_alumnos_max=100,
+        edificios_count=10
+    )
+)
+def test_large_stress_asignación_imposible(aulas, clases):
+    with pytest.raises(lógica_de_asignación.ImposibleAssignmentException):
+        lógica_de_asignación.asignar(clases, aulas)
 

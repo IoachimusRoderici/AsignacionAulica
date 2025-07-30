@@ -81,18 +81,18 @@ def clases_generadas(
 
 @pytest.mark.stress_test
 @pytest.mark.parametrize(
-    "aulas_count,capacidad_max,edificios_count,amount_per_hour,cantidad_de_alumnos_max",
-   [(         10,          100,             10,             10,                    100),
-    (         20,          100,             10,             20,                    100),
-    (         30,          100,             10,             30,                    100)]
+    "edificios_count,capacidad_max,aulas_count,amount_per_hour,cantidad_de_alumnos_max",
+   [(             10,          100,         10,             10,                    100),
+    (             10,          100,         20,             20,                    100),
+    (             10,          100,         30,             30,                    100)]
 )
 def test_stress_asignación_posible(aulas_generadas, clases_generadas):
     lógica_de_asignación.asignar(clases_generadas, aulas_generadas)
 
 @pytest.mark.stress_test
 @pytest.mark.parametrize(
-    "aulas_count,capacidad_max,edificios_count,amount_per_hour,cantidad_de_alumnos_max",
-   [(         30,          100,             10,             31,                    100)]
+    "edificios_count,capacidad_max,aulas_count,amount_per_hour,cantidad_de_alumnos_max",
+   [(             10,          100,         30,             31,                    100)]
 )
 def test_stress_asignación_imposible(aulas_generadas, clases_generadas):
     with pytest.raises(lógica_de_asignación.ImposibleAssignmentException):

@@ -63,57 +63,60 @@ def clases_params_generator(amount_per_hour: int, cantidad_de_alumnos_max: int, 
     return clases_params
 
 @pytest.mark.stress_test
-@pytest.mark.aulas(
-    *aulas_params_generator(
-        aulas_count=10,
-        capacidad_max=100,
-        edificios_count=10
-    )
-)
-@pytest.mark.clases(
-    *clases_params_generator(
-        amount_per_hour=10,
-        cantidad_de_alumnos_max=100,
-        edificios_count=10
-    )
-)
-def test_small_stress(aulas, clases):
-    lógica_de_asignación.asignar(clases, aulas)
+@pytest.mark.parametrize("", [
 
-@pytest.mark.stress_test
-@pytest.mark.aulas(
-    *aulas_params_generator(
-        aulas_count=20,
-        capacidad_max=100,
-        edificios_count=10
-    )
-)
-@pytest.mark.clases(
-    *clases_params_generator(
-        amount_per_hour=20,
-        cantidad_de_alumnos_max=100,
-        edificios_count=10
-    )
-)
-def test_medium_stress(aulas, clases):
-    lógica_de_asignación.asignar(clases, aulas)
+    pytest.param(marks=[
+        pytest.mark.aulas(
+            *aulas_params_generator(
+                aulas_count=10,
+                capacidad_max=100,
+                edificios_count=10
+            )
+        ),
+        pytest.mark.clases(
+            *clases_params_generator(
+                amount_per_hour=10,
+                cantidad_de_alumnos_max=100,
+                edificios_count=10
+            )
+        ),
+    ]),
 
-@pytest.mark.stress_test
-@pytest.mark.aulas(
-    *aulas_params_generator(
-        aulas_count=30,
-        capacidad_max=100,
-        edificios_count=10
-    )
-)
-@pytest.mark.clases(
-    *clases_params_generator(
-        amount_per_hour=30,
-        cantidad_de_alumnos_max=100,
-        edificios_count=10
-    )
-)
-def test_large_stress(aulas, clases):
+    pytest.param(marks=[
+        pytest.mark.aulas(
+            *aulas_params_generator(
+                aulas_count=20,
+                capacidad_max=100,
+                edificios_count=10
+            )
+        ),
+        pytest.mark.clases(
+            *clases_params_generator(
+                amount_per_hour=20,
+                cantidad_de_alumnos_max=100,
+                edificios_count=10
+            )
+        ),
+    ]),
+
+    pytest.param(marks=[
+        pytest.mark.aulas(
+            *aulas_params_generator(
+                aulas_count=30,
+                capacidad_max=100,
+                edificios_count=10
+            )
+        ),
+        pytest.mark.clases(
+            *clases_params_generator(
+                amount_per_hour=30,
+                cantidad_de_alumnos_max=100,
+                edificios_count=10
+            )
+        )
+    ]),
+])
+def test_stress_asignación_posible(aulas, clases):
     lógica_de_asignación.asignar(clases, aulas)
 
 @pytest.mark.stress_test

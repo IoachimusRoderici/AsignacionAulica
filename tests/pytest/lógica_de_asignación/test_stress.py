@@ -1,18 +1,26 @@
 import pytest, random, logging
 
+from pandas import DataFrame
+
 from asignacion_aulica.lógica_de_asignación.dia import Día
 from asignacion_aulica import lógica_de_asignación
+from conftest import _aulas, _clases
 
-def aulas_params_generator(aulas_count: int, capacidad_max: int, edificios_count: int):
+@pytest.fixture
+def aulas_generadas(
+        aulas_count: int,
+        capacidad_max: int,
+        edificios_count: int
+    ) -> DataFrame:
     '''
-    Genera parámetros para la creación de aulas.
+    Genera aulas *proceduralmente*.
     Las capacidades de las aulas se generan pseudo-aleatoriamente, pero con una
     semilla fija para que sea consistente.
 
     :param aulas_count: Cantidad de aulas a generar.
     :param capacidad_max: Capacidad máxima exclusiva para un aula.
     :param edificios_count: Cantidad total de edificios.
-    :return: Tupla de diccionarios para el fixture `aulas`.
+    :return: Un DataFrame con el formato esperado por lógica_de_asignación.
     '''
     # Dar semilla para que siempre sean los mismo números
     random.seed(0)
@@ -25,11 +33,16 @@ def aulas_params_generator(aulas_count: int, capacidad_max: int, edificios_count
             'edificio': i % edificios_count,
         })
 
-    return aulas_params
+    return _aulas(aulas_params)
 
-def clases_params_generator(amount_per_hour: int, cantidad_de_alumnos_max: int, edificios_count: int):
+@pytest.fixture
+def clases_generadas(
+        amount_per_hour: int,
+        cantidad_de_alumnos_max: int,
+        edificios_count: int
+    ) -> DataFrame:
     '''
-    Genera parámetros para la creación de clases.
+    Genera clases *proceduralmente*.
     Las cantidades de alumnos y los edificios preferidos de las clases se
     generan pseudo-aleatoriamente, pero con una semilla fija para que sea
     consistente.
@@ -39,7 +52,7 @@ def clases_params_generator(amount_per_hour: int, cantidad_de_alumnos_max: int, 
         asignación sea posible.
     :param cantidad_de_alumnos_max: Cantidad máxima exclusiva de alumnos.
     :param edificios_count: Cantidad total de edificios.
-    :return: Tupla de diccionarios para el fixture `aulas`.
+    :return: Un DataFrame con el formato esperado por lógica_de_asignación.
     '''
     # Dar semilla para que siempre sean los mismo números
     random.seed(1)
@@ -60,81 +73,28 @@ def clases_params_generator(amount_per_hour: int, cantidad_de_alumnos_max: int, 
 
     logging.info(f'Cantidad de clases: {len(clases_params)}.')
 
-    return clases_params
+    return _clases(clases_params)
+
+# NOTE: Esta forma de parametrizar no está muy claramente documentada, la
+# encontré de casualidad en StackOverflow, pero la fuente primaria sería esta:
+# https://docs.pytest.org/en/stable/how-to/fixtures.html#override-a-fixture-with-direct-test-parametrization
 
 @pytest.mark.stress_test
-@pytest.mark.parametrize("", [
-
-    pytest.param(marks=[
-        pytest.mark.aulas(
-            *aulas_params_generator(
-                aulas_count=10,
-                capacidad_max=100,
-                edificios_count=10
-            )
-        ),
-        pytest.mark.clases(
-            *clases_params_generator(
-                amount_per_hour=10,
-                cantidad_de_alumnos_max=100,
-                edificios_count=10
-            )
-        ),
-    ]),
-
-    pytest.param(marks=[
-        pytest.mark.aulas(
-            *aulas_params_generator(
-                aulas_count=20,
-                capacidad_max=100,
-                edificios_count=10
-            )
-        ),
-        pytest.mark.clases(
-            *clases_params_generator(
-                amount_per_hour=20,
-                cantidad_de_alumnos_max=100,
-                edificios_count=10
-            )
-        ),
-    ]),
-
-    pytest.param(marks=[
-        pytest.mark.aulas(
-            *aulas_params_generator(
-                aulas_count=30,
-                capacidad_max=100,
-                edificios_count=10
-            )
-        ),
-        pytest.mark.clases(
-            *clases_params_generator(
-                amount_per_hour=30,
-                cantidad_de_alumnos_max=100,
-                edificios_count=10
-            )
-        )
-    ]),
-])
-def test_stress_asignación_posible(aulas, clases):
-    lógica_de_asignación.asignar(clases, aulas)
+@pytest.mark.parametrize(
+    "aulas_count,capacidad_max,edificios_count,amount_per_hour,cantidad_de_alumnos_max",
+   [(         10,          100,             10,             10,                    100),
+    (         20,          100,             10,             20,                    100),
+    (         30,          100,             10,             30,                    100)]
+)
+def test_stress_asignación_posible(aulas_generadas, clases_generadas):
+    lógica_de_asignación.asignar(clases_generadas, aulas_generadas)
 
 @pytest.mark.stress_test
-@pytest.mark.aulas(
-    *aulas_params_generator(
-        aulas_count=30,
-        capacidad_max=100,
-        edificios_count=10
-    )
+@pytest.mark.parametrize(
+    "aulas_count,capacidad_max,edificios_count,amount_per_hour,cantidad_de_alumnos_max",
+   [(         30,          100,             10,             31,                    100)]
 )
-@pytest.mark.clases(
-    *clases_params_generator(
-        amount_per_hour=31,
-        cantidad_de_alumnos_max=100,
-        edificios_count=10
-    )
-)
-def test_large_stress_asignación_imposible(aulas, clases):
+def test_stress_asignación_imposible(aulas_generadas, clases_generadas):
     with pytest.raises(lógica_de_asignación.ImposibleAssignmentException):
-        lógica_de_asignación.asignar(clases, aulas)
+        lógica_de_asignación.asignar(clases_generadas, aulas_generadas)
 

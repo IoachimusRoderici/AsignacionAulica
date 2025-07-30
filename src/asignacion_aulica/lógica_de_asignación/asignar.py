@@ -145,7 +145,7 @@ def resolver_problema_de_asignación(
     # Loguear progreso de forma limpia
     solver.parameters.log_search_progress = True
     solver.parameters.log_to_stdout = False
-    solver.log_callback = logging.info
+    solver.log_callback = logging.debug
 
     status = solver.solve(modelo)
     # TODO: ¿qué hacer si da FEASIBLE?¿en qué condiciones ocurre?¿aceptamos la solución suboptima o tiramos excepción?

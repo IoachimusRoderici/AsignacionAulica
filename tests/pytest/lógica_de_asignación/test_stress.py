@@ -25,8 +25,6 @@ def aulas_params_generator(aulas_count: int, capacidad_max: int, edificios_count
             'edificio': i % edificios_count,
         })
 
-    logging.info(f'Cantidad de aulas: {len(aulas_params)}.')
-
     return aulas_params
 
 def clases_params_generator(amount_per_hour: int, cantidad_de_alumnos_max: int, edificios_count: int):
@@ -79,7 +77,7 @@ def clases_params_generator(amount_per_hour: int, cantidad_de_alumnos_max: int, 
         edificios_count=10
     )
 )
-def test_small_stress(caplog, aulas, clases):
+def test_small_stress(aulas, clases):
     lógica_de_asignación.asignar(clases, aulas)
 
 @pytest.mark.stress_test

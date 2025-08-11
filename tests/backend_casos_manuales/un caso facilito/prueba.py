@@ -23,6 +23,7 @@ def construir_horarios(aulas):
 
 clases = pd.read_csv('clases.csv', keep_default_na=False)
 clases['equipamiento_necesario'] = list(map(parsear_equipamiento, clases['equipamiento_necesario']))
+clases['aula_asignada'] = None
 
 aulas = pd.read_csv('aulas.csv', keep_default_na=False)
 aulas['equipamiento'] = list(map(parsear_equipamiento, aulas['equipamiento']))

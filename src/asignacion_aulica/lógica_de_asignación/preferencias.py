@@ -169,11 +169,45 @@ def obtener_capacidad_sobrante(
 
     return capacidad_sobrante_total, cota_superior_total
 
+def obtener_cantidad_de_alumnos_en_edificios_no_deseables(
+        clases: DataFrame,
+        aulas: DataFrame,
+        modelo: cp_model.CpModel,
+        asignaciones: np.ndarray
+    ) -> tuple[LinearExpr, int]:
+    '''
+    Devuelve una expresión que representa la cantidad de alumnos que cursan en
+    edificios no deseables, y una cota superior de la expresión.
+    '''
+    aulas_no_deseables = aulas.index[aulas['preferir_no_usar']]
+    cantidad_de_alumnos_en_edificios_no_deseables = 0
+    cota_superior = 0
+
+    for clase in clases.itertuples():
+        asignaciones_a_aulas_no_deseables = asignaciones[clase.Index, aulas_no_deseables]
+        está_en_aula_no_deseable = sum(asignaciones_a_aulas_no_deseables)
+        cantidad_de_alumnos_en_edificios_no_deseables += clase.cantidad_de_alumnos * está_en_aula_no_deseable
+
+        # Esta lógica asume que las variables de asignación son 0 (asignaciones
+        # prohinidas) o son variables del modelo. Si el resultado de la suma es
+        # int significa que esta clase no se va a asignar a ningún aula no
+        # deseable.
+        if not isinstance(está_en_aula_no_deseable, int):
+            cota_superior += clase.cantidad_de_alumnos
+
+    # Evitamos que la cota superior sea 0 porque luego se usa para dividir
+    if cota_superior == 0:
+        cota_superior = 1
+
+    return cantidad_de_alumnos_en_edificios_no_deseables, cota_superior
+
+
 # Iterable de tuplas (peso, función)
 todas_las_penalizaciones = (
-    (100,  obtener_cantidad_de_clases_fuera_del_edificio_preferido),
     (1000, obtener_cantidad_de_alumnos_fuera_del_aula),
-    (1, obtener_capacidad_sobrante),
+    (100,  obtener_cantidad_de_clases_fuera_del_edificio_preferido),
+    (10,   obtener_cantidad_de_alumnos_en_edificios_no_deseables),
+    (1,    obtener_capacidad_sobrante)
 )
 
 def obtener_penalización(
@@ -183,8 +217,8 @@ def obtener_penalización(
         asignaciones: np.ndarray
     ):
     '''
-    Calcula la suma de todas las penalizaciones con sus pesos,
-    y normalizadas usando sus cotas máximas.
+    Calcula la suma de todas las penalizaciones con sus pesos, y normalizadas
+    usando sus cotas máximas.
 
     :param clases: Tabla con los datos de las clases.
     :param aulas: Tabla con los datos de las aulas.

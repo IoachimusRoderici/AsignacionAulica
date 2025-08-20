@@ -179,20 +179,20 @@ def obtener_cantidad_de_alumnos_en_edificios_no_deseables(
     Devuelve una expresión que representa la cantidad de alumnos que cursan en
     edificios no deseables, y una cota superior de la expresión.
     '''
-    aulas_no_deseables = aulas.index[aulas['preferir_no_usar']]
+    aulas_de_edificios_no_deseables = aulas.index[aulas['preferir_no_usar']]
+
     cantidad_de_alumnos_en_edificios_no_deseables = 0
     cota_superior = 0
 
     for clase in clases.itertuples():
-        asignaciones_a_aulas_no_deseables = asignaciones[clase.Index, aulas_no_deseables]
-        está_en_aula_no_deseable = sum(asignaciones_a_aulas_no_deseables)
-        cantidad_de_alumnos_en_edificios_no_deseables += clase.cantidad_de_alumnos * está_en_aula_no_deseable
+        # Esta lógica asume que no va a haber asignaciones en 1 nunca;
+        # que van a ser 0 (asignaciones prohibidas) o variables del modelo.
+        asignaciones_a_edificios_no_deseables = asignaciones[clase, aulas_de_edificios_no_deseables]
+        puede_estar_en_edificio_no_deseable = any(map(lambda x: isinstance(x, cp_model.IntVar), asignaciones_a_edificios_no_deseables))
 
-        # Esta lógica asume que las variables de asignación son 0 (asignaciones
-        # prohinidas) o son variables del modelo. Si el resultado de la suma es
-        # int significa que esta clase no se va a asignar a ningún aula no
-        # deseable.
-        if not isinstance(está_en_aula_no_deseable, int):
+        if puede_estar_en_edificio_no_deseable:
+            está_en_aula_no_deseable = sum(asignaciones_a_edificios_no_deseables)
+            cantidad_de_alumnos_en_edificios_no_deseables += clase.cantidad_de_alumnos * está_en_aula_no_deseable
             cota_superior += clase.cantidad_de_alumnos
 
     # Evitamos que la cota superior sea 0 porque luego se usa para dividir

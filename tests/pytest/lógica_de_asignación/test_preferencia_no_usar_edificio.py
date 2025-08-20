@@ -78,7 +78,5 @@ def test_cantidad_de_alumnos_en_aulas_indeseables_y_su_cota_superior(aulas_param
     status = solver.solve(modelo)
     if status != cp_model.OPTIMAL:
         pytest.fail(f'El solver terminó con status {solver.status_name(status)}. Alguien escribió mal la prueba.')
-    asignaciones_finales = np.vectorize(solver.value)(asignaciones)
-    print(f'{asignaciones_finales=}')
     
     assert solver.value(alumnos_en_edificios_indeseables) == cantidad_esperada

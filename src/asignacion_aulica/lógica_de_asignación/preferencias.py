@@ -187,7 +187,7 @@ def obtener_cantidad_de_alumnos_en_edificios_no_deseables(
     for clase in clases.itertuples():
         # Esta lógica asume que no va a haber asignaciones en 1 nunca;
         # que van a ser 0 (asignaciones prohibidas) o variables del modelo.
-        asignaciones_a_edificios_no_deseables = asignaciones[clase, aulas_de_edificios_no_deseables]
+        asignaciones_a_edificios_no_deseables = asignaciones[clase.Index, aulas_de_edificios_no_deseables]
         puede_estar_en_edificio_no_deseable = any(map(lambda x: isinstance(x, cp_model.IntVar), asignaciones_a_edificios_no_deseables))
 
         if puede_estar_en_edificio_no_deseable:

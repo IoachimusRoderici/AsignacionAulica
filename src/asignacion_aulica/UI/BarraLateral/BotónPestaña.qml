@@ -10,6 +10,7 @@ Button {
     id: self
     Layout.fillWidth: true
     Layout.preferredHeight: 68
+    font.pointSize: 20
     
     background: Rectangle {
         color: tabLoader.pestaña_actual === self.text

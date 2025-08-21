@@ -4,22 +4,29 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 // El botón de una pestaña.
-// Propiedad obligatoria: text (nombre de la pestaña)
 // TODO: Íconos
 Button {
+    required property string nombre
     id: self
     Layout.fillWidth: true
     Layout.preferredHeight: 68
-    font.pointSize: 20
+
+    contentItem: Text {
+        text: parent.nombre
+        font.pointSize: 22
+        color: "white"
+        horizontalAlignment: Text.AlignHRight
+        verticalAlignment: Text.AlignVCenter
+    }
     
     background: Rectangle {
-        color: tabLoader.pestaña_actual === self.text
+        color: tabLoader.pestaña_actual === self.nombre
                 ? Colores.pestaña_seleccionada 
                 : "transparent"
     }
 
     // Tab selection logic
     onClicked: {
-        tabLoader.pestaña_actual = self.text
+        tabLoader.pestaña_actual = self.nombre
     }
 }

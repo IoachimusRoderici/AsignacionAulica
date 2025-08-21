@@ -13,11 +13,11 @@ Rectangle {
         spacing: 0
 
         // Botones de las pestañas
-        BotónPestaña{ text: "Edificios" }
-        BotónPestaña{ text: "Aulas"     }
-        BotónPestaña{ text: "Carreras"  }
-        BotónPestaña{ text: "Materias"  }
-        BotónPestaña{ text: "Horarios"  }
+        BotónPestaña{ nombre: "Edificios" }
+        BotónPestaña{ nombre: "Aulas"     }
+        BotónPestaña{ nombre: "Carreras"  }
+        BotónPestaña{ nombre: "Materias"  }
+        BotónPestaña{ nombre: "Horarios"  }
 
         // Spacer to push tabs to the top
         Item {

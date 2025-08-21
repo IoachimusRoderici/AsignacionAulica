@@ -1,6 +1,4 @@
 from ortools.sat.python import cp_model
-import numpy as np
-import logging
 import pytest
 
 from asignacion_aulica.lógica_de_asignación import preferencias

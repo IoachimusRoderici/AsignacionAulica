@@ -1,5 +1,4 @@
 import pandas as pd
-import json
 from asignacion_aulica import lógica_de_asignación
 
 días = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']

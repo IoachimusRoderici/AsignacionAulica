@@ -1,0 +1,4 @@
+module UI
+Main 1.0 Main.qml
+singleton Colores 1.0 Colores.qml
+BarraLateral 1.0 BarraLateral.qml

@@ -16,8 +16,7 @@ dependencies = [
   "numpy == 2.2.*",
   "ortools == 9.12.*",
   "openpyxl == 3.1.*",
-  "pillow == 11.3.*",
-  "flet == 0.28.3"
+  "pyside6 == 6.9.*"
 ]
 
 [project.optional-dependencies]
@@ -25,14 +24,9 @@ test = [
   "pytest ~= 8.3"
 ]
 
+[project.gui-scripts]
+asignacion-aulica = "asignacion_aulica:main.main"
+
 [tool.pytest.ini_options]
 testpaths = ["tests/pytest"]
 minversion = "8.3"
-
-[tool.flet]
-company = "UNRN"
-org = "ar.edu.unrn"
-product = "Asignacion Aulica"
-
-[tool.flet.app]
-path = "src"

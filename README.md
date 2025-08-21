@@ -26,12 +26,7 @@ de python.
     pruebas unitarias. Se puede omitir si no vas a ejecutar las pruebas
     unitarias.
 
-4. Ejecutar el programa con `flet run`.
-
-    Nota: No ejecutar los archivos `.py` directamente, porque flet agrega
-    variables de entorno y otras magias que, si no se tienen en cuenta, pueden
-    causar problemas del tipo "en mi compu aparecen los iconos pero en las
-    otras compus no".
+4. Ejecutar el programa con el comando `asignacion-aulica`.
 
 **Ejecutar tests unitarios:**
 

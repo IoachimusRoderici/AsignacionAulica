@@ -5,7 +5,7 @@ import QtQuick.Layouts
 
 // Sidebar with tabs
 Rectangle {
-    Layout.preferredWidth: 200
+    Layout.preferredWidth: 250
     Layout.fillHeight: true
     color: Colores.rojo_unrn
 
@@ -18,22 +18,8 @@ Rectangle {
         Repeater {
             model: ["Home", "Profile", "Settings", "Messages", "Notifications"]
             
-            Button {
+            BotónPestaña{
                 text: modelData
-                Layout.fillWidth: true
-                Layout.preferredHeight: 50
-                
-                // Button styling
-                background: Rectangle {
-                    color: tabLoader.currentIndex === index 
-                            ? "#e0e0e0" 
-                            : "transparent"
-                }
-
-                // Tab selection logic
-                onClicked: {
-                    tabLoader.currentIndex = index
-                }
             }
         }
 

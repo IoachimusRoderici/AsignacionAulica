@@ -7,17 +7,18 @@ import QtQuick.Layouts
 // Propiedad obligatoria: text (nombre de la pestaña)
 // TODO: Íconos
 Button {
+    id: self
     Layout.fillWidth: true
     Layout.preferredHeight: 68
     
     background: Rectangle {
-        color: tabLoader.currentIndex === index 
+        color: tabLoader.pestaña_actual === self.text
                 ? Colores.pestaña_seleccionada 
                 : "transparent"
     }
 
     // Tab selection logic
     onClicked: {
-        tabLoader.currentIndex = index
+        tabLoader.pestaña_actual = self.text
     }
 }

@@ -27,18 +27,16 @@ Window {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            // Track current tab index
-            property int currentIndex: 0
+            property string pestaña_actual: "Edificios"
 
-            // Source selection based on current index
             sourceComponent: {
-                switch(currentIndex) {
-                case 0: return homeComponent
-                case 1: return profileComponent
-                case 2: return settingsComponent
-                case 3: return messagesComponent
-                case 4: return notificationsComponent
-                default: return homeComponent
+                switch(pestaña_actual) {
+                    case "Edificios": return homeComponent
+                    case "Aulas": return profileComponent
+                    case "Carreras": return settingsComponent
+                    case "Materias": return messagesComponent
+                    case "Horarios": return notificationsComponent
+                    default: return homeComponent
                 }
             }
         }

@@ -1,10 +1,8 @@
-name: flet build windows
+name: build windows
 
 on: workflow_dispatch
 
 env:
-  # Disables rich text formatting in Flet CLI output
-  FLET_CLI_NO_RICH_OUTPUT: 1
   PYTHONUTF8: 1
 
 jobs:
@@ -35,12 +33,14 @@ jobs:
 
       - name: Build Windows App
         shell: pwsh
-        run: .\build.ps1
+        run: |
+          pip install .
+          python .\empaquetar.py
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4.3.4
         with:
           name: asignacion-aulica-${{ env.PROJECT_VERSION }}-windows
-          path: build/windows
+          path: .\AsignaciónÁulica
           if-no-files-found: warn
           overwrite: false

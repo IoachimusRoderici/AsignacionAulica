@@ -10,7 +10,7 @@ archivo_main = path.join(raíz_del_repo, 'src', 'asignacion_aulica', 'main.py')
 archivo_de_configuración_del_empaquetador = path.join(path.dirname(archivo_main), 'pysidedeploy.spec')
 
 reemplazar_configuración = dict(
-    title = 'Asignación Áulica',
+    title = 'AsignaciónÁulica',
     icon = path.join(directorio_assets, 'iconos', 'unrn.ico'),
     exec_directory = raíz_del_repo
 )

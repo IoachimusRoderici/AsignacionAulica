@@ -16,7 +16,7 @@ reemplazar_configuración = dict(
 )
 
 apendear_configuración = dict(
-    extra_args = f' --include-data-dir={directorio_assets}=assets --include-data-dir={directorio_qml}=QML',
+    extra_args = f' --include-data-dir=assets={directorio_assets}',# --include-data-dir={directorio_qml}=QML',
     plugins = ',qml'
 )
 

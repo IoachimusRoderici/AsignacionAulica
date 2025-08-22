@@ -19,9 +19,8 @@ def main() -> int:
 
     configurar_fuente_por_defecto()
 
-
     engine = QQmlApplicationEngine()
-    engine.addImportPath(directorio)
+    #engine.addImportPath(directorio)
     engine.loadFromModule('QML', "Main")
     if engine.rootObjects():
         exit_code = app.exec()

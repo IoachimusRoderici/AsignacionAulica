@@ -2,13 +2,13 @@ from os import path, environ
 
 este_directorio = path.dirname(__file__)
 
-# Calcular el path de la carpeta assets según el ambiente de ejecución:
-if 'NUITKA_ONEFILE_DIRECTORY' in environ:
-    # Ambiente empaquetado, hay que ir un directorio para arriba
-    assets_path = path.abspath(path.join(este_directorio, '..', 'ass'))
+estamos_en_ambiente_empaquetado = 'NUITKA_ONEFILE_DIRECTORY' in environ
+
+# Calcular el path de la carpeta assets
+if estamos_en_ambiente_empaquetado:
+    assets_path = path.abspath(path.join(este_directorio, '..', 'assets'))
 else:
-    # Ambiente de desarrollo, hay que ir dos directorios para arriba
-    assets_path = path.abspath(path.join(este_directorio, '..', '..', 'ass'))
+    assets_path = path.abspath(path.join(este_directorio, '..', '..', 'assests'))
 
 def get_path(*nombres: str) -> str:
     '''

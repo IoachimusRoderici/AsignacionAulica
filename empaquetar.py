@@ -60,4 +60,4 @@ run(
     check = True
 )
 
-os.remove(archivo_de_configuración_del_empaquetador)
+#os.remove(archivo_de_configuración_del_empaquetador)

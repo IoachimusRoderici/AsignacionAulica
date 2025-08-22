@@ -53,8 +53,9 @@ with open(archivo_de_configuración_del_empaquetador, 'w') as archivo:
 run(
     [
         'pyside6-deploy',
+        f'--config-file={archivo_de_configuración_del_empaquetador}',
         '--verbose',
-        f'--config-file={archivo_de_configuración_del_empaquetador}'
+        '--force' # No preguntar si queremos crear un entorno virtual.
     ],
     check = True
 )

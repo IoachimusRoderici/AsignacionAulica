@@ -4,18 +4,20 @@ import os
 
 
 raíz_del_repo = path.dirname(__file__)
-assets = path.join(raíz_del_repo, 'assets')
+directorio_assets = path.join(raíz_del_repo, 'assets')
+directorio_qml = path.join(raíz_del_repo, 'src', 'asignacion_aulica', 'GUI', 'QML')
 archivo_main = path.join(raíz_del_repo, 'src', 'asignacion_aulica', 'main.py')
 archivo_de_configuración_del_empaquetador = path.join(path.dirname(archivo_main), 'pysidedeploy.spec')
 
 reemplazar_configuración = dict(
     title = 'Asignación Áulica',
-    icon = path.join(assets, 'iconos', 'unrn.ico'),
+    icon = path.join(directorio_assets, 'iconos', 'unrn.ico'),
     exec_directory = raíz_del_repo
 )
 
 apendear_configuración = dict(
-    extra_args = f' --include-data-dir={assets}=assets'
+    extra_args = f' --include-data-dir={directorio_assets}=assets --include-data-dir={directorio_qml}=QML',
+    plugins = ',qml'
 )
 
 run(
@@ -56,3 +58,5 @@ run(
     ],
     check = True
 )
+
+os.remove(archivo_de_configuración_del_empaquetador)

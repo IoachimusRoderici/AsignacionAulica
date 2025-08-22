@@ -39,6 +39,7 @@ jobs:
         run: |
           pip install .
           python .\empaquetar.py
+          cat D:\a\AsignacionAulica\AsignacionAulica\src\asignacion_aulica\pysidedeploy.spec
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4.3.4

@@ -1,4 +1,4 @@
-name: build windows
+name: flet build windows
 
 on: workflow_dispatch
 

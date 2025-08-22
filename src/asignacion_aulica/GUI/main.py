@@ -3,9 +3,8 @@ from PySide6.QtGui import QGuiApplication, QFontDatabase
 from PySide6.QtQml import QQmlApplicationEngine
 
 from asignacion_aulica import assets
-import ortools
 
-directorio = os.path.dirname(os.path.abspath(__file__))
+este_directorio = os.path.dirname(os.path.abspath(__file__))
 
 def configurar_fuente_por_defecto():
     default_font_file = assets.get_path('fonts', 'Karla-Regular.ttf')
@@ -13,15 +12,16 @@ def configurar_fuente_por_defecto():
     font = QFontDatabase.font('Karla', 'regular', 12)
     QGuiApplication.setFont(font)
 
-
 def main() -> int:
     app = QGuiApplication(sys.argv)
 
     configurar_fuente_por_defecto()
 
     engine = QQmlApplicationEngine()
-    #engine.addImportPath(directorio)
+    engine.addImportPath(este_directorio)
+
     engine.loadFromModule('QML', "Main")
+    
     if engine.rootObjects():
         exit_code = app.exec()
     else:

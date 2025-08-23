@@ -26,6 +26,9 @@ jobs:
           echo "PROJECT_VERSION=$PROJECT_VERSION"
           echo "PROJECT_VERSION=$PROJECT_VERSION" >> $env:GITHUB_ENV
 
+          # Copy the version number into the installer configuration
+          (Get-Content .\instalador.iss) | ForEach-Object { $_ -replace "AppVersion=esto se completa en el CI", "AppVersion=$PROJECT_VERSION" } | Set-Content .\instalador.iss
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -42,7 +45,7 @@ jobs:
         with:
           path: instalador.iss
 
-      - name: Logguear qué archivos quedaron
+      - name: Log created files
         run: |
           ls build
           ls instalador

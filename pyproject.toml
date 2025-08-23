@@ -21,6 +21,7 @@ dependencies = [
 [project.optional-dependencies]
 test = ["pytest == 8.3.*"]
 build = ["cx_freeze == 8.4.*"]
+excel = ["openpyxl == 3.1.*", "pillow == 11.3.*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests/pytest"]

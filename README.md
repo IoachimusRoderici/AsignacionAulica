@@ -20,11 +20,12 @@ de python.
     .\venv\Scripts\activate  # En Windows
     ```
 
-3. Instalar las dependencias del proyecto con `pip install --editable .[test,build]`
+3. Instalar las dependencias del proyecto con `pip install --editable .[test,build,excel]`
 
-    Nota: la opción `[test,build]` instala los paquetes necesarios para ejecutar
-    las pruebas unitarias y para empaquetar el programa. Se puede omitir
-    cualquiera de los dos si no se va a usar.
+    Nota: la opción `[test,build,excel]` instala los paquetes extra necesarios
+    para ejecutar las pruebas unitarias, para empaquetar el programa, y para
+    generar las plantillas excel. Se puede omitir cualquiera de los tres extras
+    si no se va a usar.
 
 4. El archivo que hay que ejecutar para usar el programa (sin empaquetar) es
    `src/asignacion_aulica/main.py`.

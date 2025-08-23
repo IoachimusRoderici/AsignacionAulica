@@ -48,12 +48,12 @@ jobs:
       - name: Log created files
         run: |
           ls build
-          ls instalador
+          ls .\
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4.3.4
         with:
-          name: asignacion-aulica-${{ env.PROJECT_VERSION }}-windows
-          path: .\instalador\
+          name: Instalador-AsignaciónÁulica-${{ env.PROJECT_VERSION }}
+          path: .\Instalador-AsignaciónÁulica.exe
           if-no-files-found: warn
           overwrite: false

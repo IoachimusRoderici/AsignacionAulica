@@ -4,8 +4,6 @@ from PySide6.QtQml import QQmlApplicationEngine
 
 from asignacion_aulica import assets
 
-este_directorio = os.path.dirname(os.path.abspath(__file__))
-
 def configurar_fuente_por_defecto():
     default_font_file = assets.get_path('fonts', 'Karla-Regular.ttf')
     QFontDatabase.addApplicationFont(default_font_file)
@@ -18,7 +16,7 @@ def main() -> int:
     configurar_fuente_por_defecto()
 
     engine = QQmlApplicationEngine()
-    engine.addImportPath(este_directorio)
+    engine.addImportPath(assets.QML_path)
 
     engine.loadFromModule('QML', "Main")
     

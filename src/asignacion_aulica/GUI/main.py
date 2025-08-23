@@ -1,5 +1,5 @@
 import sys, os
-from PySide6.QtGui import QGuiApplication, QFontDatabase
+from PySide6.QtGui import QGuiApplication, QFontDatabase, QIcon
 from PySide6.QtQml import QQmlApplicationEngine
 
 from asignacion_aulica import assets
@@ -12,6 +12,8 @@ def configurar_fuente_por_defecto():
 
 def main() -> int:
     app = QGuiApplication(sys.argv)
+    icono = QIcon(assets.get_path('iconos', 'unrn.ico'))
+    app.setWindowIcon(icono)
 
     configurar_fuente_por_defecto()
 

@@ -11,7 +11,7 @@ Window {
     visibility: Window.Maximized
     width: 800
     height: 600
-    title: qsTr("Sidebar Tab Application")
+    title: qsTr("Asignación Áulica")
 
     // Main layout with sidebar and content area
     RowLayout {

@@ -21,9 +21,9 @@ Name: "es"; MessagesFile: "compiler:Languages\Spanish.isl"
 Source: "build\AsignaciónÁulica\*"; DestDir: "{app}"; Flags: recursesubdirs
 
 [Icons]
-Name: "{group}\Asignación Áulica"; Filename: "{app}\main.exe"
-Name: "{group}\Desinstalar Asignación Áulica"; Filename: "{uninstallexe}"
-Name: "{userdesktop}\Asignación Áulica"; Filename: "{app}\main.exe"; Tasks: desktopicon
+Name: "{group}\Asignación Áulica"; Filename: "{app}\main.exe"; IconFilename: "{app}\assets\iconos\unrn.ico"
+Name: "{group}\Desinstalar Asignación Áulica"; Filename: "{uninstallexe}"; IconFilename: "{app}\assets\iconos\unrn.ico"
+Name: "{userdesktop}\Asignación Áulica"; Filename: "{app}\main.exe"; IconFilename: "{app}\assets\iconos\unrn.ico"; Tasks: desktopicon
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked

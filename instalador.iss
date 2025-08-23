@@ -5,6 +5,7 @@
 AppName=Asignación Áulica
 AppVersion=esto se completa en el CI
 
+AppIcon=assets/iconos/unrn.ico
 SetupIconFile=assets/iconos/unrn.ico
 WizardStyle=modern
 

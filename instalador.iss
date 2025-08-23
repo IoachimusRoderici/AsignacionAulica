@@ -18,7 +18,7 @@ DefaultDirName={autopf}\AsignaciónÁulica
 Name: "es"; MessagesFile: "compiler:Languages\Spanish.isl"
 
 [Files]
-Source: "build\*"; DestDir: "{app}"; Flags: recursesubdirs
+Source: "build\AsignaciónÁulica\*"; DestDir: "{app}"; Flags: recursesubdirs
 
 [Icons]
 Name: "{group}\Asignación Áulica"; Filename: "{app}\main.exe"

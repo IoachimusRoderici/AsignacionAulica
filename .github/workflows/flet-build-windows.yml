@@ -54,6 +54,6 @@ jobs:
         uses: actions/upload-artifact@v4.3.4
         with:
           name: AsignaciónÁulica-${{ env.PROJECT_VERSION }}
-          path: .\build\AsignacionAulica
+          path: .\build\AsignaciónÁulica
           if-no-files-found: warn
           overwrite: false

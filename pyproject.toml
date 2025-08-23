@@ -32,4 +32,6 @@ executables = [
 ]
 
 [tool.cxfreeze.build_exe]
+build_exe = "build"
 include_files = "assets"
+silent_level = 1

@@ -23,4 +23,7 @@ Source: "build\AsignaciónÁulica\*"; DestDir: "{app}"; Flags: recursesubdirs
 [Icons]
 Name: "{group}\Asignación Áulica"; Filename: "{app}\main.exe"
 Name: "{group}\Desinstalar Asignación Áulica"; Filename: "{uninstallexe}"
-Name: "{userdesktop}\Asignación Áulica"; Filename: "{app}\main.exe"
+Name: "{userdesktop}\Asignación Áulica"; Filename: "{app}\main.exe"; Tasks: desktopicon
+
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked

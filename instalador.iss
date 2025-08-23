@@ -12,6 +12,8 @@ OutputDir=instalador
 ; Instalar en "Program Files" del usuario:
 DefaultDirName={autopf}\AsignaciónÁulica
 
+[Languages]
+Name: "es"; MessagesFile: "compiler:Languages\Spanish.isl"
 
 [Files]
 Source: "build\AsignaciónÁulica\*"; DestDir: "{app}"; Flags: recursesubdirs

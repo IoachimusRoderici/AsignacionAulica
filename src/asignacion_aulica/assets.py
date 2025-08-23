@@ -1,3 +1,8 @@
+'''
+Este módulo se encarga de calcular los paths absolutos de archivos, detectando
+si se está ejecutando el programa en el entorno de desarrollo o en el entorno
+empaquetado.
+'''
 from os import path
 import sys
 

@@ -8,6 +8,8 @@ Rectangle {
     Layout.fillHeight: true
     color: Colores.rojo_unrn
 
+    property string pestaña_actual: "Edificios"
+
     ColumnLayout {
         anchors.fill: parent
         spacing: 0

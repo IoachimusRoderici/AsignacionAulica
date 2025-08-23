@@ -27,6 +27,6 @@ Button {
 
     // Tab selection logic
     onClicked: {
-        tabLoader.pestaña_actual = self.nombre
+        parent.parent.pestaña_actual = self.nombre
     }
 }

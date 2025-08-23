@@ -9,11 +9,9 @@ Window {
     id: mainWindow
     visible: true
     visibility: Window.Maximized
-    width: 800
-    height: 600
     title: qsTr("Asignación Áulica")
 
-    // Main layout with sidebar and content area
+    // Layout raíz: barra lateral + contenido de las pestañas
     RowLayout {
         anchors.fill: parent
 
@@ -21,83 +19,76 @@ Window {
             id: sidebar
         }
 
-        // Content area with loader
+        // Mecanismo para cambiar de pestaña
         Loader {
             id: tabLoader
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            property string pestaña_actual: "Edificios"
-
             sourceComponent: {
-                switch(pestaña_actual) {
-                    case "Edificios": return homeComponent
-                    case "Aulas": return profileComponent
-                    case "Carreras": return settingsComponent
-                    case "Materias": return messagesComponent
-                    case "Horarios": return notificationsComponent
-                    default: return homeComponent
+                switch(sidebar.pestaña_actual) {
+                    case "Edificios": return pestañaEdificios
+                    case "Aulas": return pestañaAulas
+                    case "Carreras": return pestañaCarreras
+                    case "Materias": return pestañaMaterias
+                    case "Horarios": return pestañaHorarios
+                    default: return pestañaEdificios
                 }
             }
         }
     }
 
-    // Component definitions for different tab contents
+    // Acá debería ir el contenido de cada pestaña
     Component {
-        id: homeComponent
+        id: pestañaEdificios
         Rectangle {
-            color: "white"
             Text {
                 anchors.centerIn: parent
-                text: "Home Content"
+                text: "Edificios"
                 font.pixelSize: 24
             }
         }
     }
 
     Component {
-        id: profileComponent
+        id: pestañaAulas
         Rectangle {
-            color: "lightblue"
             Text {
                 anchors.centerIn: parent
-                text: "Profile Content"
+                text: "Aulas"
                 font.pixelSize: 24
             }
         }
     }
 
     Component {
-        id: settingsComponent
+        id: pestañaCarreras
         Rectangle {
-            color: "lightgreen"
             Text {
                 anchors.centerIn: parent
-                text: "Settings Content"
+                text: "Carreras"
                 font.pixelSize: 24
             }
         }
     }
 
     Component {
-        id: messagesComponent
+        id: pestañaMaterias
         Rectangle {
-            color: "lightyellow"
             Text {
                 anchors.centerIn: parent
-                text: "Messages Content"
+                text: "Materias"
                 font.pixelSize: 24
             }
         }
     }
 
     Component {
-        id: notificationsComponent
+        id: pestañaHorarios
         Rectangle {
-            color: "lightpink"
             Text {
                 anchors.centerIn: parent
-                text: "Notifications Content"
+                text: "Horarios"
                 font.pixelSize: 24
             }
         }

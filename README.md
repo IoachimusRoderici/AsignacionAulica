@@ -12,7 +12,7 @@ de python.
 
 **Cómo usar el ambiente virtual:**
 
-1. Crear el ambiente con `python -m venv venv`.
+1. Crear el ambiente ejecutando en la raíz de este repositorio `python -m venv venv`.
 2. Activar el ambiente con
 
     ```
@@ -20,15 +20,22 @@ de python.
     .\venv\Scripts\activate  # En Windows
     ```
 
-3. Instalar las dependencias del proyecto con `pip install --editable .[test]`
+3. Instalar las dependencias del proyecto con `pip install --editable .[test,build]`
 
-    Nota: la opción `[test]` instala los paquetes necesarios para ejecutar las
-    pruebas unitarias. Se puede omitir si no vas a ejecutar las pruebas
-    unitarias.
+    Nota: la opción `[test,build]` instala los paquetes necesarios para ejecutar
+    las pruebas unitarias y para empaquetar el programa. Se puede omitir
+    cualquiera de los dos si no se va a usar.
 
-4. Ejecutar el programa con el comando `asignacion-aulica`.
+4. El archivo que hay que ejecutar para usar el programa (sin empaquetar) es
+   `src/asignacion_aulica/main.py`.
 
-**Ejecutar tests unitarios:**
+**Tests unitarios:**
+
+Hay pruebas unitarias que usan la librería `pytest`. Están en el directorio
+`tests/pytest`.
+
+Hay algunas pruebas llamadas *stress tests* que pueden tardar en ejecutarse, así
+que por defecto se saltean.
 
 - Ejecutar todo excepto los *stress tests*:
 
@@ -47,4 +54,14 @@ de python.
     ```
     pytest --stress-tests
     ```
+## Empaquetado
 
+El programa se empaqueta en dos pasos:
+
+1. Se usa [cx_freeze](https://cx-freeze.readthedocs.io/en/stable/index.html)
+   para generar una carpeta con un exe más el programa y todas sus dependencias.
+2. Se usa [Inno Setup](https://jrsoftware.org/ishelp/index.php) para generar un
+   instalador.
+
+Hay una GitHub action que ejecuta los dos pasos. El paso 1 también se puede
+ejecutar en el entorno virtual (ver comando en el archivo de la GitHub Action).

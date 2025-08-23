@@ -130,10 +130,6 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-# Aplicación empaquetada
-Asignación Áulica.bin
-Asignación Áulica.exe
-
 # Ignorar archivos temporales de MicrosoftOffice/LibreOffice
 # (creados por ejemplo cuando abrís un excel)
 .$*

@@ -4,16 +4,18 @@
 [Setup]
 AppName=Asignación Áulica
 SetupIconFile=assets/iconos/unrn.ico
-
-; Instalar en "Program Files" del usuario:
-DefaultDirName={autopf}\AsignacionAulica
-
 WizardStyle=modern
 
+OutputDir=instalador
+
+; Instalar en "Program Files" del usuario:
+DefaultDirName={autopf}\AsignaciónÁulica
+
+
 [Files]
-Source: "build\*"; DestDir: "{app}"; Flags: recursesubdirs
+Source: "build\AsignaciónÁulica\*"; DestDir: "{app}"; Flags: recursesubdirs
 
 [Icons]
-Name: "{group}\Asignación Áulica"; Filename: "{app}\your_main_executable.exe"
-Name: "{autodesktop}\Asignación Áulica"; Filename: "{app}\your_main_executable.exe"
-Name: "{group}\Desinstalar Asignacion Áulica"; Filename: "{uninstallexe}"
+Name: "{group}\Asignación Áulica"; Filename: "{app}\main.exe"
+Name: "{group}\Desinstalar Asignación Áulica"; Filename: "{uninstallexe}"
+Name: "{autodesktop}\Asignación Áulica"; Filename: "{app}\main.exe"

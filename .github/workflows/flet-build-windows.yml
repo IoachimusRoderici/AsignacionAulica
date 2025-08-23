@@ -31,21 +31,26 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           
-      - uses: TheMrMilchmann/setup-msvc-dev@v3
-        with:
-          arch: x64
-
       - name: Build Windows App
         shell: pwsh
         run: |
-          pip install .
-          python .\empaquetar.py
-          cat D:\a\AsignacionAulica\AsignacionAulica\src\asignacion_aulica\pysidedeploy.spec
+          pip install .[build]
+          cxfreeze build --verbose
+      
+      - name: Make an installer
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
+        with:
+          path: instalador.iss
+
+      - name: Logguear qué archivos quedaron
+        run: |
+          ls build
+          ls instalador
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4.3.4
         with:
           name: asignacion-aulica-${{ env.PROJECT_VERSION }}-windows
-          path: .\AsignaciónÁulica
+          path: .\instalador\
           if-no-files-found: warn
           overwrite: false

@@ -1,7 +1,7 @@
 [project]
 name = "asignacion-aulica"
 description = "Software de asignación de aulas para la UNRN Sede Andina"
-version = "0.0.2"
+version = "0.1.0"
 
 authors = [
   {name = "Cristian Gustavo Mogensen"},
@@ -32,6 +32,6 @@ executables = [
 ]
 
 [tool.cxfreeze.build_exe]
-build_exe = "build"
+build_exe = "build/AsignaciónÁulica"
 include_files = "assets"
 silent_level = 1

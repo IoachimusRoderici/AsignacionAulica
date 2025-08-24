@@ -1,6 +1,6 @@
 from PySide6.QtGui import QGuiApplication, QFontDatabase, QIcon
 from PySide6.QtQml import QQmlApplicationEngine
-import sys, os
+import sys
 
 from asignacion_aulica import assets
 
@@ -29,6 +29,3 @@ def main() -> int:
 
     del engine
     return exit_code
-
-if __name__ == '__main__':
-    sys.exit(main())

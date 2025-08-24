@@ -1,14 +1,16 @@
 from PySide6.QtGui import QGuiApplication, QFontDatabase, QIcon
 from PySide6.QtQml import QQmlApplicationEngine
-import sys
+from os import path
+import sys, os
 
 from asignacion_aulica import assets
 
 def configurar_fuente_por_defecto():
-    default_font_file = assets.get_path('fonts', 'Karla-Regular.ttf')
-    QFontDatabase.addApplicationFont(default_font_file)
-    font = QFontDatabase.font('Karla', 'regular', 12)
-    QGuiApplication.setFont(font)
+    for file in os.listdir(assets.get_path('fonts')):
+        QFontDatabase.addApplicationFont(file)
+
+    default_font = QFontDatabase.font('Karla', 'regular', 12)
+    QGuiApplication.setFont(default_font)
 
 def main() -> int:
     app = QGuiApplication(sys.argv)

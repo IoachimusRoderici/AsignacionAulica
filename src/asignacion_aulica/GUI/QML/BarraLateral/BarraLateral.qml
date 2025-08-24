@@ -4,9 +4,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 Rectangle {
-    Layout.preferredWidth: 250
+    Layout.preferredWidth: Constantes.ancho_de_la_barra
     Layout.fillHeight: true
-    color: Colores.rojo_unrn
+    color: Constantes.rojo_unrn
 
     property string pestaña_actual: "Edificios"
 
@@ -24,6 +24,15 @@ Rectangle {
         // Spacer to push tabs to the top
         Item {
             Layout.fillHeight: true
+        }
+
+        Image {
+            id: logoUNRN
+            Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
+            Layout.margins: Constantes.logo_unrn_margen
+            Layout.fillWidth: true
+            fillMode: Image.PreserveAspectFit
+            source: Constantes.logo_unrn_path
         }
     }
 }

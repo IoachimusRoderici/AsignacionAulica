@@ -20,8 +20,8 @@ Button {
     }
     
     background: Rectangle {
-        color: tabLoader.pestaña_actual === self.nombre
-                ? Colores.pestaña_seleccionada 
+        color: sidebar.pestaña_actual === self.nombre
+                ? Constantes.rojo_unrn_oscuro 
                 : "transparent"
     }
 

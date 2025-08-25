@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Controls.Basic
 
 Rectangle {
     Layout.preferredWidth: Constantes.ancho_de_la_barra
@@ -13,6 +14,28 @@ Rectangle {
     ColumnLayout {
         anchors.fill: parent
         spacing: 0
+
+        // Título
+        Text{
+            text: Constantes.título_texto
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignHCenter
+            Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+            Layout.fillWidth: true
+            Layout.topMargin: 15
+            font.pointSize: Constantes.título_tamaño
+            font.bold: true
+            lineHeight: 1.1
+            color: "white"
+        }
+
+        MenuSeparator {
+            Layout.fillWidth: true
+            leftPadding: 7
+            rightPadding: 7
+            topPadding: 0
+            bottomPadding: 0
+        }
 
         // Botones de las pestañas
         BotónPestaña{ nombre: "Edificios" }

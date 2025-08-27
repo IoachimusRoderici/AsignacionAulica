@@ -21,7 +21,7 @@ Button {
     }
     
     background: Rectangle {
-        color: sidebar.pestaña_actual === self.nombre
+        color: sidebar.pestaña_actual === self.nombre || self.hovered
                 ? Constantes.rojo_unrn_oscuro 
                 : "transparent"
     }

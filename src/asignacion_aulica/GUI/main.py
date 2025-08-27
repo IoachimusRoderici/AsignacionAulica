@@ -1,6 +1,6 @@
 from PySide6.QtGui import QGuiApplication, QFontDatabase, QIcon
 from PySide6.QtQml import QQmlApplicationEngine
-from os import path
+from pathlib import Path
 import sys, os
 
 from asignacion_aulica import assets
@@ -20,7 +20,7 @@ def main() -> int:
     configurar_fuente_por_defecto()
 
     engine = QQmlApplicationEngine()
-    engine.rootContext().setContextProperty('assets_path', assets.assets_path)
+    engine.rootContext().setContextProperty('assets_path', Path(assets.assets_path).as_uri())
     engine.addImportPath(assets.QML_path)
     engine.loadFromModule('QML', "Main")
     

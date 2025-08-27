@@ -2,6 +2,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.VectorImage
+import QtQuick.Layouts
 
 // El botón de una pestaña.
 // TODO: Íconos

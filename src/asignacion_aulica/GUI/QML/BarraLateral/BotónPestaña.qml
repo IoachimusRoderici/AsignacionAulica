@@ -1,7 +1,7 @@
 
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
+import QtQuick.VectorImage
 
 // El botón de una pestaña.
 // TODO: Íconos
@@ -9,11 +9,12 @@ Button {
     required property string nombre
     id: self
     Layout.fillWidth: true
-    Layout.preferredHeight: 68
+    Layout.preferredHeight: Constantes.pestaña_altura
+    spacing: 0
 
     contentItem: Text {
         text: parent.nombre
-        font.pointSize: 22
+        font.pointSize: Constantes.pestaña_texto_altura
         color: "white"
         horizontalAlignment: Text.AlignHRight
         verticalAlignment: Text.AlignVCenter

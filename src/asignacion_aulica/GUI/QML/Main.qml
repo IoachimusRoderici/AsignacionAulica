@@ -13,6 +13,7 @@ Window {
 
     // Layout raíz: barra lateral + contenido de las pestañas
     RowLayout {
+        spacing: 0
         anchors.fill: parent
 
         BarraLateral{

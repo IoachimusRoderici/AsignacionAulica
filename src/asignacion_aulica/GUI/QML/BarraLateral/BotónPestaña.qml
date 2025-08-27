@@ -4,7 +4,6 @@ import QtQuick.VectorImage
 import QtQuick.Layouts
 
 // El botón de una pestaña.
-// TODO: Íconos
 Button {
     required property string nombre
     id: self
@@ -12,12 +11,24 @@ Button {
     Layout.preferredHeight: Constantes.pestaña_altura
     spacing: 0
 
-    contentItem: Text {
-        text: parent.nombre
-        font.pointSize: Constantes.pestaña_texto_altura
-        color: "white"
-        horizontalAlignment: Text.AlignHRight
-        verticalAlignment: Text.AlignVCenter
+    contentItem: RowLayout{
+        spacing: 0
+        Image {
+            Layout.alignment: Qt.AlignCenter
+            Layout.rightMargin: 10
+            fillMode: Image.PreserveAspectFit
+            source: assets_path + "/iconos/" + self.nombre + ".svg"
+        }
+        Text {
+            text: self.nombre
+            font.pointSize: Constantes.pestaña_texto_altura
+            color: "white"
+            horizontalAlignment: Text.AlignHLeft
+            verticalAlignment: Text.AlignVCenter
+        }
+        Item {
+            Layout.fillWidth: true
+        }
     }
     
     background: Rectangle {

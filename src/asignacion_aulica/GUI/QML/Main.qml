@@ -8,7 +8,9 @@ Window {
     id: mainWindow
     visible: true
     visibility: Window.Maximized
-    title: qsTr("Asignación Áulica")
+    minimumHeight: 500
+    minimumWidth: 800
+    title: "Asignación Áulica"
 
     // Layout raíz: barra lateral + contenido de las pestañas
     RowLayout {

@@ -14,6 +14,6 @@ QtObject {
     readonly property string logo_unrn_path: assets_path + "/logo_unrn_blanco.svg"
     readonly property int logo_unrn_margen: 15
 
-    readonly property int pestaña_altura: 60
+    readonly property int pestaña_altura: 55
     readonly property int pestaña_texto_altura: 20
 }

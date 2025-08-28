@@ -10,11 +10,11 @@ estamos_en_ambiente_empaquetado = getattr(sys, 'frozen', False)
 
 if estamos_en_ambiente_empaquetado:
     assets_path = path.join(sys.prefix, 'assets')
-    QML_path = sys.prefix
+    QML_import_path = sys.prefix
 else:
     este_directorio = path.dirname(__file__)
     assets_path = path.abspath(path.join(este_directorio, path.pardir, path.pardir, 'assets'))
-    QML_path = path.join(este_directorio, 'GUI')
+    QML_import_path = path.join(este_directorio, 'GUI')
 
 def get_path(*nombres: str) -> str:
     '''

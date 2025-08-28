@@ -24,7 +24,7 @@ def main() -> int:
 
     engine = QQmlApplicationEngine()
     engine.rootContext().setContextProperty('assets_path', Path(assets.assets_path).as_uri())
-    engine.addImportPath(assets.QML_path)
+    engine.addImportPath(assets.QML_import_path)
     engine.loadFromModule('QML', "Main")
     
     if not engine.rootObjects():

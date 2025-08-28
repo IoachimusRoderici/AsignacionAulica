@@ -7,8 +7,9 @@ import sys, os
 from asignacion_aulica import assets
 
 def configurar_fuente_por_defecto():
-    for file in os.listdir(assets.get_path('fonts')):
-        QFontDatabase.addApplicationFont(file)
+    fonts_path = assets.get_path('fonts')
+    for font_file in os.listdir(fonts_path):
+        QFontDatabase.addApplicationFont(os.path.join(fonts_path, font_file))
 
     default_font = QFontDatabase.font('Karla', 'regular', 12)
     QGuiApplication.setFont(default_font)

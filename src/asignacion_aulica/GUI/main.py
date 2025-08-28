@@ -26,10 +26,7 @@ def main() -> int:
     engine.addImportPath(assets.QML_path)
     engine.loadFromModule('QML', "Main")
     
-    if engine.rootObjects():
-        exit_code = app.exec()
-    else:
-        exit_code = -1
+    if not engine.rootObjects():
+        return -1
 
-    del engine
-    return exit_code
+    return app.exec()

@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Layouts 1.15
 
+import "."
 import "./BarraLateral"
 
 Window {
@@ -43,13 +44,7 @@ Window {
     // Acá debería ir el contenido de cada pestaña
     Component {
         id: pestañaEdificios
-        Rectangle {
-            Text {
-                anchors.centerIn: parent
-                text: "Edificios"
-                font.pixelSize: 24
-            }
-        }
+        PruebaTablaSql{}
     }
 
     Component {

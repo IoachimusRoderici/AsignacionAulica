@@ -18,7 +18,7 @@ Window {
         spacing: 0
         anchors.fill: parent
 
-        BarraLateral{
+        BarraLateral {
             id: sidebar
         }
 
@@ -44,7 +44,13 @@ Window {
     // Acá debería ir el contenido de cada pestaña
     Component {
         id: pestañaEdificios
-        PruebaTablaSql{}
+        Rectangle {
+            Text {
+                anchors.centerIn: parent
+                text: "Edificios"
+                font.pixelSize: 24
+            }
+        }
     }
 
     Component {
@@ -60,13 +66,7 @@ Window {
 
     Component {
         id: pestañaCarreras
-        Rectangle {
-            Text {
-                anchors.centerIn: parent
-                text: "Carreras"
-                font.pixelSize: 24
-            }
-        }
+        Carreras { }
     }
 
     Component {

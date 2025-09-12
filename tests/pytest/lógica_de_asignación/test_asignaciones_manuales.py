@@ -2,8 +2,8 @@ import pytest
 
 from asignacion_aulica.lógica_de_asignación.asignación import separar_asignaciones_manuales, asignar
 from asignacion_aulica.lógica_de_asignación.restricciones import no_asignar_aulas_ocupadas
-from asignacion_aulica.lógica_de_asignación import ImposibleAssignmentException
-from asignacion_aulica.lógica_de_asignación.dia import Día
+from asignacion_aulica.lógica_de_asignación import AsignaciónImposibleException
+from asignacion_aulica.gestor_de_datos import Día
 
 @pytest.mark.clases(
     dict(aula_asignada=1, día=Día.LUNES, horario_inicio=10, horario_fin=15),
@@ -48,7 +48,7 @@ def test_asignación_manual_al_aula_doble(aulas, clases):
     assert (0, 2) in prohibidas
 
     # Probar asignar
-    with pytest.raises(ImposibleAssignmentException):
+    with pytest.raises(AsignaciónImposibleException):
         asignar(clases, aulas, aulas_dobles)
 
 @pytest.mark.aulas({}, {})

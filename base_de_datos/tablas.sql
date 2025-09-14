@@ -51,6 +51,11 @@ CREATE TABLE IF NOT EXISTS "Materias" (
 	FOREIGN KEY("Carrera") REFERENCES "Carreras"("Carrera") ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS "Equipamientos" (
+	"Equipamiento"	TEXT NOT NULL UNIQUE,
+	PRIMARY KEY("Equipamiento")
+);
+
 CREATE TABLE IF NOT EXISTS "Clases" (
 	"Materia"	TEXT NOT NULL,
 	"Dia"	TEXT NOT NULL,

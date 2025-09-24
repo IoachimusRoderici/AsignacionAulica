@@ -8,7 +8,7 @@ Window {
     id: mainWindow
     visible: true
     visibility: Window.Maximized
-    minimumHeight: 500
+    minimumHeight: 300
     minimumWidth: 800
     title: "Asignación Áulica"
 
